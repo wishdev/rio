@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'rio'
+
+ARGV.each do |path|
+  rio(path).norecurse('.svn').files('*.rb',proc{ |f| f.executable? and f[0] =~ /^#!.+ruby/ }) do |f|
+    puts f
+  end
+end
+
+__END__
