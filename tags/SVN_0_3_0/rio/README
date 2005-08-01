@@ -1,0 +1,65 @@
+Copyright (c) 2005, Christopher Kleckner
+All rights reserved
+
+This file is part of the Rio library for ruby.
+
+Rio is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Rio is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Rio; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+
+<b>Rio is pre-alpha software. 
+The documented interface and behavior is subject to change without notice.</b>
+
+=== Rio - Ruby I/O Comfort Class
+
+Rio is a convenience class wrapping much of the functionality of 
+IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
+
+To create the documentation for Rio run the command
+  rake rdoc
+from the distribution directory. 
+
+If your don't have rake installed try:
+  ruby buildrdoc.rb
+from  the distribution directory.
+
+Then point your browser at the 'doc/rdoc' directory.
+
+Suggested Reading
+* RIO::Doc::SYNOPSIS
+* RIO::Doc::INTRO
+* RIO::Doc::HOWTO
+* RIO::Rio
+
+To install Rio untar the distribution and type
+  rake install
+
+If you don't have rake installed, get it.
+
+Until you do, you may want to try
+  ruby setup.rb
+
+To build the documentation without rake, try
+ rdoc --op doc/rdoc -m RIO::Doc::SYNOPSIS README lib/rio/doc/*.rb lib/rio.rb lib/rio/if/*.rb lib/rio/kernel.rb
+ 
+Then point your browser at doc/rdoc.
+
+To read the documentation without running rdoc, read the files:
+* lib/rio/doc/SYNOPSIS.rb
+* lib/rio/doc/INTRO.rb
+* lib/rio/doc/HOWTO.rb
+* lib/rio/if/*.rb
+
+
+
