@@ -55,7 +55,7 @@ module PKG
   FULLNAME = PKG::NAME + "-" + PKG::VERSION
   SUMMARY = RIO::SUMMARY
   DESCRIPTION = RIO::DESCRIPTION
-  FILES = FileList.new(['setup.rb', 'buildrdoc.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION', 
+  FILES = FileList.new(['setup.rb', 'RUNME.1st.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION', 
                         'test/**/*.rb','doc/**/*'] + SRC_FILES.to_a + DOC_FILES.to_a + XMP_FILES.to_a
                        ) do |fl|
     fl.exclude( /\bsvn\b/ )
@@ -208,20 +208,17 @@ else
     s.require_path = 'lib'
     s.autorequire = nil
 
-#    s.executables = ['webgen']
-#    s.default_executable = 'webgen'
-
     #### Documentation
 
     s.has_rdoc = true
-    s.extra_rdoc_files = rd.rdoc_files.reject do |fn| fn =~ /\.rb$/ end.to_a
-    s.rdoc_options = RDOC_OPTIONS
+    #s.extra_rdoc_files = ['doc/generators/template/html/rio.rb']
+    s.rdoc_options << RDOC_OPTIONS 
 
     #### Author and project details
 
     s.author = "Christopher Kleckner"
-    s.email = "cgkleckner@yahoo.com"
-    #s.homepage = "rio.rubyforge.org"
+    s.email = "rio4ruby@rubyforge.org"
+    s.homepage = "rio.rubyforge.org"
     s.rubyforge_project = "rio"
   end
 
