@@ -58,8 +58,9 @@ module RIO
           @uri= nil
         end
         self.join(*args) unless args.empty?
-        @wd = ::Dir.getwd+'/'
+        @wd = RL.fs2url(::Dir.getwd)+'/'
       end
+
       def parse_url(str)
         ::URI.parse(::URI.escape(str,ESCAPE))
       end

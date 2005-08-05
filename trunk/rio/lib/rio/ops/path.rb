@@ -118,7 +118,7 @@ module RIO
       module Query
         def expand_path(*args)
           args[0] = args[0].to_s unless args.empty?
-          new_rio(Impl::U.expand_path(self.to_s,*args))
+          new_rio(RL.fs2url(Impl::U.expand_path(self.to_s,*args)))
         end
         def extname(*args) 
           en = Impl::U.extname(rl.path_no_slash,*args) 

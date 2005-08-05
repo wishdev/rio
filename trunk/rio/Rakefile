@@ -61,7 +61,7 @@ module PKG
     fl.exclude( /\bsvn\b/ )
     fl.exclude( 'test/qp' )
     fl.exclude( 'test/coverage' )
-    fl.exclude( 'doc/rdoc' )
+#    fl.exclude( 'doc/rdoc' )
   end
   OUT_DIR = 'pkg'
   OUT_FILES = %w[.gem .tar.gz .zip].map { |ex| OUT_DIR + '/' + FULLNAME + ex }
@@ -165,7 +165,7 @@ Rake::PackageTask.new( PKG::NAME, PKG::VERSION ) do |p|
 end
 
 desc "Make a new release (test,package,svn_version)"
-task :release => [:test, :clobber , :package, :svn_version, :ziparc] do
+task :release => [:test, :clobber, :rdoc , :package, :svn_version, :ziparc] do
   
 
 end
@@ -239,9 +239,11 @@ end
 =end
 
 desc "Upload documentation to homepage"
-task :uploaddoc => [:doc] do
-  Dir.chdir('doc/output')
-#  sh "scp -r * gettalong@rubyforge.org:/var/www/gforge-projects/#{PKG::NAME}/"
+task :uploaddoc => [:rdoc] do
+  Dir.chdir('doc/rdoc')
+  puts
+  puts "rio4ruby@rubyforge.org:/var/www/gforge-projects/#{PKG::NAME}/"
+  sh "scp -r * rio4ruby@rubyforge.org:/var/www/gforge-projects/#{PKG::NAME}/"
 end
 
 
