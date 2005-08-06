@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
-
-require 'rio/kernel'
+require 'rio'
 require 'test/unit'
 require 'test/unit/testsuite'
 require 'extensions/symbol'

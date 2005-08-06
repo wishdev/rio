@@ -1,5 +1,9 @@
-#!/usr/bin/env ruby
-require 'rio/kernel'
+#!/usr/local/bin/ruby
+if $0 == __FILE__
+  Dir.chdir File.dirname(__FILE__)+'/../'
+  $:.unshift File.expand_path('../lib/')
+end
+require 'rio'
 require 'test/unit'
 require 'test/unit/testsuite'
 require 'tc/testcase'
@@ -109,7 +113,7 @@ class TC_RIO_misc < Test::Unit::TestCase
   end
 
   def test_readwrite 
-    require 'rio/kernel'
+    require 'rio'
     tdir = rio(%w/qp test_readwrite/)
     tdir.rmtree.mkpath.chdir {
       exp = (0..5).to_a.map { |n| "Line #{n}" }
@@ -191,7 +195,7 @@ class TC_RIO_misc < Test::Unit::TestCase
     }
   end
   def test_copy2
-    require 'rio/kernel'
+    require 'rio'
     tdir = rio(%w/qp test_copy2/)
     tdir.rmtree.mkpath.chdir {
       txt = "Hello f1.txt"
@@ -337,7 +341,7 @@ class TC_RIO_misc < Test::Unit::TestCase
   end
 
   def test_copy
-    require 'rio/kernel'
+    require 'rio'
     datadir = rio('qp/test_copy').rmtree.mkpath
     inline = "Source Stuff\n"
     src = rio(datadir,'src')

@@ -1,5 +1,9 @@
-#!/usr/bin/env ruby
-require 'rio/kernel'
+#!/usr/local/bin/ruby
+if $0 == __FILE__
+  Dir.chdir File.dirname(__FILE__)+'/../'
+  $:.unshift File.expand_path('../lib/')
+end
+require 'rio'
 require 'test/unit'
 require 'tc/testcase'
 

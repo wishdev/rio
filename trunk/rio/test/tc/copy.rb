@@ -1,4 +1,8 @@
-#!/usr/bin/env ruby
+#!/usr/local/bin/ruby
+if $0 == __FILE__
+  Dir.chdir File.dirname(__FILE__)+'/../'
+  $:.unshift File.expand_path('../lib/')
+end
 require 'rio'
 require 'test/unit'
 require 'test/unit/testsuite'
@@ -9,7 +13,7 @@ require 'test/unit/testsuite'
 
 class TC_RIO_copy < Test::Unit::TestCase
   def test_copy
-    require 'rio/kernel'
+    require 'rio'
     datadir = rio('qp/test_copy').rmtree.mkpath
     inline = "Source Stuff\n"
     src = rio(datadir,'src')

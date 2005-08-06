@@ -175,6 +175,11 @@ task :svn_version do
   repos = rio(SVN_REPOSITORY_URL)
   proju = rio(repos,PKG::NAME,'trunk') 
   relu  = rio(repos,PKG::NAME,'tags','release-') + PKG::VERSION 
+  relo =`svn list #{relu.to_url}`
+  if relo.size > 0
+    $stderr.puts "Release #{relu.to_url} exists!"
+    exit -1
+  end
   msg = "Release #{PKG::VERSION} of #{PKG::NAME}"
   cmd = sprintf('svn copy %s %s -m "%s"',proju.to_url, relu.to_url, msg)
   sh cmd
@@ -206,7 +211,7 @@ else
     s.add_dependency( 'extensions', '>= 0.6.0' )
 
     s.require_path = 'lib'
-    s.autorequire = nil
+    s.autorequire = 'rio'
 
     #### Documentation
 
@@ -293,7 +298,7 @@ def run_testsite( arguments = '' )
 end
 
 
-CLOBBER << "test/qp" << "testsite/rio.log"
+CLOBBER << "test/qp" << "qp"
 desc "Build the test site"
 task :testsite do
   run_testsite
