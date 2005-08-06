@@ -1,5 +1,7 @@
-<b>Rio is pre-alpha software. 
-The documented interface and behavior is subject to change without notice.</b>
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Rio is pre-alpha software. 
+The documented interface and behavior is subject to change without notice.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 === Rio - Ruby I/O Comfort Class
 
@@ -11,8 +13,8 @@ To create the documentation for Rio run the command
 from the distribution directory. 
 
 If your don't have rake installed, install it, until you do try:
-  ruby buildrdoc.rb
-from  the distribution directory.
+  ruby RUNME.1st.rb
+from the distribution directory.
 
 Then point your browser at the 'doc/rdoc' directory.
 

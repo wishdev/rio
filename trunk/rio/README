@@ -31,7 +31,7 @@ To create the documentation for Rio run the command
 from the distribution directory. 
 
 If your don't have rake installed try:
-  ruby buildrdoc.rb
+  ruby RUNME.1st.rb
 from  the distribution directory.
 
 Then point your browser at the 'doc/rdoc' directory.
