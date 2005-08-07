@@ -139,8 +139,8 @@ character.
 <tt>rio(?-)</tt> (mnemonic: '-' is used by some Unix programs to specify stdin or stdout in place of a file)
 
 Just as a Rio that refers to a file, does not know whether that file will be opened for reading or
-writing until an io operation is specified, a +stdio:+ Rio does not know whether it will connect
-to stdin or stdout until an io operation is specified. 
+writing until an io operation is specified, a <tt>stdio:</tt> Rio does not know whether it will connect
+to stdin or stdout until an I/O operation is specified. 
 
 ===== Creating a Rio that refers to a clone of your programs stderr.
 
@@ -196,10 +196,10 @@ the return values converted to a Rio.
 
 ==== Creating a Rio from a Rio's component parts.
 
-The Rio methods for creating a Rio from a Rio's component parts are Rio#dirname, 
-Rio#filename, Rio#basename,
-and Rio#extname. 
-The behavior of Rio#basename depends on the setting of the +ext+ configuration variable
+The Rio methods for creating a Rio from a Rio's component parts are 
+Rio#dirname, Rio#filename, Rio#basename, and Rio#extname. 
+The behavior of Rio#basename depends on the setting of the +ext+ 
+configuration variable
 and is different from its counterpart in the File class. The default value of the +ext+ configuration variable
 is the string returned File#extname. The +ext+ configuration variable can be changed using Rio#ext and Rio#noext
 and can be queried using Rio#ext?. This value is used by calls to Rio#basename.
@@ -562,10 +562,53 @@ symlinks to non-existant object even though the symlink itself exists).
 The deleting methods' purpose is to make things not exist, so
 calling one of them on something that already does not exist is considered a success.
 
-To create a clean copy of a directory whether or not anything with that name exists you might do this
-   rio('adir').delete!.mkpath.chdir do
-    # do something in adir
-   end
+To create a clean copy of a directory whether or not anything with that name exists one might do this
+ rio('adir').delete!.mkpath.chdir do
+   # do something in adir
+ end
+
+=== Using Symbolic Links
+
+To create a symbolic link (symlink) to the file-system entry refered to by a Rio, use Rio#symlink. 
+Rio#symlink differs from File#symlink in that it calculates the path from the symlink location to 
+the Rio's position. So:
+
+ File#symlink('adir/afile','adir/alink')
+
+creates a symlink in the directory 'adir' named 'alink' which references 'adir/afile'. From the 
+perspective of 'alink', 'adir/afile' does not exist. While:
+
+ rio('adir/afile').symlink('adir/alink')
+
+creates a symlink in the directory 'adir' named 'alink' which references 'afile'. This is the route
+to 'adir/afile' from the perspective of 'adir/alink'. 
+
+Note that the return value from +symlink+ is the calling Rio and not a Rio refering to the symlink.
+This is done for consistency with the rest of Rio.
+
+Rio#symlink? can be used to test if a file-system object is a symlink. A Rio is extended with
+Rio#readlink, and Rio#lstat only if Rio#symlink? returns true. So for non-symlinks, these
+will raise a NoMethodError. These are both passed to their counterparts in File. Rio#readlink
+returns a Rio refering to the result of File#readlink.
+
+=== Using A Rio as an IO (or File or Dir)
+
+Rio supports so much of IO's interface that one might be tempted to pass it to a method that 
+expects an IO. While Rio is not and is not intended to be a stand in for IO, this can work. 
+It requires knowledge of every IO method that will be called, under any circumstances. 
+
+Even in cases where Rio supports the IO interface, A Rio feature that seems to 
+cause the most incompatibility, is its automatic closing of files. To turn off all of Rio's
+automatic closing use Rio#noclose.
+
+For example:
+ require 'yaml'
+ yrio = rio('ran.yaml').delete!.noclose
+ rtn2 = YAML.dump( ['badger', 'elephant', 'tiger'], yrio )
+ obj = YAML::load( yrio )
+
+---
+
 
 See also:
 * RIO::Doc::SYNOPSIS
