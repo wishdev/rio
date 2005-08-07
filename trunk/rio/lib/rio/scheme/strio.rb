@@ -46,7 +46,7 @@ module RIO
 
     class RL < RL::IOIBase 
       RIOSCHEME = 'strio'
-      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].freeze
+      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
       def initialize(str="")
         @str = str
       end

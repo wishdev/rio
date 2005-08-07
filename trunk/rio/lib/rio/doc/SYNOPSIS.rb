@@ -63,6 +63,9 @@ For the following assume:
 Copy a file into a string
  rio('afile') > astring 
 
+Copy a string into a file
+ rio('afile') < astring 
+
 Copy the chomped lines of a file into an array
  rio('afile').chomp > anarray
  
@@ -78,17 +81,17 @@ Copy an entire directory structure into another directory
 Copy a web page into a file
  rio('http://rubydoc.org/') > rio('afile')
 
-Copy a file from a ftp server into a file
+Copy a file from a ftp server into a local file
  rio('ftp://host/afile.gz') > rio('afile.gz')
 
 Copy a gzipped file un-gzipping it
  rio('afile.gz').gzip > rio('afile')
 
-Copy a file from a ftp server into a local file un-gzipping it
- rio('ftp://host/afile.gz').gzip > rio('afile')
-
 Copy a plain file, gzipping it
  rio('afile.gz').gzip < rio('afile')
+
+Copy a file from a ftp server into a local file un-gzipping it
+ rio('ftp://host/afile.gz').gzip > rio('afile')
 
 Iterate over the entries in a directory
  rio('adir').entries { |entrio| ... }
@@ -111,8 +114,7 @@ Create an array of the .rb entries in a directory and its subdirectories
 Create an array of the .rb files in a directory and its subdirectories
  anarray = rio('adir').all.files['*.rb']
 
-Copy an entire directory structure but only the .rb files from a directory and its subdirectories 
-into another directory
+Copy an entire directory structure and the .rb files within it
  rio('adir').dirs.files('*.rb') > rio('another_directory')
 
 Iterate over the chomped lines of a file
@@ -140,7 +142,13 @@ Copy the first 10 lines of a gzipped file on an ftp server to stdout
  rio('ftp://host/afile.gz').gzip.lines(0..9) > rio(?-)
 
 Put the first 100 chomped lines of a gzipped file into an array
- anarray =  rio('afile.gz').gzip[0...100] 
+ anarray =  rio('afile.gz').chomp.gzip[0...100] 
+
+Put chomped lines that start with 'Rio' into an array
+ anarray = rio('afile').chomp[/^Rio/]
+
+Iterate over the non-empty, non-comment chomped lines of a file
+ rio('afile').chomp.nolines(:empty?,/^\s*#/) { |line| ... }
 
 Copy the output of th ps command into an array, skipping the header line and the ps command entry
  rio(?-,'ps -a').nolines(0,/ps$/) > anarray 
@@ -148,14 +156,13 @@ Copy the output of th ps command into an array, skipping the header line and the
 Prompt for input and return what was typed
  ans = rio(?-).print("Type Something: ").chomp.gets 
 
-Change the extension of all files with the extension '.htm' in a directory and its
-subdirectories to have the extension '.html'
+Change the extension of all .htm files in a directory and its subdirectories to .html
  rio('adir').rename.all.files('*.htm') do |htmfile|
    htmfile.extname = '.html'
  end
 
 Create a symbolic link 'asymlink' in 'adir' which refers to 'adir/afile'
- rio('adir/afile').symlinke('adir/asymlink')
+ rio('adir/afile').symlink('adir/asymlink')
 
 === SUGGESTED READING
 

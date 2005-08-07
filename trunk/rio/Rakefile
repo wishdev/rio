@@ -178,7 +178,7 @@ task :svn_version do
   relo =`svn list #{relu.to_url}`
   if relo.size > 0
     $stderr.puts "Release #{relu.to_url} exists!"
-    exit -1
+    exit(-1)
   end
   msg = "Release #{PKG::VERSION} of #{PKG::NAME}"
   cmd = sprintf('svn copy %s %s -m "%s"',proju.to_url, relu.to_url, msg)

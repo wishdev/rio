@@ -40,28 +40,32 @@ module RIO
 
     # Returns the path for the Rio, which is defined differently for different types of Rios.
     #
-    # For Rios representing paths on the underlying file system this proxies URI::FILE#path or URI::Generic#path
-    # depending on whether the Rio is absolute or not. Note that this is *not* the same as Rio#fspath, but rather
-    # a URL path as defined in RFC 1738.
+    # For Rios representing paths on the underlying file system this returns 
+    # URI::FILE#path or URI::Generic#path depending on whether the Rio is absolute or not. 
+    # Note that this is not necessarily the same as Rio#fspath, but rather
+    # a URL path as defined in RFC1738.
     #
-    # For HTTP Rios this proxies this proxies URI::HTTP#path 
+    # For Rios that have a URI representation this returns URI#path 
     #
-    # For special Rios such as stdin: and stderr: this returns the special symbol used to create the Rio
-    #
-    # Specifically:
-    #  '-' => stdio:
-    #  '=' => stderr:
-    #  '?' => tempfile:
-    #  '$' => stringio:
-    #  '_' => sysio:
-    #
-    # This list of possible paths may not be comprehensive as new types of Rios are added, however,
-    # A Rio should always return a path when the underlying object has a concept of a path and something
-    # else that is reasonable for Rios that have no such concept
+    # Otherwise this returns nil.
     # 
     def path(*args) target.path(*args) end
     
+    # For resources that have a absolute URL (RFC1738) representation, 
+    # this returns a string containing that representation. 
+    # For objects that do not this returns a RIORL (a descriptive pseudo-URL).
+    #
+    #  rio('/var/www/')                  #=> "file:///var/www/"
+    #  rio('http://rio.rubyforge.org/')  #=> "http://rio.rubyforge.org"
+    #  
     def to_url() target.to_url end
+
+    # For resources that have a URL (RFC1738) representation, this returns a 
+    # URI object referencing it.  Otherwise this raises NoMethodError.
+    #
+    #  rio('http://rubyforge.org/').to_uri     #=> <URI::HTTP:0x818bd84 URL:http://rubyforge.org/>
+    #  rio('adir/afile').to_uri                #=> <URI::Generic:0x817d288 URL:adir/afile>
+    #
     def to_uri() target.to_uri end
 
     # Returns the path for the Rio on the underlying file system
@@ -95,6 +99,17 @@ module RIO
     #  rio('zippy/afile').rel('zippy') #=> rio('afile')
     #
     def rel(other) target.rel(other)  end
+
+
+    # Returns a new Rio whose path is the base path that is used by 
+    # Rio#abs to create an absolute Rio from a relative one.
+    #
+    #  rio('/tmp').chdir
+    #  rio('afile').base # => rio('/tmp/')
+    #
+    # See Rio#abs.
+    #
+    def base() target.base()  end
 
 
     # Sets the string that the Rio considers an extension. The value will be used by
@@ -308,14 +323,26 @@ module RIO
 
     # Create a Rio referencing Rio#to_s + arg.to_s
     #
+    #  rio('afile') + '-0.1'   #=> rio('afile-0.1')
+    #
     def +(arg) target + arg end
 
     # Create a new Rio referencing the result of applying String#sub to the value returned by
-    # Rio#to_s
+    # Rio#to_s. So:
+    #
+    #  ario.sub(re,string)
+    # is equivelent to
+    #  rio(ario.to_s.sub(re,string))
+    #
     def sub(re,string) target.sub(re,string) end
 
     # Create a new Rio referencing the result of applying String#gsub to the value returned by
-    # Rio#to_s
+    # Rio#to_s. So:
+    #
+    #  ario.gsub(re,string)
+    # is equivelent to
+    #  rio(ario.to_s.gsub(re,string))
+    #
     def gsub(re,string) target.gsub(re,string) end
 
 
@@ -359,49 +386,48 @@ module RIO
     ##def getwd(*args,&block) target.getwd(*args,&block) end
 
 
-    # Rio#base
-    #
-    #
-    def base() target.base()  end
-
-
-    # Returns the scheme for Rio's URI like URI#scheme where the Rio is represented
+    # Returns the scheme for the Rio's URI like URI#scheme where the Rio is represented
     # by a standard URI. For Rios that are not represented by standard URIs one of
-    # Rio's non-standard schemes's is returned. 
+    # Rio's non-standard schemes is returned. 
     #
-    #  rio('http://ruby-doc.org/') #=> 'http'
+    #  rio('http://ruby-doc.org/').scheme #=> 'http'
     #
     def scheme(*args) target.scheme(*args) end
 
-    # Proxy for URI#host
+    # Calls URI#host for Rios which have a URI. Otherwise raises NoMethodError.
     #
-    #  rio('http://ruby-doc.org/') #=> 'ruby-doc'
+    #  rio('http://ruby-doc.org/').host #=> 'ruby-doc'
     #
     def host(*args) target.host(*args) end
 
-    # Proxy for URI#opaque
+    # Calls URI#opaque for Rios which have URI representations. The opaque portion
+    # of a URI is the portion after the colon and before the question-mark beginning 
+    # the query.
     #
+    #  rio('http://example.org/do.cgi?n=1').opaque  #=> '//example.org/do.cgi'
+    #
+    # For Rios that do not have URL representations, returns the same part of 
+    # Rio's internal psuedo-URL
     def opaque(*args) target.opaque(*args) end
 
 
 
-    # Proxy for URI#merge
+    # Calls URI#merge
     # 
-    # Merges to Rios. URI#merge does not document exactly what merging to URIs means. This appears to
+    # Merges two Rios. URI#merge does not document exactly what merging to URIs means. This appears to
     # join the the paths with like <tt>other + path</tt>. See URI#merge for less information.
-    #
     #
     def merge(other) target.merge(other)  end
 
 
-    # Proxy for URI#route_from
+    # Calls URI#route_from
     #
     # Returns a new rio representing the path to this Rio from the perspective of _other_.
     # URI#route_from requires that absolute URIs be used. Rio#route_from does not.
     #
     def route_from(other) target.route_from(other)  end
 
-    # Proxy for URI#route_to
+    # Calls URI#route_to
     #
     # Returns a new rio representing the path to _other_ from the perspective of this Rio.
     # URI#route_to requires that absolute URIs be used. Rio#route_to does not.

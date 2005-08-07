@@ -45,7 +45,7 @@ module RIO
         #p callstr('initialize',u,*args)
         # u should be a ::URI or something that can be parsed to one
         args = get_base(*args)
-        @uri = ( u.kind_of?(::URI) ? u.dup : parse_url(u.to_s) )
+        @uri =  _mkuri(u)
         self.join(*args)
         @uri.path = '/' if @uri.absolute? and @uri.path == ''
       end
@@ -55,6 +55,13 @@ module RIO
         super
         @uri = @uri.clone unless @uri.nil?
         @base = @base.clone unless @base.nil?
+      end
+      def _mkuri(arg)
+        (arg.kind_of?(::URI) ?  arg.dup : parse_url(arg.to_s))
+      end
+      def base(arg=nil)
+        @base = _mkuri(arg) unless arg.nil? or @uri.absolute?
+        (@base.nil? ? @uri : @base)
       end
       def join(*args)
 #        self.class.joinuri(self.uri,*args)
@@ -82,9 +89,6 @@ module RIO
       end
       def merge(other)
         self.class.new(@uri.merge(other.uri))
-      end
-      def base()
-        (@base.nil? ? @uri : @base)
       end
       def get_base(*args)
         #      args.each { |a| p "get_base len=#{args.length} #{a.class}##{a.to_s}" }

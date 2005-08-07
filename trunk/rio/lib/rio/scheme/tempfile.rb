@@ -45,7 +45,7 @@ module RIO
     require 'tmpdir'
     class RL < RL::IOIBase 
       RIOSCHEME = 'tempfile'
-      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME]
+      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
       DFLT_PREFIX = 'rio'
       DFLT_TMPDIR = '/tmp' # ::Dir::tmpdir
       attr_reader :prefix,:tmpdir,:tmprl

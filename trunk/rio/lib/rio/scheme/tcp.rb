@@ -42,6 +42,7 @@ module RIO
     require 'rio/rl/ioi'
     class RL < RL::IOIBase 
       RIOSCHEME = 'tcp'.freeze
+      attr_reader :host
       def initialize(host,port)
         @host = host
         @port = port

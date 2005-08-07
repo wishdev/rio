@@ -42,7 +42,7 @@ module RIO
 
     class RL < RL::SysIOBase
       RIOSCHEME = 'sysio'
-      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].freeze
+      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
       def opaque() sprintf('0x%08x',self.ios.object_id) end
       # must be able to process both
       # parse('rio:sysio',ios)

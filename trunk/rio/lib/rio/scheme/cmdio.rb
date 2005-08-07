@@ -42,7 +42,7 @@ module RIO
 
     class RL < RL::SysIOBase 
       RIOSCHEME = 'cmdio'
-      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].freeze
+      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
       def initialize(cmd="")
         @cmd = cmd
       end

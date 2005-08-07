@@ -57,8 +57,16 @@ module RIO
           @pth = pth
           @uri= nil
         end
+        if !args.empty? and args[-1].kind_of?(::Hash) and (b = args.pop['base'])
+          @wd = case b
+                when %r%^file://(localhost)?(/.*)?$% then $2 || '/'
+                when %r%^/% then b
+                else RL.fs2url(::Dir.getwd)+'/'+b
+                end
+          @wd.squeeze('/')
+        end
         self.join(*args) unless args.empty?
-        @wd = RL.fs2url(::Dir.getwd)+'/'
+        @wd = RL.fs2url(::Dir.getwd)+'/' unless @wd
       end
 
       def parse_url(str)
@@ -98,7 +106,6 @@ module RIO
       def to_s() RL.url2fs(@pth) end
 
       def self.splitrl(s)
-
         sch,opq,whole = split_riorl(s)
         case sch
         when 'file' then [whole]
@@ -124,7 +131,12 @@ module RIO
       def merge(other)
         self.class.new(uri.merge(other.uri))
       end
-      def base() (absolute? ? @pth : @wd) end
+      def base(arg=nil) 
+        unless arg.nil?
+          self.wd = arg
+        end
+        (absolute? ? @pth : @wd) 
+      end
 
       def abs()
         return self if absolute?

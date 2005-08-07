@@ -109,7 +109,11 @@ module RIO
           new_rio(rl.merge(ensure_rio(other).rl))
         end
         def base(b=nil)
-          new_rio(rl.base)
+          new_rio(rl.base(b))
+        end
+        def setbase(b)
+          rl.base(b)
+          self
         end
         extend Forwardable
         def_instance_delegators(:rl,:scheme,:host,:opaque)
@@ -124,14 +128,6 @@ module RIO
           en = Impl::U.extname(rl.path_no_slash,*args) 
           (en.empty? ? nil : en)
         end
-        def basename(*args)
-          unless args.empty?
-            ex = args[0] || self.extname
-            self.ext(ex)
-          end
-          #p self.ext?.inspect
-          new_rio(Impl::U.basename(rl.path_no_slash,self.ext?))
-        end
         def split()
           require 'rio/to_rio'
           pth = rl.path_no_slash
@@ -142,10 +138,28 @@ module RIO
             parts[0] = rooturi
           end
           # give each rio the correct base
-          parts.inject([rio(parts.shift)]) { |ary,d| ary << rio(d,ary[-1].abs.to_url+'/') }.extend(ToRio::Array)
+          parts.inject([rio(parts.shift)]) { |ary,d| ary << rio(d,{ 'base' => ary[-1].abs.to_url+'/'} ) }.extend(ToRio::Array)
+        end
+        def basename(*args)
+          unless args.empty?
+            ex = args[0] || self.extname
+            self.ext(ex)
+          end
+          #p self.ext?.inspect
+          fn = Impl::U.basename(rl.path_no_slash,self.ext?)
+          new_rio(fn,{'base' => _calc_base()})
         end
         def filename()
-          new_rio(Impl::U.basename(rl.path_no_slash))
+          fn = Impl::U.basename(rl.path_no_slash)
+          new_rio(fn,{'base' => _calc_base()})
+        end
+        def _calc_base()
+          dn = Impl::U.dirname(rl.path_no_slash)
+          if dn[0] == ?/
+            dn 
+          else
+            self.base.to_url + dn + '/'
+          end
         end
         def dirname(*args)
           new_rio(Impl::U.dirname(rl.path_no_slash,*args))

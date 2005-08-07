@@ -44,7 +44,8 @@ module RIO
       def scheme() self.class.const_get(:RIOSCHEME) end
       def opaque() '' end
       def self.splitrl(s) nil end
-      def path() self.class.const_get(:RIOPATH) end
+      #def path() self.class.const_get(:RIOPATH) end
+      def path() nil end
       def fspath() nil end
       def to_s() url() end
     end

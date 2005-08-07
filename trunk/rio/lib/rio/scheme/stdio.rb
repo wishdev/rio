@@ -42,7 +42,7 @@ module RIO
 
     class RL < RL::SysIOBase 
       RIOSCHEME = 'stdio'
-      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].freeze
+      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
       attr_reader :scheme
       def initialize(sch=RIOSCHEME)
         @scheme = sch

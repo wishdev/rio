@@ -38,7 +38,7 @@
 module RIO
   class Rio
 
-    def to_rl() target.to_rl end
+    #def to_rl() target.to_rl end
     
     # Returns the length of the Rio's String representation
     # 
