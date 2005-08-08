@@ -67,7 +67,7 @@ as an implied +each+.
 == Using a Rio
 
 Using a Rio can be described as having 3 steps:
-* Creating a Rio (using the constructor or as the result of one of path manipulation methods)
+* Creating a Rio (using the constructor or as the result of one of the path manipulation methods)
 * Configuring a Rio 
 * Rio I/O
 
@@ -567,7 +567,12 @@ To create a clean copy of a directory whether or not anything with that name exi
    # do something in adir
  end
 
-=== Using Symbolic Links
+---
+
+== Miscellany
+
+
+==== Using Symbolic Links
 
 To create a symbolic link (symlink) to the file-system entry refered to by a Rio, use Rio#symlink. 
 Rio#symlink differs from File#symlink in that it calculates the path from the symlink location to 
@@ -591,21 +596,94 @@ Rio#readlink, and Rio#lstat only if Rio#symlink? returns true. So for non-symlin
 will raise a NoMethodError. These are both passed to their counterparts in File. Rio#readlink
 returns a Rio refering to the result of File#readlink.
 
-=== Using A Rio as an IO (or File or Dir)
+==== Using A Rio as an IO (or File or Dir)
 
 Rio supports so much of IO's interface that one might be tempted to pass it to a method that 
 expects an IO. While Rio is not and is not intended to be a stand in for IO, this can work. 
 It requires knowledge of every IO method that will be called, under any circumstances. 
 
-Even in cases where Rio supports the IO interface, A Rio feature that seems to 
+Even in cases where Rio supports the required IO interface, A Rio feature that seems to 
 cause the most incompatibility, is its automatic closing of files. To turn off all of Rio's
-automatic closing use Rio#noclose.
+automatic closing use Rio#noautoclose.
 
 For example:
  require 'yaml'
- yrio = rio('ran.yaml').delete!.noclose
- rtn2 = YAML.dump( ['badger', 'elephant', 'tiger'], yrio )
- obj = YAML::load( yrio )
+ yrio = rio('ran.yaml').delete!.noautoclose
+ YAML.dump( ['badger', 'elephant', 'tiger'], yrio )
+ obj = YAML::load( yrio ) #=> ["badger", "tiger", "elephant"]
+
+==== Automatic Closing of Files
+
+Rio closes files automatically in three instances. 
+
+When reading from an IO it is closed when the end of file is reached. While 
+this is a reasonable thing to do in many cases, sometimes this is not desired.
+To turn Rio's automatic closing on end of file use Rio#nocloseoneof (it can
+be turned back on via Rio#closeoneof)
+
+ ario = rio('afile').nocloseoneof
+ lines = ario[]
+ ario.closed?   #=> false
+
+Closing on end-of-file is necessary for many of Rio's "one-liners", but has an 
+implication that may be surprising at first. A Rio starts life as a path, not 
+much more than a string. When one of its read methods is called it becomes an
+input stream. When the stream is closed, it becomes a path again. This means 
+that when reading from a Rio, the end-of-file condition is seen only once before it 
+becomes a path again, and will be reopened if another read operation is attempted.
+
+Another time a Rio will be closed atomatically is when writing to it with one
+of the copy operators (<tt><, <<, >, >></tt>).
+This behavior can be turned off with Rio#nocloseoncopy.
+
+To turn off both of thes types of automatic closing use Rio#noautoclose.
+
+The third instance when Rio will close a file automatically is when a file opened
+for one type of access receives a method which that access mode does not support.
+So, the code
+ rio('afile').puts("Hello World").gets
+will open the file for write access when the +puts+ method is received. When +gets+ is
+called the file is closed and reopened with read access.
+
+==== Explicit Closing of Files
+
+Rio can not determine when the client is finished writing to it, as it does 
+using +eof+ on read. It is the author's understanding that Ruby does not support
+a mechanism to have code run when there are no more references to it -- that finalizers 
+are not necessarily run immediatly upon an object's reference count reaching 0.
+If this understanding is incorrect, some of Rio's extranious ways of closing a file
+may be rethought.
+
+That being said, Rio support several ways to explicitly close a file. Rio#close will close
+any open Rio. The output methods Rio#puts!, Rio#putc!, Rio#printf!, Rio#print!, and Rio#write!
+behave as if their counterparts without the exclamation point had been called and
+then call Rio#close or Rio#close_write if the underlying IO object is opened for duplex access.
+
+
+==== Open mode selection
+
+A Rio is typically not explicitly opened. It opens a file automatically when an
+input or output methed is called. For output methods Rio opens a file with mode 'w',
+and otherwise opens a file with mode 'r'. This behavior can be modified using the
+tersely named methods Rio#a, Rio#a!, Rio#r, Rio#r!, Rio#w, and Rio#w!, which cause
+the Rio to use modes 'a','a+','r','r+','w',and 'w+' respectively.
+
+One way to append a string to a file and close it in one line is
+ rio('afile').a.puts!("Hello World") 
+
+Run a cmd that must be opened for read and write
+ ans = rio(?-,'cat').w!.puts!("Hello Kitty").readlines
+
+The automatic selection of mode can be bypassed entirely using Rio#mode and Rio#open.
+
+If a mode is specified using +mode+, the file will still be opened automatically, but 
+the mode specified in the +mode+ method will be used regardless of whether it makes sense.
+
+A Rio can also be opened explicitly using Rio#open. +open+ takes one parameter, a mode.
+This also will override all of Rio's automatic mode selection.
+
+
+
 
 ---
 

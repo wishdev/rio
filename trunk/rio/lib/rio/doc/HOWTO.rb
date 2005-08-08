@@ -173,7 +173,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 2
    ario.print(string)
    # method 3
-   ario.noclose < string
+   ario.noautoclose < string
 
 * Write a string to a file and close the file
    # method 1
@@ -189,7 +189,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 2
    ario.a.print(string)
    # method 3
-   ario.noclose << string
+   ario.noautoclose << string
 
 * Append a string to a file and close the file
    # method 1
@@ -204,7 +204,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    ario = rio('afile').nocloseoncopy
    ario << array
    # method 2
-   ario.noclose < array
+   ario.noautoclose < array
 
 * Write an array to a file and close the file
    # method 1

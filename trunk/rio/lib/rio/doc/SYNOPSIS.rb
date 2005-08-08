@@ -102,6 +102,15 @@ Iterate over only the files in a directory
 Iterate over only the .rb files in a directory
  rio('adir').files('*.rb') { |entrio| ... }
 
+Iterate over only the directories in a directory
+ rio('adir').dirs { |entrio| ... }
+
+Iterate over only the _dot_ files in a directory
+ rio('adir').dirs(/^\./) { |entrio| ... }
+
+Iterate over the files in a directory and its subdirectories, skipping '.svn' and 'CVS' directories 
+ rio('adir').norecurse(/^\.svn$/,'CVS').files { |entrio| ... }
+
 Create an array of the .rb entries in a directory
  anarray = rio('adir')['*.rb']
 
@@ -134,9 +143,6 @@ Copy the first 10 lines of a file into another file
 
 Copy the first 10 lines of a file to stdout
  rio('afile').lines(0..9) > rio(?-)
-
-Copy the first 10 lines of a gzipped file to stdout
- rio('afile.gz').gzip.lines(0..9) > rio(?-)
 
 Copy the first 10 lines of a gzipped file on an ftp server to stdout
  rio('ftp://host/afile.gz').gzip.lines(0..9) > rio(?-)

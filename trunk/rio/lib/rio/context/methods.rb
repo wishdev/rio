@@ -85,13 +85,13 @@ module RIO
 
   module Cx
     module Methods
-      def noclose(arg=false,&block)
+      def noautoclose(arg=false,&block)
         closeoncopy(arg).closeoneof(arg,&block)
       end
-      def noclose_(arg=false)
+      def noautoclose_(arg=false)
         closeoncopy_(arg).closeoneof_(arg)
       end
-      protected :noclose_
+      protected :noautoclose_
     end
   end
 

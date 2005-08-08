@@ -66,7 +66,7 @@ module RIO
         #p callstr('open_',args.inspect)+" mode='#{mode?}' (#{mode?.class}) ioh=#{self.ioh} open?=#{open?}"
         unless open?
           ios = self.rl.open(mode?,*args)
-          noclose_(false) if ios.tty?
+          noautoclose_(false) if ios.tty?
           self.ioh = IOH::Stream.new(ios)
         end
         self
