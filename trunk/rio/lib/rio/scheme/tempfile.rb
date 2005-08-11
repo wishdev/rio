@@ -40,47 +40,44 @@ module RIO
   module Tempfile #:nodoc: all
     require 'rio/rl/ioi'
     require 'rio/scheme/path'
-    RESET_STATE = RL::IOIBase::RESET_STATE
+    RESET_STATE = 'Tempfile::Stream::Open'
 
     require 'tmpdir'
     class RL < RL::IOIBase 
       RIOSCHEME = 'tempfile'
       RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
       DFLT_PREFIX = 'rio'
-      DFLT_TMPDIR = '/tmp' # ::Dir::tmpdir
+      DFLT_TMPDIR = ::Dir::tmpdir
       attr_reader :prefix,:tmpdir,:tmprl
       def initialize(file_prefix=DFLT_PREFIX,temp_dir=DFLT_TMPDIR)
+        # p callstr('initialize',file_prefix,temp_dir)
         @prefix = file_prefix || DFLT_PREFIX
         @tmpdir = RIO::Path::RL.new(temp_dir || DFLT_TMPDIR)
         @tmprl = nil
       end
-      def path()
-        return @tmprl.path unless @tmprl.nil?
-        RIOPATH
-      end
-      def fspath() 
-        return nil if @tmprl.nil?
-        self.class.path_to_fspath(self.path)
-      end
-      def uri()
-        return @tmprl.uri unless @tmprl.nil?
-        nil
-      end
-      def url()
-        return @tmprl.url unless @tmprl.nil?
-        super
-      end
+      def path()   @tmprl ? @tmprl.path : super  end
+      def fspath() @tmprl ? @tmprl.fspath : super end
+      def to_s()   @tmprl ? @tmprl.to_s : super end
+      def uri()    @tmprl ? @tmprl.uri : super end
+      def url()    @tmprl ? @tmprl.url : super end
+      def scheme() @tmprl ? @tmprl.scheme : super end
+
       def opaque()
-        td = @tmpdir.to_s
-        td += '/' unless td.nil? or td.empty? or (td.ends_with?('/') and td != '/')
-        td+@prefix
+        if @tmprl
+          @tmprl.opaque
+        else
+          td = @tmpdir.to_s
+          td += '/' unless td.nil? or td.empty? or (td.ends_with?('/') and td != '/')
+          td+@prefix
         end
+      end
       def open(mode='ignored',tf=nil,td=nil)
         require 'tempfile'
         tf ||= @prefix
         td ||= @tmpdir
         hnd = ::Tempfile.new( tf.to_s, td.to_s)
         @tmprl = RIO::Path::RL.new(RIO::RL::fs2url(hnd.path))
+        
         hnd
       end
       def close()
@@ -97,6 +94,13 @@ module RIO
           [tpfx,tdir]
         else
           []
+        end
+      end
+    end
+    module Stream
+      class Open < RIO::Stream::Open
+        def iostate(sym)
+          mode_('w+').noautoclose_.open_.inout()
         end
       end
     end

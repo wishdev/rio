@@ -77,6 +77,7 @@ module RIO
         end
         def input() stream_state('Path::Stream::Input') end
         def output() stream_state('Path::Stream::Output') end
+
         def inout() stream_state('Path::Stream::InOut') end
       end
 

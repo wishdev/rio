@@ -1,5 +1,6 @@
 require 'test/unit'
 require 'tc/testcase'
+require 'tc/riorl'
 require 'tc/abs'
 require 'tc/closeoneof'
 require 'tc/clearsel'

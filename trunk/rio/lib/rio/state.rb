@@ -109,7 +109,7 @@ module RIO
       # it's job is create an instance of the next state
       # and change the value in the handle that is shared with the fs object
       def become(new_class,*args)
-        #p "become : #{self.class.to_s} => #{new_class.to_s} (#{self.mode?})" if $trace_states
+        p "become : #{self.class.to_s} => #{new_class.to_s} (#{self.mode?})" if $trace_states
 #
         return self if new_class == self.class
 
@@ -124,7 +124,7 @@ module RIO
         "missing: "+self.class.to_s+'['+self.to_url+']'+'.'+sym.to_s+'('+args.join(',')+')'
       end
       def method_missing(sym,*args,&block)
-        #p method_missing_trace_str(sym,*args) if $trace_states
+        p method_missing_trace_str(sym,*args) if $trace_states
 
         obj = when_missing(sym,*args)
         raise RuntimeError,"when_missing returns nil" if obj.nil?
@@ -163,15 +163,25 @@ module RIO
 
       def to_rl() self.rl.rl end
 
-      def fspath() @rl.fspath end
-      def path() @rl.path() end
-      def to_s() @rl.to_s() end
+
+      extend Forwardable
+#      def_instance_delegators(:rl,:path,:to_s,:fspath,:opaque,:host,:length)
+      def_instance_delegators(:rl,:path,:to_s,:fspath,:length)
+
+#      def fspath() @rl.fspath end
+#      def path() @rl.path() end
+#      def opaque() @rl.opaque() end
+#      def scheme() @rl.scheme() end
+#      def host() @rl.host() end
+#      def to_s() @rl.to_s() end
+#      def length() @rl.length end
+
+
       def ==(other) @rl == other end
       def ===(other) self == other end
       def =~(other) other =~ self.to_s end
       def to_url() @rl.url end
       def to_uri() @rl.uri end
-      def length() @rl.length end
       alias to_str to_s
 
       def hash() @rl.to_s.hash end

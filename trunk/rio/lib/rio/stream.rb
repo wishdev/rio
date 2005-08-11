@@ -61,7 +61,7 @@ module RIO
 
     class IOBase < Base
       # Mixin the appropriate ops
-      #include Ops::Path::Str
+      include Ops::Path::Str
       include Ops::Stream::Status
       include Ops::Stream::Manip
       

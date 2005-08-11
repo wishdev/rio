@@ -165,6 +165,8 @@ module RIO
       'HTTP::Stream::Input' => 'rio/scheme/http',
       'HTTP::Stream::Open' => 'rio/scheme/http',
 
+      'Tempfile::Stream::Open' => 'rio/scheme/tempfile',
+
       'FTP::State::Dir' => 'rio/ftp',
       'FTP::State::File' => 'rio/ftp',
       'FTP::State::Reset' => 'rio/ftp',
