@@ -70,9 +70,9 @@ module RIO
       def open(m=nil,*args)
         open_(*args)
       end
-      def open_() 
+      def open_(*args) 
         unless open?
-          ios = self.rl.open()
+          ios = self.rl.open(*args)
           self.ioh = IOH::Dir.new(ios)
 #          self.ioh = self.rl.open()
         end

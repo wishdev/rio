@@ -73,6 +73,9 @@ module RIO
                           when 'tempfile'
                             require 'rio/scheme/tempfile'
                             Tempfile
+                          when 'tempdir'
+                            require 'rio/scheme/tempdir'
+                            Tempdir
                           when 'strio'
                             require 'rio/scheme/strio'
                             StrIO
