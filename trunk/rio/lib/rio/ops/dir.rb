@@ -137,14 +137,13 @@ module RIO
         alias :unlink :rmdir
 
         def chdir(*args,&block) 
-          ndir = new_rio('.')
           if block_given?
             Impl::U.chdir(self,*args) { |dir|
-              yield ndir
+              yield new_rio('.')
             }
           else
             Impl::U.chdir(self,*args)
-            return ndir
+            return new_rio('.')
           end
           self
         end

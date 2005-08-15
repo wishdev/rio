@@ -57,6 +57,8 @@ module RIO
           @pth = pth
           @uri= nil
         end
+        @pth.sub!(%r|/\.$|,'/')
+        @wd = nil
         if !args.empty? and args[-1].kind_of?(::Hash) and (b = args.pop['base'])
           @wd = case b
                 when %r%^file://(localhost)?(/.*)?$% then $2 || '/'
@@ -66,6 +68,7 @@ module RIO
           @wd.squeeze('/')
         end
         self.join(*args) unless args.empty?
+        @wd = @pth if @pth[0] == ?/
         @wd = RL.fs2url(::Dir.getwd)+'/' unless @wd
       end
 

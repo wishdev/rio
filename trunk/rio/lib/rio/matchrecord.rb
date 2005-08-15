@@ -80,6 +80,16 @@ module RIO
           @select_arg === record.recno 
         end
       end
+      class Fixnum < Base
+        def match?(val,recno)
+          #p "match?(#{val},#{recno}) select_arg=#{@select_arg}"
+          @select_arg === recno
+        end
+        def =~(record) 
+          #p "=~(#{record},#{record.recno}) select_arg=#{@select_arg}"
+          @select_arg === record.recno 
+        end
+      end
       class Proc < Base
         def initialize(arg,therio)
           super(arg)
@@ -127,6 +137,10 @@ module RIO
         def inspect
           @list.inspect
         end
+        def size() @list.size unless @list.nil? end
+        def only_one_fixnum?()
+          @list && @list.size == 1 && @list[0].kind_of?(Match::Record::Fixnum)
+        end
         def delete_at(index)
           @list.delete_at(index)
           @list = nil if @list.empty?
@@ -157,8 +171,10 @@ module RIO
             Match::Record::Proc.new(arg,therio)
           when ::Symbol
             Match::Record::Symbol.new(arg)
+          when ::Fixnum
+            Match::Record::Fixnum.new(arg)
           else
-            Match::Record::Range.new(::Range.new(arg,arg))
+            raise ArgumentError,"Argument must be a Regexp,Range,Fixnum,Proc, or Symbol"
           end
         end
         def match?(val,recno)
@@ -187,6 +203,9 @@ module RIO
           @sel = SelList.create(therio,sel_args)
           @rej = SelList.create(therio,rej_args)
           @always = init_always()
+        end
+        def only_one_fixnum?()
+          @rej.nil? && @sel && @sel.only_one_fixnum?
         end
         def init_always(reset=false)
           if @sel.nil? and @rej.nil?

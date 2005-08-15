@@ -1,9 +1,13 @@
 #!/usr/bin/env ruby
 
 require 'rio'
+require 'rio/argv'
 
-ARGV.each do |path|
-  rio(path).norecurse('.svn').files('*.rb',proc{ |f| f.executable? and f[0] =~ /^#!.+ruby/ }) do |f|
+#is_ruby_exe = proc{ |f| f.executable? and f[0][0] =~ /^#!.+ruby/ }
+is_ruby_exe = proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }
+
+RIO.ARGV.each do |rpath|
+  rpath.norecurse('.svn','pkg').files('*.rb',is_ruby_exe) do |f|
     puts f
   end
 end

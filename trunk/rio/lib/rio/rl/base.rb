@@ -47,7 +47,7 @@ module RIO
       '-'    => 'stdio',
       '='    => 'stderr',
       '"'    => 'strio',
-      '?'    => 'tempfile',
+      '?'    => 'temp',
       '['    => 'aryio',
       '`'    => 'cmdio',
       '#'    => 'fd',
@@ -56,7 +56,7 @@ module RIO
       ?-    => 'stdio',
       ?=    => 'stderr',
       ?"    => 'strio',
-      ??    => 'tempfile',
+      ??    => 'temp',
       ?[    => 'aryio',
       ?`    => 'cmdio',
       ?#    => 'fd',
@@ -133,6 +133,7 @@ module RIO
       def =~(other) other =~ self.to_s end
       def length() self.to_s.length end
       def fspath() nil end
+      def path() nil end
 
       def to_rl() self.rl end
 

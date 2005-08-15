@@ -11,7 +11,7 @@ require 'extensions/symbol'
 require 'tc/testcase'
 require 'tmpdir'
 
-class TC_tempfile < Test::RIO::TestCase
+class TC_riorl < Test::RIO::TestCase
   @@once = false
   def self.once
     @@once = true
@@ -43,7 +43,7 @@ class TC_tempfile < Test::RIO::TestCase
       ?- => ['stdio',"",nil,nil,"stdio:","stdio:"],
       ?= => ['stderr',"",nil,nil,"stderr:","stderr:"],
       ?" => ['strio',"",nil,nil,"strio:","strio:"],
-      ?? => ['tempfile',@tmppath,nil,nil,"tempfile:#{@tmppath}","tempfile:#{@tmppath}"],
+      ?? => ['temp',@tmppath,nil,nil,"temp:#{@tmppath}","temp:#{@tmppath}"],
     }
     siopq = sprintf("0x%08x",$stdout.object_id)
     rinfo[?_] = ['sysio',siopq,nil,nil,"sysio:#{siopq}","sysio:#{siopq}"]

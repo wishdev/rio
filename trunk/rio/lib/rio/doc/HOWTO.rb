@@ -103,7 +103,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Read all lines starting with 'require' into an array, with each line chomped
    # method 1
-   array = ario.chomp.lines(/^\s*require/)
+   array = ario.chomp.lines[/^\s*require/]
    # method 2
    ario.chomp.lines(/^\s*require/) > array
 
@@ -302,9 +302,14 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 5
    array = ario.norecurse('.svn')['*.txt']
   
-* Iterate through all ruby files in a directory structure except those in the '.svn' and 'pkg' directories
+* Iterate through ruby files in a directory and subdirectories skipping 
+  those in the '.svn', and 'pkg' directories
    # method 1
-   ario.norecurse('.svn','pkg').files('*.rb',proc{ |f| f.executable? and f[0] =~ /^#!.+ruby/ }) { |f| ... }
+   is_ruby_exe = proc{ |f| f.executable? and f[0][0] =~ /^#!.+ruby/ }
+   ario.norecurse('.svn','pkg').files('*.rb',is_ruby_exe) { |f| ... }
+   # method 2
+   is_ruby_exe = proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }
+   ario.norecurse('.svn','pkg').files('*.rb',is_ruby_exe) { |f| ... }
 
 * Put all files excluding those that are symlinks to files in an array
    # method 1

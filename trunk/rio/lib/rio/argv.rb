@@ -43,6 +43,10 @@ module RIO
     ::ARGV.map { |path| rio(path) }
   end
   module_function :argv
+  def ARGV()
+    ::ARGV.map { |path| rio(path) }
+  end
+  module_function :ARGV
 end
 
 if $0 == __FILE__

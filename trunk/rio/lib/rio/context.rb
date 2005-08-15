@@ -90,7 +90,7 @@ module RIO
         p = {}
         ncx = Vars.new(q,p)
         keys.each { |key|
-          ncx.set_(key,@values[key])
+          ncx.set_(key,@values[key]) if @values.has_key?(key)
         }
         ncx
       end

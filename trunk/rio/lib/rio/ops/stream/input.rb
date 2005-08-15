@@ -90,6 +90,11 @@ module RIO
             return to_rec_(raw_rec) if @get_selrej.match?(raw_rec,@recno)
           end
         end
+        private
+
+        def _ss_like_array(selrej)
+          selrej.only_one_fixnum? and !dir_iter?
+        end
 
         protected
 
@@ -103,9 +108,7 @@ module RIO
             each_rec_ do |raw_rec|
               _got_rec(raw_rec)
               rangetops = check_passed_ranges(selrej,@recno) if rangetops and @recno > rangetops[0]
-              as = selrej.match?(raw_rec,@recno)
-              #p "as: #{as.inspect}" unless as == true || as == false
-              if as
+              if as = selrej.match?(raw_rec,@recno)
                 if want_ma
                   yield(to_rec_(raw_rec),as)
                 else

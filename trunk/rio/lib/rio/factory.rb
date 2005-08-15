@@ -71,11 +71,14 @@ module RIO
                             require 'rio/scheme/stderr'
                             StdErr
                           when 'tempfile'
-                            require 'rio/scheme/tempfile'
-                            Tempfile
+                            require 'rio/scheme/temp'
+                            Temp::File
+                          when 'temp'
+                            require 'rio/scheme/temp'
+                            Temp
                           when 'tempdir'
-                            require 'rio/scheme/tempdir'
-                            Tempdir
+                            require 'rio/scheme/temp'
+                            Temp::Dir
                           when 'strio'
                             require 'rio/scheme/strio'
                             StrIO
@@ -168,7 +171,10 @@ module RIO
       'HTTP::Stream::Input' => 'rio/scheme/http',
       'HTTP::Stream::Open' => 'rio/scheme/http',
 
-      'Tempfile::Stream::Open' => 'rio/scheme/tempfile',
+      'Temp::Reset' => 'rio/scheme/temp',
+      'Temp::Stream::Open' => 'rio/scheme/temp',
+      'Temp::Stream::Close' => 'rio/scheme/temp',
+      'Temp::Stream::InOut' => 'rio/scheme/temp',
 
       'FTP::State::Dir' => 'rio/ftp',
       'FTP::State::File' => 'rio/ftp',

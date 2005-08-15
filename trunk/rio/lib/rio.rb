@@ -44,7 +44,7 @@ require 'extensions/symbol'
 require 'extensions/enumerable'
 require 'extensions/string'
 require 'forwardable'
-
+$trace_states = false
 module RIO 
   # See also: RIO::Doc::SYNOPSIS; RIO::Doc::INTRO; RIO::Doc::HOWTO.
   class Rio < Base #:doc:

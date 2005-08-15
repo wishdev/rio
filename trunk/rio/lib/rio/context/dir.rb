@@ -42,6 +42,7 @@ require 'rio/entrysel'
 module RIO
   module Cx
     module Methods
+      def dir_iter?() cx.has_key?('sel') || cx.has_key?('nosel') end
       
       private
 

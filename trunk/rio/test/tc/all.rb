@@ -1,6 +1,8 @@
 require 'test/unit'
 require 'tc/testcase'
+require 'tc/temp'
 require 'tc/tempfile'
+require 'tc/tempdir'
 require 'tc/riorl'
 require 'tc/abs'
 require 'tc/closeoneof'
