@@ -135,6 +135,23 @@ module RIO
   #  rio(??)
   #  rio(??,basename='rio',tmpdir=Dir::tmpdir)
   #
+  # To create a temporary object that will become a file
+  # or a directory, depending on how you use it:
+  #  rio(??)
+  #  rio(??,basename='rio',tmpdir=Dir::tmpdir)
+  #
+  # To force it to become a file
+  #  rio(??).file
+  # or just write to it.
+  #
+  # To force it to become a directory:
+  #  rio(??).dir
+  # or
+  #  rio(??).mkdir
+  # or
+  #  rio(??).chdir
+  #
+  #
   # ===== Creating a Rio that refers to an arbitrary TCPSocket
   #
   #  rio('tcp:',hostname,port)
