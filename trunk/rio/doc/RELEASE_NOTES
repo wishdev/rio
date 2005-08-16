@@ -24,6 +24,14 @@ Suggested Reading
 * RIO::Doc::HOWTO
 * RIO::Rio
 
+== New for version 0.3.2
+
+* Based on a suggestion by Wybo Decker and code attributed to Nobu Nokada, 
+  Rio now supports temporary directories in addition to temporary files.
+* Bug fixes
+* Examples that actually work!
+* More tests and documentation.
+
 == SYNOPSIS
 
 For the following assume:

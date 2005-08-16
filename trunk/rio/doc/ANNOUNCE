@@ -1,4 +1,4 @@
-I am pleased to announce the first public release of Rio -- Rio 0.3.1
+For your perusal -- Rio 0.3.2
 
 == Overview
 
@@ -9,6 +9,18 @@ a simple consistent interface. In addition to forwarding the interfaces
 provided by IO, File, and Dir to an appropriate object, Rio provides
 a "grande" interface that allows many common application-level I/O and
 file-system tasks to be expressed succinctly.
+
+
+== New for version 0.3.2
+
+* Based on a suggestion by Wybo Decker and code attributed to Nobu Nokada, 
+  Rio now supports temporary directories in addition to temporary files.
+* Bug fixes
+* Examples that actually work!
+* More tests and documentation.
+
+
+== Version 0.3.1
 
 A Rio is and can manipulate:
 * a path

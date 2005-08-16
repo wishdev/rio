@@ -40,6 +40,7 @@ require 'rio/context'
 require 'rio/context/methods'
 require 'rio/ext'
 require 'rio/symantics'
+$trace_states = false
 module RIO
 
                    
