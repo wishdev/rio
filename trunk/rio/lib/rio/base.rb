@@ -44,6 +44,7 @@ module RIO
     KEEPSYM = {
       '__id__' => true,
       '__send__' => true,
+      'send' => true,
       'class' => true, 
       'kind_of?' => true, 
       'instance_of?' => true, 
@@ -52,7 +53,8 @@ module RIO
       'object_id' => true,
       'dup' => true,
       'clone' => true,
-
+      'nil?'  => true,
+#      'to_s'  => true,
     }.freeze
     instance_methods.each { |m| undef_method m unless KEEPSYM[m] }
   end

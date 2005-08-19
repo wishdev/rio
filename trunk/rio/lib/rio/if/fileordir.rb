@@ -103,6 +103,12 @@ module RIO
     #
     def rename(*args,&block) target.rename(*args,&block); self end
     
+
+    # Behaves like Rio#rename, but also changes the calling Rio to 
+    # refer to the renamed path
+    def rename!(*args,&block) target.rename!(*args,&block); self end
+    
+
     # For directories proxies Dir#read, otherwise proxies IO#read
     #
     # Proxy for IO#read

@@ -111,20 +111,20 @@ module RIO
     end
 
     # returns the Rio#fspath, which is the path for the Rio on the underlying filesystem
-    def to_s(*args) target.to_s(*args) end
-
+    def to_s() target.to_s end
+    alias :to_str :to_s
     def dup
       self.class.new(self.to_s)
     end
 
-    def method_missing(sym,*args,&block) #:nodoc:
-      #p callstr('method_missing',sym,*args)
+  def method_missing(sym,*args,&block) #:nodoc:
+    #p callstr('method_missing',sym,*args)
 
-      result = target.__send__(sym,*args,&block)
-      return result unless result.kind_of? State::Base and result.equal? target
+    result = target.__send__(sym,*args,&block)
+    return result unless result.kind_of? State::Base and result.equal? target
 
-      self
-    end
+    self
+  end
 
     def inspect()
       cl = self.class.to_s[5..-1]
@@ -138,7 +138,6 @@ module RIO
       require 'rio/if'
       include Enumerable
     end
-
     protected
 
     def target() @state.target end

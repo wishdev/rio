@@ -70,7 +70,7 @@ class TC_copyfrom < Test::RIO::TestCase
 
   def test_arrayofstrings_dir
     $trace_states = false
-    ario = rio('oud').delete!.mkdir
+    ario = rio('oup').delete!.mkdir
     str = "HelloWorld"
     drio = rio(str).delete!
     assert_raise(Errno::ENOENT) { ario < [str] }

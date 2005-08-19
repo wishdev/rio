@@ -465,10 +465,11 @@ module RIO
     #def autorewind?() target.autorewind?() end
 
 
-    # Rio#autorewind
+    # Sets a Rio to 'autorewind'.
+    # autorewind is not a well thought out concept and probably will be
+    # removed. Do not use it.
     #
-    #
-    #def autorewind(arg=true,&block) target.autorewind(arg,&block); self end
+    def autorewind(*args,&block) target.autorewind(*args,&block); self end
 
 
     # Rio#noautorewind

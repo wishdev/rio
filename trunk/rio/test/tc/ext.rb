@@ -23,7 +23,7 @@ class TC_ext < Test::Unit::TestCase
     rio('a/b').mkpath
     rio('a/c').mkpath
     rio('a/b/f').touch
-    rio('a/b/f').mv('a/c')
+    rio('a/b/f').rename('a/c')
     rio('a/b/d').mkdir
     rio('a/b/d').rename('a/c')
     assert(rio('a/c/f').exist?)

@@ -43,7 +43,7 @@ module Doc
 
 Rio is a convenience class wrapping much of the functionality of 
 IO, File, Dir, Pathname, FileUtils,
-Tempfile, StringIO, and OpenURI and uses Zlib, and CSV 
+Tempfile, StringIO, and OpenURI and uses Zlib, and CSV
 to extend that functionality using a simple consistent interface. 
 Most of the instance methods of IO, File and Dir are simply forwarded to the appropriate handle
 to provide identical functionality. Rio also provides a "grande" interface that 
@@ -699,6 +699,79 @@ A Rio can also be opened explicitly using Rio#open. +open+ takes one parameter, 
 This also will override all of Rio's automatic mode selection.
 
 
+==== CSV mode
+
+Rio uses the CSV class from the Ruby standard library to provide support for reading
+and writing comma-separated-value files. Normally using <tt>(no)records</tt> is
+identical to <tt>(no)lines</tt> because while +records+ only selects and does not
+specify the record-type, lines is the default, and so
+ rio('afile').records(1..2)
+effectively means
+ rio('afile').lines.records(1..2)
+
+The CSV extension distingishes between items selected using Rio#records and those 
+selected using Rio#lines. Rio returns records parsed into Arrays by the CSV
+library when +records+ is used, and returns Strings as normal when +lines+ is used.
++records+ is the default
+So:
+ rio('f.csv').puts!(["h0,h1","f0,f1"])                 
+
+ rio('f.csv').csv.records[]    #==>[["h0", "h1"], ["f0", "f1"]]
+ rio('f.csv').csv[]            #==> same thing
+ rio('f.csv').csv.lines[]      #==>["h0,h1\n", "f0,f1\n"]
+ rio('f.csv').csv.records[0]   #==>[["h0", "h1"]]
+ rio('f.csv').csv[0]           #==> same thing
+ rio('f.csv').csv.lines[0]     #==>["h0,h1\n"]
+ rio('f.csv').csv.norecords[0] #==>[["f0", "f1"]]
+ rio('f.csv').csv.nolines[0]   #==>["f0,f1\n"]
+
+This distinction, of course, applies equally when using the copy operators and +each+
+ rio('f.csv').csv[0] > rio('out').csv # out contains "f0,f1\n"
+ rio('f.csv').csv { |array_of_fields| ... }
+
+Notice that +csv+ mode is called on both the input and output Rios. The +csv+ on the 
+'out' Rio causes it to treat an array written to it as an array of records which is
+converted into CSV format before writing. Without the +csv+, the output would be
+written as if Array#to_s on [["f0","f1"]] had been called
+ rio('f.csv').csv[0] > rio('out') # out contains "f0f1"
+
+The String representing a record that is returned when using +lines+ is extended with a
++to_a+ method which will parse it into an array of fields. Likewise the Array returned
+when a record is returned using +records+ is extended with a modified +to_s+ which
+treats it as an array CSV fields, rather than just an array of strings.
+
+ array_of_lines = rio('f.csv').csv.lines[1]      #==>["f0,f1\n"]
+ array_of_records = rio('f.csv').csv.records[1]  #==>[["f0", "f1"]]
+
+ array_of_lines[0].to_a                          #==>["f0", "f1"]
+ array_of_records[0].to_s                        #==>"f0,f1"
+
+Rio#csv takes two optional parameters, which are passed on to the CSV library. They are
+the +field_separator+ and the +record_separator+. 
+ rio('semisep').puts!(["h0;h1","f0;f1"])                 
+
+ rio('semisep').csv(';').to_a  #==>[["h0", "h1"], ["f0", "f1"]]
+
+These are specified independently on the source and destination when using the
+copy operators, So:
+
+ rio('semisep').csv(';') > rio('colonsep').csv(':')
+ rio('colonsep').slurp  #==>"h0:h1\nf0:f1\n"
+
+Rio provides two methods for selecting fields from CSV records in a manner similar
+to that provided for selecting lines -- Rio#columns and Rio#nocolumns.
+
+ rio('f.csv').puts!(["h0,h1,h2,h3","f0,f1,f2,f3"])
+
+ rio('f.csv').csv.columns(0).to_a       #==>[["h0"], ["f0"]]
+ rio('f.csv').csv.nocolumns(0).to_a     #==>[["h1", "h2", "h3"], ["f1", "f2", "f3"]]
+ rio('f.csv').csv.columns(1..2).to_a    #==>[["h1", "h2"], ["f1", "f2"]]
+ rio('f.csv').csv.nocolumns(1..2).to_a  #==>[["h0", "h3"], ["f0", "f3"]]
+
+Rio#columns can, of course be used with the +each+ and the copy operators:
+
+ rio('f.csv').csv.columns(0..1) > rio('out').csv
+ rio('out').slurp  #==>"h0,h1\nf0,f1\n"
 
 
 ---

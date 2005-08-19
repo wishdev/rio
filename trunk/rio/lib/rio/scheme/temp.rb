@@ -112,7 +112,8 @@ module RIO
           @tf = ::Tempfile.new( @prefix.to_s, @tmpdir.to_s)
           super(@tf.path)
         end
-        def open(mode='ignored',tf=nil,td=nil)
+        def open(mode='ignored')
+          #p callstr('open',mode)
           @tf
         end
         def close 
@@ -129,6 +130,7 @@ module RIO
     class Reset < State::Base
       def initialize(*args)
         super
+        #p args
         @tempobj = nil
       end
       def check?() true end
@@ -156,6 +158,7 @@ module RIO
       def open?() false end
       def closed?() true end
       def when_missing(sym,*args)
+        #p @rl.scheme
         if @tempobj.nil?
           file()
         else

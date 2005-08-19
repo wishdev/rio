@@ -207,6 +207,31 @@ module RIO
     # So the existance of a block after many methods is taken as an implied
     # Rio#each
     #
+    # For Rios that refer to files, the item passed to the block is a String containing
+    # the line or block as selected by Rio#lines, or Rio#bytes. +lines+ is the default.
+    #  rio('afile').lines.each { |line| ...}
+    # 
+    # The block passed to +each+ will also accept an optional second parameter which will contain
+    # the result of the matching function. What this variable contains depends on the argument
+    # to +lines+ that resulted in the match as follows:
+    # 
+    # Regexp::   The MatchData that resulted from the match.
+    # Range::    The record number of the matching record.
+    # Fixnum::   The record number of the matching record.
+    # Proc::     The value returned by the proc.
+    # Symbol::   The value resulting from sending the symbol to the String.
+    #
+    # If no selection arguments were used, this variable will simply contain +true+.
+    #
+    #  rio(??).puts(%w[0:zero 1:one]).rewind.lines(/(\d+):([a-z]+)/) do |line,match| 
+    #    puts("#{match[1]} is spelled '#{match[2]}'")
+    #  end
+    # 
+    # Produces:
+    #  0 is spelled 'zero'
+    #  1 is spelled 'one'
+    #
+    # 
     # For Rios that refer to directories, the item passed to the block is a Rio refering to
     # the directory entry. 
     #
@@ -373,6 +398,9 @@ module RIO
     #  rio('http://domain/file.csv.gz').columns(0,7..9).gzip.csv[0..9] > rio('localfile.csv.gz').csv(';').gzip
     #
     def >(destination) target > destination; self end
+
+    # Alias for Rio#> (copy-to grande operator)
+    def copy(destination) target.copy(destination); self end
 
     # Grande Append-To Operator
     # 

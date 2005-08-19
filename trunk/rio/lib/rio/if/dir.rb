@@ -127,7 +127,15 @@ module RIO
     #
     def entries(*args,&block) target.entries(*args,&block); self end
 
+    # Grande Directory Entry Rejection Method 
+    #
+    # No aguments rejects all entries.
+    #
+    # Behaves like Rio#entries, except that matching entries are excluded.
+    #
+    def noentries(*args,&block) target.noentries(*args,&block); self end
 
+    
     # Grande File Selection Method 
     #
     # Sets the rio to return files. +args+ can be used to select which files are returned.
@@ -136,9 +144,9 @@ module RIO
     #  end
     # No aguments selects all files.
     #
-    # If +args+ are:
+    # +args+ may be one or more of the following:
     # Regexp:: selects matching files
-    # glob::   selects matching files
+    # String:: treated as a glob, and selects matching files
     # Proc::   called for each file. the file is processed unless the proc returns false
     # Symbol:: sent to each file. Each file is processed unless the symbol returns false
     #
@@ -153,7 +161,7 @@ module RIO
     #  rio('adir').files[/\.rb$/] # same thing using a regular expression
     #  rio('adir').files[:symlink?] # an array of symlinks to files
     #
-    # For Rios that refer to files, +files(*args)+ causes the file to be processed only if 
+    # For Rios that refer to files, <tt>files(*args)</tt> causes the file to be processed only if 
     # it meets the criteria specified by the args.
     #
     #  rio('afile.z').files['*.z'] #=> [rio('afile.z')]
@@ -167,7 +175,7 @@ module RIO
     # directories. For the purposes of this problem, a Ruby program is defined as a file ending with .rb or a file
     # that is executable and whose shebang line contains 'ruby'
     #
-    #  rio(path).norecurse('.svn').files['*.rb',proc{ |f| f.executable? and f[0] =~ /^#!.+ruby/ }]
+    #  rio(path).norecurse('.svn').files['*.rb',proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }]
     #
     # Explanation:
     #
@@ -180,9 +188,9 @@ module RIO
     # Limit to files ending with '.rb'
     #  rio(path).norecurse('.svn').files('*.rb')
     # Also allow files that are both executable and whose first line is a shebang-ruby line
-    #  rio(path).norecurse('.svn').files('*.rb',proc{ |f| f.executable? and f[0] =~ /^#!.+ruby/ })
+    #  rio(path).norecurse('.svn').files('*.rb',proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ })
     # Return an array rather than iterating thru them
-    #  rio(path).norecurse('.svn').files['*.rb',proc{ |f| f.executable? and f[0] =~ /^#!.+ruby/ }]
+    #  rio(path).norecurse('.svn').files['*.rb',proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }]
     #
     def files(*args,&block) target.files(*args,&block); self end
 

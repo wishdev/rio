@@ -43,11 +43,84 @@ module RIO
     
     # This is an internal function and should not normally be needed in client code.
     # It closes a Rio and returns it to its 'reset' state.
-    def reset() target.reset() end
+    def reset() # :nodoc:
+      target.reset() 
+    end
     
     # This is an internal function and is not needed in client code.
     # It returns the internal 'Rio Resource Locator' object.
-    def rl() target.rl() end
+    def rl() # :nodoc:
+      target.rl() 
+    end
+
+    # This is an internal function and is not needed in client code.
+    # It returns the internal 'Rio Resource Locator' object.
+    def to_rl() # :nodoc:
+      target.to_rl() 
+    end
+
+    # This is an internal function and is not needed in client code.
+    # It returns the internal 'Rio Context' object.
+    def cx() # :nodoc:
+      target.cx() 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def cx=(arg) # :nodoc:
+      target.cx = arg 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def copyclose() # :nodoc:
+      target.copyclose 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def nostreamenum() # :nodoc:
+      target.nostreamenum 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def cpclose(*args,&block) # :nodoc:
+      target.cpclose(*args,&block) 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def each_record(*args,&block) # :nodoc:
+      target.each_record(*args,&block) 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def each_row(*args,&block) # :nodoc:
+      target.each_row(*args,&block) 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def outputmode?() # :nodoc:
+      target.outputmode? 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def inputmode?() # :nodoc:
+      target.inputmode? 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def iostate(sym) # :nodoc:
+      target.iostate(sym) 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def getwd(*args) # :nodoc:
+      target.getwd(*args) 
+    end
+
+    # This is an internal function and is not needed in client code.
+    def stream_iter?() # :nodoc:
+      target.stream_iter? 
+    end
+
+    
 
   end
 end

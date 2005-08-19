@@ -34,24 +34,13 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
-#
-
-require 'rio'
 
 module RIO
-  def ARGV()
-    ::ARGV.map { |path| rio(path) }
+  class Rio
+    def file() target.file; self end
+    def dir() target.dir; self end
+      
+
   end
-  module_function :ARGV
 end
 
-if $0 == __FILE__
-  eval DATA.read, nil, $0, __LINE__+4
-end
-
-__END__
-
-puts
-puts("Run the tests that came with the distribution")
-puts("From the distribution directory use 'test/runtests.rb'")
-puts

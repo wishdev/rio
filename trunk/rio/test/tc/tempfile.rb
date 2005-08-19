@@ -34,5 +34,22 @@ class TC_tempfile < Test::RIO::TestCase
     assert_equal(str,rio(??).puts(str).rewind.chomp.gets)
   end
 
+  def test_rl_temp
+    str = "Hello Tempfile"
+    tmp = rio('temp:')
+    assert(tmp.closed?)
+    assert_equal(str,tmp.puts(str).rewind.chomp.gets)
+  end
+
+  def test_rl_tempfile
+    str = "Hello Tempfile"
+    #$trace_states = true
+    tmp = rio('tempfile:')
+    assert(tmp.closed?)
+    tmp.puts(str)
+    assert(tmp.open?)
+    assert_equal(str,tmp.rewind.chomp.gets)
+  end
+
 
 end

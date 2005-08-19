@@ -173,8 +173,8 @@ module RIO
 
       'Temp::Reset' => 'rio/scheme/temp',
       'Temp::Stream::Open' => 'rio/scheme/temp',
-      'Temp::Stream::Close' => 'rio/scheme/temp',
-      'Temp::Stream::InOut' => 'rio/scheme/temp',
+      #'Temp::Stream::Close' => 'rio/scheme/temp',
+      #'Temp::Stream::InOut' => 'rio/scheme/temp',
 
       'FTP::State::Dir' => 'rio/ftp',
       'FTP::State::File' => 'rio/ftp',

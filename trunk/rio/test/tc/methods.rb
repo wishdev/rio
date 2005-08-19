@@ -114,7 +114,7 @@ class TC_RIO_methods < Test::Unit::TestCase
   end
 
 
-  def test_clone_own_context
+  def ztest_clone_own_context
 
     assert(rio.closeoncopy?,"closeoncopy is on")
     assert!(rio.nocloseoncopy.closeoncopy?,"nocloseoncopy is off")

@@ -59,6 +59,11 @@ module RIO
           cx['col_args'] = ranges.flatten
           cxx('columns',true,&block)
         end
+        def nocolumns(*ranges,&block)
+          @cnames = nil
+          cx['nocol_args'] = ranges.flatten
+          cxx('columns',true,&block)
+        end
         def columns?() 
           cxx?('columns') 
         end 
@@ -109,12 +114,36 @@ module RIO
         private
 
         def trim(fields)
-          return fields if cx['col_args'].nil? or cx['col_args'].empty?
+          ycols = cx['col_args']
+          ncols = cx['nocol_args']
+          return [] if ncols and ncols.empty?
+          if ycols.nil? and ncols.nil?
+            return fields
+          end
+          ncols = [] if ncols.nil?
+          ycols = [(0...fields.size)] if ycols.nil? or ycols.empty?
+          cols = []
+          fields.each_index { |i|
+            yes = nil
+            no = nil
+            ycols.each { |yc|
+              if yc === i
+                yes = true
+                break
+              end
+            }
+            ncols.each { |nc|
+              if nc === i
+                no = true
+                break
+              end
+            }
+
+            cols << i if yes and !no
+          }
           tfields = []
-          fields.each_index do |i|
-            cx['col_args'].each do |rng|
-              tfields << fields[i] if rng === i
-            end
+          cols.each do |i|
+            tfields << fields[i]
           end
           tfields
         end
