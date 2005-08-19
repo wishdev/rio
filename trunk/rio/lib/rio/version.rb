@@ -39,7 +39,7 @@
 module RIO
   # :stopdoc:
   module Version #:nodoc: all
-    VERSION = '0.3.2'
+    VERSION = '0.3.3'
 
     N = VERSION.split('.').freeze
     MAJOR = N[0].freeze
