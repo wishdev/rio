@@ -3,7 +3,7 @@ Dir.chdir File.dirname(__FILE__)
 #$:.unshift File.expand_path('../lib/')
 
 require 'rubygems'
-require_gem 'rio'
+require 'rio'
 
 
 #require 'rio'

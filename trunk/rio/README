@@ -50,6 +50,14 @@ If you don't have rake installed, get it.
 Until you do, you may want to try
   ruby setup.rb
 
+Rio is also available as a gem. If you have rubygems installed use:
+  gem install rio
+
+To use Rio as a rubygem:
+  require 'rubygems'
+  require 'rio'
+
+
 To build the documentation without rake, try
  rdoc --op doc/rdoc -m RIO::Doc::SYNOPSIS README lib/rio/doc/*.rb lib/rio.rb lib/rio/if/*.rb lib/rio/kernel.rb
  
