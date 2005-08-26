@@ -138,19 +138,21 @@ module RIO
     
     # Grande File Selection Method 
     #
-    # Sets the rio to return files. +args+ can be used to select which files are returned.
+    # Configures the rio to process files. +args+ can be used to select which files are returned.
     #  ario.files(*args) do |f|
     #    f.file?      #=> true
     #  end
     # No aguments selects all files.
     #
-    # +args+ may be one or more of the following:
+    # +args+ may be zero or more of the following:
+    #
     # Regexp:: selects matching files
     # String:: treated as a glob, and selects matching files
     # Proc::   called for each file. the file is processed unless the proc returns false
     # Symbol:: sent to each file. Each file is processed unless the symbol returns false
     #
-    # If a block is given, behaves like <tt>ario.files(*args).each</tt>
+    # If a block is given, behaves like 
+    #  ario.files(*args).each
     #
     # See also Rio#dirs, Rio#entries, Rio#nofiles
     #
@@ -160,6 +162,8 @@ module RIO
     #  rio('adir').files['*.rb'] # return an array of .rb files
     #  rio('adir').files[/\.rb$/] # same thing using a regular expression
     #  rio('adir').files[:symlink?] # an array of symlinks to files
+    #  rio('adir').files >> rio('other_dir') # copy files to 'other_dir'
+    #  rio('adir').files('*.rb') >> rio('other_dir') # only copy .rb files
     #
     # For Rios that refer to files, <tt>files(*args)</tt> causes the file to be processed only if 
     # it meets the criteria specified by the args.
@@ -167,30 +171,111 @@ module RIO
     #  rio('afile.z').files['*.z'] #=> [rio('afile.z')]
     #  rio('afile.q').files['*.z'] #=> []
     #
-    # Example
+    # === Example Problem
     #
-    # Problem:
+    # Fill the array +ruby_progs+ with all ruby programs in a directory and its subdirectories, 
+    # skipping those in _subversion_ (.svn) directories. 
     #
-    # Need an array of all ruby programs in a directory and its subdirectories, skipping those in _subversion_ (.svn) 
-    # directories. For the purposes of this problem, a Ruby program is defined as a file ending with .rb or a file
-    # that is executable and whose shebang line contains 'ruby'
+    #  ruby_progs = []
+    # 
+    # For the purposes of this problem, a Ruby program is defined as a file ending with .rb or a file
+    # that is executable and whose shebang line contains 'ruby':
     #
-    #  rio(path).norecurse('.svn').files['*.rb',proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }]
+    #  is_ruby_exe = proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }
+    #
+    # ==== Solution 1. Use the subscript operator.
+    #
+    #  ruby_progs = rio('adir').norecurse('.svn').files['*.rb',is_ruby_exe]
     #
     # Explanation:
     #
-    # Create a Rio for a directory
-    #  rio(path)
-    # Specify that '.svn' directories should not be included in recursion.
-    #  rio(path).norecurse('.svn')
-    # Select files
-    #  rio(path).norecurse('.svn').files
-    # Limit to files ending with '.rb'
-    #  rio(path).norecurse('.svn').files('*.rb')
-    # Also allow files that are both executable and whose first line is a shebang-ruby line
-    #  rio(path).norecurse('.svn').files('*.rb',proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ })
-    # Return an array rather than iterating thru them
-    #  rio(path).norecurse('.svn').files['*.rb',proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }]
+    # 1. Create the Rio
+    #
+    #    Create a Rio for a directory
+    #     rio('adir')
+    #
+    # 2. Configure the Rio
+    #
+    #    Specify recursion and that '.svn' directories should not be included.
+    #     rio('adir').norecurse('.svn')
+    #    Select files
+    #     rio('adir').norecurse('.svn').files
+    #    Limit to files ending with '.rb'
+    #     rio('adir').norecurse('.svn').files('*.rb')
+    #    Also allow files for whom +is_ruby_exe+ returns true
+    #     rio('adir').norecurse('.svn').files('*.rb',is_ruby_exe)
+    #
+    # 3. Do the I/O
+    #
+    #    Return an array rather than iterating thru them
+    #     ruby_progs = rio('adir').norecurse('.svn').files['*.rb',is_ruby_exe]
+    #
+    # ==== Solution  2. Use the copy-to operator
+    #
+    #  rio('adir').files('*.rb',is_ruby_exe).norecurse('.svn') > ruby_progs
+    #
+    # Explanation:
+    #
+    # 1. Create the Rio
+    #
+    #    Create a Rio for a directory
+    #     rio('adir')
+    #
+    # 2. Configure the Rio
+    #
+    #    Select only files
+    #     rio('adir').files
+    #    Limit to files ending with '.rb'
+    #     rio('adir').files('*.rb')
+    #    Also allow files for whom +is_ruby_exe+ returns true
+    #     rio('adir').files('*.rb',is_ruby_exe)
+    #    Specify recursion and that '.svn' directories should not be included.
+    #     rio('adir').files('*.rb',is_ruby_exe).norecurse('.svn')
+    #
+    # 3. Do the I/O
+    #
+    #    Copy the Rio to ruby_progs
+    #     rio('adir').files('*.rb',is_ruby_exe).norecurse('.svn') > ruby_progs
+    #
+    # ==== Example Discussion
+    #
+    # Note that the only difference between Step 2 of Solution 1 and that of Solution 2 is 
+    # the order of the configuration methods. Step 2 of Solution 1 would have worked equally 
+    # well:
+    #
+    #  rio('adir').norecurse('.svn').files('*.rb',is_ruby_exe) > ruby_progs
+    #
+    # Furthermore if our problem were changed slightly and instead of having our results
+    # ending up in an array, we wished to iterate through them, we could use:
+    #
+    #  rio('adir').norecurse('.svn').files('*.rb',is_ruby_exe) { |ruby_prog_rio| ... }
+    #
+    # Note the similarities. In fact, solution 1 could have been written:
+    #  
+    #  rio('adir').norecurse('.svn').files('*.rb',is_ruby_exe).to_a
+    # or
+    #  rio('adir').norecurse('.svn').files('*.rb',is_ruby_exe)[]
+    #
+    # Passing the arguments for +files+ to the subscript operator is syntactic sugar.
+    # The subscript operator does not really take any arguments of its own. It always
+    # passes them to the most recently called of the grande selection methods (or the
+    # default selection method, if none have been called). So,
+    #
+    #  rio('adir').files['*.rb']
+    # is a shortcut for
+    #  rio('adir').files('*.rb').to_a
+    #
+    #  rio('adir')['*.rb']
+    # is a shortcut for
+    #  rio('adir').entries('*.rb').to_a
+    #
+    #  rio('afile').lines[0..10]
+    # is a shortcut for
+    #  rio('afile').lines(0..10).to_a
+    #
+    # And so on.
+    # 
+    #
     #
     def files(*args,&block) target.files(*args,&block); self end
 

@@ -85,7 +85,7 @@ module RIO
         str
       end
       def bequeath()
-        keys = %w[chomp closeoneof rename]
+        keys = %w[chomp strip closeoneof rename]
         q = {}
         p = {}
         ncx = Vars.new(q,p)

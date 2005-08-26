@@ -79,7 +79,6 @@ module RIO
       module Output
         include InOut
 
-
         protected
 
         def cpfrom_obj_(obj)
@@ -119,7 +118,10 @@ module RIO
             self
           }
         end
+        alias :copy_to :>
+        alias :append_to :>>
         private
+
         def _cpto_rio(arg,sym)
           ario = ensure_rio(arg)
           ario = ario.join(self.filename) if ario.dir?
@@ -132,10 +134,13 @@ module RIO
           }
         end
       end
+
       module Output
         include Util::Output
         def <<(arg) cpclose { _cpfrom(arg) } end
         def <(arg) cpclose { _cpfrom(arg) } end
+        alias :copy_from :<
+        alias :append_from :<<
 
         private
 
@@ -164,6 +169,8 @@ module RIO
         include Util::Output
         def <(arg) cpclose { self.iostate(:<) < arg } end
         def <<(arg) cpclose { self.iostate(:<<) << arg } end
+        alias :copy_from :<
+        alias :append_from :<<
       end
       module Input
         include Util::Input
@@ -173,6 +180,8 @@ module RIO
         def >>(arg) 
           spcp(arg) || cpclose(arg) { self.iostate(:>>) >> arg } 
         end
+        alias :copy_to :>
+        alias :append_to :>>
         def copy_as_file?(arg)
           arg.kind_of?(Rio) and arg.scheme == 'ftp'
         end
@@ -184,7 +193,6 @@ module RIO
             nil
           end
         end
-        alias :copy :>
       end
     end
   end
@@ -196,12 +204,15 @@ module RIO
         include Util::Output
         def <(arg) cpclose { self.iostate(:<) < arg } end
         def <<(arg) cpclose { self.iostate(:<<) << arg } end
+        alias :copy_from :<
+        alias :append_from :<<
       end
       module Input
         include Util::Input
         def >(arg) cpclose(arg) { self.iostate(:>) > arg } end
         def >>(arg) cpclose(arg) { self.iostate(:>>) >> arg } end
-        alias :copy :>
+        alias :copy_to :>
+        alias :append_to :>>
       end
     end
   end
@@ -213,6 +224,8 @@ module RIO
         include Util::Output
         def <<(arg)  _cpfrom(arg); self  end
         def <(arg)  _cpfrom(arg); self end
+        alias :copy_from :<
+        alias :append_from :<<
 
         private
 
@@ -251,7 +264,8 @@ module RIO
           end
           self
         end
-        alias :copy :>
+        alias :copy_to :>
+        alias :append_to :>>
 
         private
 
@@ -284,6 +298,8 @@ module RIO
             _cpsrc(arg) << arg
           end
         end
+        alias :copy_from :<
+        alias :append_from :<<
 
         private
 

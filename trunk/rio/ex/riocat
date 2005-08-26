@@ -6,11 +6,11 @@ require 'rio'
 # 
 # explanation:
 #
-# rio('-')
-#   rio('-'): a rio that will be connected to stdin or stdout depending how it is used
+# rio(?-)
+#   rio(?-): a rio that will be connected to stdin or stdout depending how it is used
 #
-# rio('-')
-#   rio('-'): a rio that will be connected to stdin or stdout depending how it is used
+# rio(?-)
+#   rio(?-): a rio that will be connected to stdin or stdout depending how it is used
 #
 # <
 #   <: copy operator indicating rio on left is written to and the rio on the right is read from
@@ -22,7 +22,7 @@ rio(?-) < rio(?-)
 # rio(?-) > rio(?-)
 #
 # this is similar but reads the entire file before writing
-#rio('-').print!( rio('-').slurp )
+#rio(?-).print!( rio(?-).slurp )
 
 
 

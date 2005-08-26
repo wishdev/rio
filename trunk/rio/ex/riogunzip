@@ -24,7 +24,7 @@ rio(?-).gzip > rio(?-)
 # rio(?-) < rio(?-).gzip
 #
 # this is similar, but reads the entire file in before writing it out
-#    rio('-').print!( rio('-').gzip.contents )
+#    rio(?-).print!( rio(?-).gzip.contents )
 #
 #rio(?-).gzip.each_record do |rec|
 #  rio(?-).print(rec)

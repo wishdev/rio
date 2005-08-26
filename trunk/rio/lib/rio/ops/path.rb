@@ -173,7 +173,7 @@ module RIO
         end
 
         def +(arg)
-          new_rio(softreset.to_s + ensure_rio(arg).to_s)
+          new_rio(softreset.to_str + ensure_rio(arg).to_str)
         end
 
         private

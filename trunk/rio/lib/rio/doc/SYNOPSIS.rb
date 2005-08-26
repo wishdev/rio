@@ -60,30 +60,37 @@ For the following assume:
  astring = ""
  anarray = []
 
-Copy a file into a string
- rio('afile') > astring 
+Copy or append a file to a string
+ rio('afile') > astring      # copy
+ rio('afile') >> astring     # append
 
-Copy a string into a file
- rio('afile') < astring 
+Copy or append a string to a file
+ rio('afile') < astring      # copy
+ rio('afile') << astring     # append
 
-Copy the chomped lines of a file into an array
- rio('afile').chomp > anarray
+Copy or append the lines of a file to an array
+ rio('afile') > anarray     
+ rio('afile') >> anarray
  
-Copy a file into another file
- rio('afile') > rio('another_file')
+Copy or append a file to another file
+ rio('afile') > rio('another_file')  
+ rio('afile') >> rio('another_file') 
 
-Copy a file into a directory
- rio('afile') > rio('adir')
+Copy a file to a directory
+ rio('adir') << rio('afile')
 
-Copy an entire directory structure into another directory
- rio('adir') > rio('another_directory')
+Copy a directory structure to another directory
+ rio('adir') >> rio('another_directory')
 
-Copy a web page into a file
+Copy a web-page to a file
  rio('http://rubydoc.org/') > rio('afile')
 
-Copy a file from a ftp server into a local file
- rio('ftp://host/afile.gz') > rio('afile.gz')
-
+Ways to get the chomped lines of a file into an array
+ anarray = rio('afile').chomp[]         # subscript operator
+ rio('afile').chomp > anarray           # copy-to operator
+ anarray = rio('afile').chomp.to_a      # to_a
+ anarray = rio('afile').chomp.readlines # IO#readlines
+ 
 Copy a gzipped file un-gzipping it
  rio('afile.gz').gzip > rio('afile')
 
@@ -102,11 +109,8 @@ Iterate over only the files in a directory
 Iterate over only the .rb files in a directory
  rio('adir').files('*.rb') { |entrio| ... }
 
-Iterate over only the directories in a directory
- rio('adir').dirs { |entrio| ... }
-
 Iterate over only the _dot_ files in a directory
- rio('adir').dirs(/^\./) { |entrio| ... }
+ rio('adir').files(/^\./) { |entrio| ... }
 
 Iterate over the files in a directory and its subdirectories, skipping '.svn' and 'CVS' directories 
  rio('adir').norecurse(/^\.svn$/,'CVS').files { |entrio| ... }
@@ -114,23 +118,14 @@ Iterate over the files in a directory and its subdirectories, skipping '.svn' an
 Create an array of the .rb entries in a directory
  anarray = rio('adir')['*.rb']
 
-Iterate over the .rb files in a directory and its subdirectories
- rio('adir').all.files('*.rb') { |entrio| ... }
-
 Create an array of the .rb entries in a directory and its subdirectories
  anarray = rio('adir').all['*.rb']
 
-Create an array of the .rb files in a directory and its subdirectories
- anarray = rio('adir').all.files['*.rb']
+Iterate over the .rb files in a directory and its subdirectories
+ rio('adir').all.files('*.rb') { |entrio| ... }
 
 Copy an entire directory structure and the .rb files within it
  rio('adir').dirs.files('*.rb') > rio('another_directory')
-
-Iterate over the chomped lines of a file
- rio('afile').chomp.lines { |line| ... }
-
-Put the chomped lines of a file into an array
- anarray = rio('afile').chomp.lines[]
 
 Iterate over the first 10 chomped lines of a file
  rio('afile').chomp.lines(0..9) { |line| ... }

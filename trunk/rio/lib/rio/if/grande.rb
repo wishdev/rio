@@ -400,7 +400,7 @@ module RIO
     def >(destination) target > destination; self end
 
     # Alias for Rio#> (copy-to grande operator)
-    def copy(destination) target.copy(destination); self end
+    def copy_to(destination) target.copy_to(destination); self end
 
     # Grande Append-To Operator
     # 
@@ -424,6 +424,10 @@ module RIO
     def >>(destination) target >> destination; self end
 
     
+    # Alias for Rio#>> (append-to grande operator)
+    def append_to(destination) target.append_to(destination); self end
+
+
     # Grande Append-From Operator
     # 
     # The append-from grande-operator copies a Rio from another Rio or another ruby object. This
@@ -437,6 +441,11 @@ module RIO
     # 
     # See Rio#< (copy-from)
     def <<(source) target << source; self end
+
+
+    # Alias for Rio#<< (append-from grande operator)
+    def append_from(source) target.append_from(source); self end
+
 
     # Grande Copy-From Operator
     # 
@@ -520,6 +529,10 @@ module RIO
     # See also Rio#> (copy-to), Rio#each, Rio#[]
     #
     def <(source) target < source; self end
+
+    # Alias for Rio#< (copy-from grande operator)
+    def copy_from(source) target.copy_from(source); self end
+
 
     # Reads and returns the next record from a Rio, honoring the grande selection methods. 
     #

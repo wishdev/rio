@@ -203,24 +203,24 @@ class TC_RIO_misc < Test::Unit::TestCase
       oslurp = o.slurp
 
       n = rio('n')
-      o.copy(n)
+      o.copy_to(n)
       assert_equal(oslurp,n.slurp)
 
       d = rio('d1').rmtree.mkpath
       n = rio(d,'o')
-      o.copy(d)
+      o.copy_to(d)
       assert_equal(oslurp,n.slurp)
 
 #      d = rio('d2').rmtree
 #      n = rio(d,'o')
 #      assert_raise(::RIO::Exception::Copy) {
-#        o.copy(n)
+#        o.copy_to(n)
 #      }
       
 
       d = rio('d3').rmtree.mkpath
       n = rio(d,'o').touch
-      o.copy(d)
+      o.copy_to(d)
       assert_equal(oslurp,n.slurp)
 
 
@@ -231,7 +231,7 @@ class TC_RIO_misc < Test::Unit::TestCase
         rio('qf').symlink('o')
       }
       n = rio(d,'o')
-      o.copy(d)
+      o.copy_to(d)
       assert_equal(oslurp,n.slurp)
 
       d = rio('d6').rmtree.mkpath
@@ -349,9 +349,9 @@ class TC_RIO_misc < Test::Unit::TestCase
     src.close
     src = rio(datadir,'src')
     dst1 = rio(datadir,'dst1')
-    src.copy(dst1)
+    src.copy_to(dst1)
     dst2 = rio(datadir,'dst2').mkdir
-    src.copy(dst2)
+    src.copy_to(dst2)
     sline = rio(datadir,'src').readline
     l1 = rio(datadir,'dst1').readline
     l2 = rio(datadir,'dst2/src').readline
@@ -366,7 +366,7 @@ class TC_RIO_misc < Test::Unit::TestCase
     oline = rio(datadir,'dir1/sd1/f1.txt').readline
 
     dir2 = rio(datadir,'dir2').rmtree.mkpath
-    sd1.copy(dir2)
+    sd1.copy_to(dir2)
     nline = rio(datadir,'dir2/sd1/f1.txt').readline
     assert_equal(oline,nline)
     

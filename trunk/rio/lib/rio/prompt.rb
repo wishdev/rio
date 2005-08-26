@@ -34,28 +34,24 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
+#
+
+require 'rio'
 
 module RIO
-  module Filter #:nodoc: all
-    module Chomp
-      module IOE
-        def gets(*args) super.chomp end
-        def readline(*args) super.chomp end
-        def each_line(*args,&block)
-          super { |l|
-            yield l.chomp
-          }
-        end
-        def readlines(*args) super.map(&:chomp) end
-      end
-      include IOE
-#      def self.extend_object(ioh)
-#        super
-#        cio = ioh.ios.clone
-#        cio.extend(IOE)
-#        ioh.iostack.push(cio)
-#      end
-    end
+  def prompt(str="")
+    rio(?-).strip.print(str).gets
   end
+  module_function :prompt
 end
+
+if $0 == __FILE__
+  eval DATA.read, nil, $0, __LINE__+4
+end
+
 __END__
+
+puts
+puts("Run the tests that came with the distribution")
+puts("From the distribution directory use 'test/runtests.rb'")
+puts

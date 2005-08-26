@@ -57,7 +57,7 @@ module RIO
     # Returns true if their String representations are eql?
     def eql?(other) target.eql?(other) end
 
-    # Match - invokes other.=~, passing the value returned by Rio#to_s
+    # Match - invokes other.=~, passing the value returned by Rio#to_str
     def =~(other) target =~ other end
       
   end

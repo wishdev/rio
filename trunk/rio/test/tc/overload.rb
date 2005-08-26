@@ -103,7 +103,7 @@ class TC_RIO_overload < Test::Unit::TestCase
 #     oline = rio(datadir,'dir1/sd1/f1.txt').slurp
 
 #     dir2 = rio(datadir,'dir2').rmtree.mkpath
-#     sd1.copy(dir2)
+#     sd1.copy_to(dir2)
 #     nline = rio(datadir,'dir2/sd1/f1.txt').slurp
 #     assert_equal(oline,nline)
     

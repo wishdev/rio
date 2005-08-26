@@ -40,7 +40,7 @@ require 'rio/iomode'
 
 require 'rio/context/stream'   
 require 'rio/context/dir'   
-require 'rio/context/chomp'   
+require 'rio/filter'   
 require 'rio/context/closeoneof'   
 require 'rio/context/gzip'   
 

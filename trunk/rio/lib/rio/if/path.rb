@@ -321,7 +321,7 @@ module RIO
     def /(arg) target / arg end
 
 
-    # Create a Rio referencing Rio#to_s + arg.to_s
+    # Create a Rio referencing Rio#to_str + arg.to_str
     #
     #  rio('afile') + '-0.1'   #=> rio('afile-0.1')
     #

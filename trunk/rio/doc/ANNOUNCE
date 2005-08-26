@@ -1,27 +1,34 @@
-For your perusal -- Rio 0.3.2
+For your perusal -- Rio 0.3.3
 
 == Overview
 
 Rio is a Ruby I/O convenience class wrapping much of the functionality
-of IO, File and Dir. Rio also uses Pathname, FileUtils, Tempfile,
-StringIO, OpenURI, Zlib, and CSV to provide similar functionality using
-a simple consistent interface. In addition to forwarding the interfaces
-provided by IO, File, and Dir to an appropriate object, Rio provides
-a "grande" interface that allows many common application-level I/O and
+of IO, File and Dir. Rio also uses FileUtils, Tempfile, StringIO,
+OpenURI, Zlib, and CSV to provide similar functionality using a simple
+consistent interface. In addition to forwarding the interfaces
+provided by IO, File, and Dir to an appropriate object, Rio provides a
+"grande" interface that allows many common application-level I/O and
 file-system tasks to be expressed succinctly.
 
 == New for version 0.3.3
 * Expanded support and documentation for CSV files
   Examples:
   * Copy, changing the separator to a semicolon
+
      rio('comma.csv').csv > rio('semicolon.csv').csv(';')
+
   * Iterate through a file with each line parsed into an array
+
      rio('afile.csv').csv { |array_of_fields| ...}
+
   * Create an array of arrays of selected fields
+
      array_of_arrays = rio('afile.csv').csv.columns(1..3,7).to_a
+
   * Create a tab separated file of accounts in a UNIX passwd file,
     listing only the username, uid, and realname fields
-     rio('/etc/passwd').csv(':').columns(0,2,4) > rio('report).csv("\t")
+
+     rio('/etc/passwd').csv(':').columns(0,2,4) > rio('rpt').csv("\t")
 
 Project:: http://rubyforge.org/projects/rio/
 Documentation:: http://rio.rubyforge.org/

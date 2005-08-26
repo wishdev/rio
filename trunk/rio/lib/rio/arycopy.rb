@@ -38,7 +38,7 @@
 module RIO
   module AryCopy #:nodoc: all
     def >>(dest)
-      rio(?$) << self >> dest
+      rio(?") << self >> dest
     end
   end
 end

@@ -130,7 +130,7 @@ module RIO
       def to_s() self.fspath || '' end
       def ==(other) self.to_s == other.to_s end
       def ===(other) self == other end
-      def =~(other) other =~ self.to_s end
+      def =~(other) other =~ self.to_str end
       def length() self.to_s.length end
       def fspath() nil end
       def path() nil end

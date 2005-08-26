@@ -40,6 +40,7 @@ require 'rio/context'
 require 'rio/context/methods'
 require 'rio/ext'
 require 'rio/symantics'
+require 'rio/filter'
 $trace_states = false
 module RIO
 
@@ -108,7 +109,7 @@ module RIO
 
       # the method for changing states
       # it's job is create an instance of the next state
-      # and change the value in the handle that is shared with the fs object
+      # and change the value in the handle that is shared with the rio object
       def become(new_class,*args)
         p "become : #{self.class.to_s} => #{new_class.to_s} (#{self.mode?})" if $trace_states
 #
@@ -180,7 +181,7 @@ module RIO
 
       def ==(other) @rl == other end
       def ===(other) self == other end
-      def =~(other) other =~ self.to_s end
+      def =~(other) other =~ self.to_str end
       def to_url() @rl.url end
       def to_uri() @rl.uri end
       alias to_str to_s

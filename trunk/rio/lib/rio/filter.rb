@@ -35,19 +35,61 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-require 'rio/context/cxx.rb'
 module RIO
-  module Cx
-    module Methods
-      require 'rio/filter/chomp'
-      def chomp(arg=true,&block)
-        cx['chomp'] = arg
-        add_filter(Filter::Chomp) if arg and self.ioh
-        each(&block) if block_given?
-        self 
-      end
-      def chomp?() cxx?('chomp') end
-      def nochomp(arg=false,&block) chomp(arg,&block) end
+  module Filter #:nodoc: all
+    def self.make_line_filter(sym)
+      module_eval %{
+        module #{sym.to_s.capitalize}
+         module IOE
+          def gets(*args) super.__send__(:#{sym}) end
+          def readline(*args) super.__send__(:#{sym}) end
+          def each_line(*args,&block) super { |l| yield l.__send__(:#{sym}) } end
+          def readlines(*args) super.map(&:#{sym}) end
+         end
+         include IOE
+        end
+      }
     end
   end
 end
+module RIO
+  module Cx
+    module Methods
+      require 'rio/context/cxx.rb'
+      def self.make_filter_methods(sym)
+        module_eval %{
+          def #{sym}(arg=true,&block)
+            cx['#{sym}'] = arg
+            add_filter(Filter::#{sym.to_s.capitalize}) if arg and self.ioh
+            each(&block) if block_given?
+            self 
+          end
+          def #{sym}?() cxx?('#{sym}') end
+          def no#{sym}(arg=false,&block) #{sym}(arg,&block) end
+        }
+      end
+    end
+  end
+end
+
+module RIO
+  FILTER_SYMS = [:chomp, :strip, :lstrip, :rstrip]
+  FILTER_SYMS.each { |sym|
+    Filter.make_line_filter(sym)
+    Cx::Methods.make_filter_methods(sym)
+  }
+  module Stream
+    module Filters
+
+      def add_line_filters()
+        add_filter(Filter::Chomp) if chomp?
+        add_filter(Filter::Strip) if strip?
+        add_filter(Filter::Lstrip) if lstrip?
+        add_filter(Filter::Rstrip) if rstrip?
+      end
+
+    end    
+  end    
+end
+
+__END__

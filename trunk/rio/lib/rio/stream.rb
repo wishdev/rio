@@ -43,13 +43,13 @@ require 'rio/ops/stream/output'
 require 'rio/ext'
 
 require 'rio/filter/gzip'
-require 'rio/filter/chomp'
+#require 'rio/filter/chomp'
+#require 'rio/filter/strip'
 require 'rio/filter/closeoneof'
 
 module RIO
 
   module Stream #:nodoc: all
-
     class Reset < Base
       # Mixin the appropriate ops
       #include Ops::Path::Str
@@ -108,6 +108,7 @@ module RIO
     class Input < IOBase
       include Ops::Stream::Input
       include Ini
+      include Filters
       def initialize_copy(*args)
         #p callstr('enter Input:initialize_copy',*args)
         super
@@ -117,10 +118,9 @@ module RIO
       def add_extensions()
         Ext::Input.add_extensions(self)
       end
-
       def add_filters
         add_filter(Filter::GZipRead) if gzip?
-        add_filter(Filter::Chomp) if chomp?
+        add_line_filters()
         if closeoneof?
           add_filter(Filter::CloseOnEOF)
           ioh.oncloseproc = proc { self.on_closeoneof }
@@ -152,6 +152,7 @@ module RIO
       include Ops::Stream::Input
       include Ops::Stream::Output
       include Ini
+      include Filters
       
       def initialize_copy(*args)
         super
@@ -166,8 +167,10 @@ module RIO
         Ext::Input.add_extensions(self)
         Ext::Output.add_extensions(self)
       end
+
       def add_filters
-        add_filter(Filter::Chomp) if chomp?
+        add_line_filters()
+
         if closeoneof?
           add_filter(Filter::CloseOnEOF)
           ioh.oncloseproc = proc { self.on_closeoneof }

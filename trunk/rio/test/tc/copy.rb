@@ -38,7 +38,7 @@ class TC_RIO_copy < Test::Unit::TestCase
     oline = rio(datadir,'dir1/sd1/f1.txt').readline
 
     dir2 = rio(datadir,'dir2').rmtree.mkpath
-    sd1.copy(dir2)
+    sd1.copy_to(dir2)
     nline = rio(datadir,'dir2/sd1/f1.txt').readline
     assert_equal(oline,nline)
     
