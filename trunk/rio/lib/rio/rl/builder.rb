@@ -113,7 +113,9 @@ module RIO
           cl = Factory.instance.riorl_class(a0.scheme)
           o = cl.new(a0,*a) unless cl.nil?
           return o
-        when ?? , ?= , ?_ , ?",?[,?#,?`
+        when ::Symbol
+          a[0] = 'rio:' + a[0].to_s + ':'
+        when ?? , ?= , ?_ , ?", ?[, ?#, ?`
           a[0] = 'rio:'+CHMAP[a[0]]+':'
         when ?-
           a[0] = ( a.size == 1 ? 'rio:'+CHMAP[a[0]]+':' : 'rio:cmdio:' )

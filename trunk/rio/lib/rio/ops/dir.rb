@@ -122,7 +122,7 @@ module RIO
     module Dir
       module Existing
         def selective?
-          %w[sel nosel stream_sel stream_nosel].any? { |k| cx.has_key?(k) }
+          %w[entry_sel stream_sel stream_nosel].any? { |k| cx.has_key?(k) }
         end
         def mkdir(*args) self end
         def mkpath(*args) self end
@@ -178,7 +178,7 @@ module RIO
         include Cp::Dir::Output
         public
 
-        def entries(*args,&block) _set_select('entries','sel',:true?,*args,&block) end
+        def entries(*args,&block) _set_select('entries',*args,&block) end
 
         def each(*args,&block)
           # p callstr('each',*args)
@@ -217,10 +217,17 @@ module RIO
             nil
           end
         end
-
+        def process_skipped
+          return unless cx.has_key?('skip_args') or cx['skipping']
+          args = cx['skip_args'] || []
+          skip_meth = 'skipentries'
+#          skip_meth = ss_type?(_ss_keys)
+          self.__send__(skip_meth,*args)
+        end
         def each_(*args,&block)
           #p "#{callstr('each_',*args)} sel=#{cx['sel'].inspect} nosel=#{cx['nosel'].inspect}"
-          sel = Match::Entry::Selector.new(cx['sel'],cx['nosel'])
+          process_skipped()
+          sel = Match::Entry::Selector.new(cx['entry_sel'])
           selfstr = (self.to_s == '.' ? nil : self.to_s)
           self.ioh.each do |estr|
             next if estr =~ /^\.(\.)?$/
@@ -234,7 +241,7 @@ module RIO
               end
 
               if cx.has_key?('all') and erio.directory?
-                rsel = Match::Entry::Selector.new(cx['r_sel'],cx['r_nosel'])
+                rsel = Match::Entry::SelectorClassic.new(cx['r_sel'],cx['r_nosel'])
                 _add_recurse_iter_cx(erio).each(&block) if rsel.match?(erio)
               end
               
@@ -277,7 +284,7 @@ module RIO
           }
           ario.cx = new_cx
         end
-        CX_DIR_ITER_KEYS = %w[sel nosel]
+        CX_DIR_ITER_KEYS = %w[entry_sel]
         CX_STREAM_ITER_KEYS = %w[stream_rectype stream_itertype stream_sel stream_nosel]
         def _add_iter_cx(ario)
           if nostreamenum?

@@ -1,6 +1,6 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Rio is pre-alpha software. 
-The documented interface and behavior is subject to change without notice.
+The documented interface and behaviour is subject to change without notice.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 === Rio - Ruby I/O Comfort Class
@@ -23,6 +23,61 @@ Suggested Reading
 * RIO::Doc::INTRO
 * RIO::Doc::HOWTO
 * RIO::Rio
+
+== New for version 0.3.4
+* New Grande Selection parameter.
+
+  A major weakness of Rio's selection methods (lines, files, etc.)
+  has always been that it only implemented a logical OR.
+
+   rio('afile').lines(0..10,/Rio/) {...}
+  iterates through lines that are in the range 0..10 OR 
+  contain 'Rio'.
+
+   rio('adir').files(:executable?,'*.rb') {...}
+  iterates through files that are executable OR match '*.rb'
+
+  Selecting files that matched both required using a proc.
+   rio('adir').files(proc{ |f| f.executable? and f.fnmatch?('*.rb')}) {...}
+
+  Rio's grande selection methods will now accept an array of conditions
+  which must all be matched, in order to be selected. A logical AND.
+
+   rio('adir').files([:executable?,'*.rb']) {...}
+  
+  The array, of course, need not be the only paramter. 
+
+   rio('adir').files('*.exe',[:executable?,'*.rb']) {...}
+
+  selects .exe files and .rb files that are executable.
+
+* Alternative syntax for creating Rios that have no path.
+
+   rio(?-)       # create a Rio refering to stdio
+   rio(:stdio)   # same thing.
+
+* Renamed some of grande rejection methods. 
+  (based on a suggestion by Gavin Sinclair)
+   skiplines => skiplines
+   skipfiles => skipfiles
+  etc.
+
+* Removed Rio#slurp in favor of Rio#contents.
+
+
+* Added aliases for the copy operators. (suggested by Dave Burt)
+   * copy_to >
+   * append_to >>
+   * copy_from <
+   * append_from <<
+
+
+* Bug fixes and corrections    
+  
+Project:: http://rubyforge.org/projects/rio/
+Documentation:: http://rio.rubyforge.org/
+Bugs:: http://rubyforge.org/tracker/?group_id=821
+Email:: rio4ruby@rubyforge.org
 
 == New for version 0.3.3
 * Expanded support and documentation for CSV files
@@ -137,7 +192,7 @@ Put the first 100 chomped lines of a gzipped file into an array
  anarray =  rio('afile.gz').gzip[0...100] 
 
 Copy the output of th ps command into an array, skipping the header line and the ps command entry
- rio(?-,'ps -a').nolines(0,/ps$/) > anarray 
+ rio(?-,'ps -a').skiplines(0,/ps$/) > anarray 
 
 Prompt for input and return what was typed
  ans = rio(?-).print("Type Something: ").chomp.gets 

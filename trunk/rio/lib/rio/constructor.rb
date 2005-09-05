@@ -92,20 +92,30 @@ module RIO
   #
   # ==== Creating Rios that do not have a path
   #
-  # To create a Rio without a path, the first argument to +rio+ is usually a single
-  # character.
+  # To create a Rio without a path, the first argument to +rio+ is usually 
+  # either a single character or a symbol.
   #
   # ===== Creating a Rio that refers to a clone of your programs stdin or stdout.
   # 
   # <tt>rio(?-)</tt> (mnemonic: '-' is used by some Unix programs to specify stdin or stdout in place of a file)
+  #
+  # <tt>rio(:stdio)</tt>
   # 
   # Just as a Rio that refers to a file, does not know whether that file will be opened for reading or
   # writing until an I/O operation is specified, a <tt>stdio:</tt> Rio does not know whether it will connect
   # to stdin or stdout until an I/O operation is specified. 
   #
+  # Currently :stdin and :stdout are allowed as synonyms for :stdio. This allows one to write
+  #  rio(:stdout).puts("Hello :stdout")
+  # which is reasonable. It also allows one to write 
+  #  rio(:stdin).puts("Hello :stdin")
+  # which is not reasonable and will be disallowed in future releases.
+  #
   # ===== Creating a Rio that refers to a clone of your programs stderr.
   #
   # <tt>rio(?=)</tt> (mnemonic: '-' refers to fileno 1, so '=' refers to fileno 2)
+  #
+  # <tt>rio(:stderr)</tt>
   #
   # ===== Creating a Rio that refers to an arbitrary IO object.
   #
@@ -114,7 +124,9 @@ module RIO
   #
   # ===== Creating a Rio that refers to a file descriptor
   #
-  # <tt>rio(?#,fd)</tt> (mnemonic: a file descriptor is a number '#')
+  # <tt>rio(?#,file_descriptor)</tt> (mnemonic: a file descriptor is a number '#')
+  #
+  # <tt>rio(:fd,file_descriptor)</tt>
   #
   #  an_io = ::File.new('afile')
   #  fnum = an_io.fileno
@@ -123,15 +135,33 @@ module RIO
   # ===== Creating a Rio that refers to a StringIO object
   #
   # <tt>rio(?")</tt> (mnemonic: '"' surrounds strings)
+  #
+  # <tt>rio(:strio)</tt>
+  #
+  # Alpha note: Should :strio be changed to :stringio, or even :string.
+  # Should more than one be allowed? I am leaning toward :string
+  #
   # * create a Rio that refers to a string that it creates
   #    rio(?")
   # * create a Rio that refers to a string of your choosing
   #    astring = ""
   #    rio(?",astring)
   #
-  # ===== Creating a Rio that refers to a Tempfile object
+  # ===== Creating a Rio that refers to a temporary object
+  #
+  # To create a temporary object that will become a file (Tempfile)
+  # or a temporary directory, depending on how it is used.
   #
   # <tt>rio(??)</tt> (mnemonic: '?' you don't know its name)
+  #
+  # <tt>rio(:temp)</tt>
+  #
+  # The following are also supported, to specify file or directory
+  #
+  # <tt>rio(:tempfile)</tt>
+  #
+  # <tt>rio(:tempdir)</tt>
+  # 
   #  rio(??)
   #  rio(??,basename='rio',tmpdir=Dir::tmpdir)
   #
@@ -145,8 +175,6 @@ module RIO
   # or just write to it.
   #
   # To force it to become a directory:
-  #  rio(??).dir
-  # or
   #  rio(??).mkdir
   # or
   #  rio(??).chdir
@@ -154,19 +182,22 @@ module RIO
   #
   # ===== Creating a Rio that refers to an arbitrary TCPSocket
   #
-  #  rio('tcp:',hostname,port)
-  # or
-  #  rio('tcp://hostname:port')
+  # <tt>rio('tcp:',hostname,port)</tt>
+  #
+  # <tt>rio('tcp://hostname:port')</tt>
+  #
+  # <tt>rio(:tcp,hostname,port)</tt>
   #
   # ===== Creating a Rio that runs an external program and connects to its stdin and stdout
   #
   # <tt>rio(?-,cmd)</tt> (mnemonic: '-' is used by some Unix programs to specify stdin or stdout in place of a file)
   #
-  # or
-  #
   # <tt>rio(?`,cmd)</tt> (mnemonic: '`' (backtick) runs an external program in ruby)
   #
+  # <tt>rio(:cmdio,cmd)</tt>
+  #
   # This is Rio's interface to IO#popen
+  #
   def rio(*args,&block)  # :yields: self
     Rio.rio(*args,&block) 
   end

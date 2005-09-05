@@ -238,7 +238,10 @@ module RIO
         def _cpfrom_rio(ario)
           #p callstr('_cpfrom_rio',ario)
           dest = self.join(ario.filename)
-          if ario.dir?
+          case
+          when ario.symlink?
+            ::File.symlink(ario.readlink.to_s,dest.to_s)
+          when ario.dir?
             dest.mkdir
             ario.nostreamenum.each do |el|
               dest < el

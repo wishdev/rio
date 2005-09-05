@@ -95,28 +95,28 @@ class TC_RIO_noqae < Test::Unit::TestCase
       begin
         begin
           ans = []
-          rio('d0').nodirs.each { |el| ans << el }
+          rio('d0').skipdirs.each { |el| ans << el }
           exp = all.reject { |el| el =~ /[cd]\d$/ }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nodirs[]
+          ans = rio('d0').skipdirs[]
           assert_equal(exp.sort,smap(ans).sort)
         end
         
         begin
           ans = []
-          rio('d0').nofiles.each { |el| ans << el }
+          rio('d0').skipfiles.each { |el| ans << el }
           exp = all.reject { |el| el =~ /[fl]\d$/ }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles[]
+          ans = rio('d0').skipfiles[]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
         begin
           ans = []
-          rio('d0').noentries.each { |el| ans << el }
+          rio('d0').skipentries.each { |el| ans << el }
           exp = []
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries[]
+          ans = rio('d0').skipentries[]
           assert_equal(exp.sort,smap(ans).sort)
         end
       end
@@ -124,62 +124,62 @@ class TC_RIO_noqae < Test::Unit::TestCase
       begin
         begin
           ans = []
-          rio('d0').nodirs.nofiles.each { |el| ans << el }
+          rio('d0').skipdirs.skipfiles.each { |el| ans << el }
           exp = all.reject { |el| el =~ /[cdfl]\d$/ }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles.nodirs[]
+          ans = rio('d0').skipfiles.skipdirs[]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nodirs.nofiles[]
+          ans = rio('d0').skipdirs.skipfiles[]
           assert_equal(exp.sort,smap(ans).sort)
         end
         
         begin
           ans = []
-          rio('d0').nodirs.files.each { |el| ans << el }
+          rio('d0').skipdirs.files.each { |el| ans << el }
           exp = all.select { |el| el =~ /[fl]\d$/ }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nodirs.files[]
+          ans = rio('d0').skipdirs.files[]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').files.nodirs[]
+          ans = rio('d0').files.skipdirs[]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
         begin
           exp = all.select { |el| el =~ /[n]\d$/ }
           ans = []
-          rio('d0').entries.nofiles.nodirs.each { |el| ans << el }
+          rio('d0').entries.skipfiles.skipdirs.each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
 
-          ans = rio('d0').entries.nofiles.nodirs[]
+          ans = rio('d0').entries.skipfiles.skipdirs[]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').entries.nodirs.nofiles[]
+          ans = rio('d0').entries.skipdirs.skipfiles[]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles.nodirs.entries[]
+          ans = rio('d0').skipfiles.skipdirs.entries[]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles.nodirs[]
+          ans = rio('d0').skipfiles.skipdirs[]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
         begin
           exp = []
           ans = []
-          rio('d0').noentries.dirs.each { |el| ans << el }
+          rio('d0').skipentries.dirs.each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          rio('d0').noentries.files.each { |el| ans << el }
+          rio('d0').skipentries.files.each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
 
-          ans = rio('d0').noentries.files[]
+          ans = rio('d0').skipentries.files[]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries.dirs[]
+          ans = rio('d0').skipentries.dirs[]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
         begin
           exp = []
           ans = []
-          rio('d0').noentries.each { |el| ans << el }
+          rio('d0').skipentries.each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries[]
+          ans = rio('d0').skipentries[]
           assert_equal(exp.sort,smap(ans).sort)
         end
       end
@@ -197,19 +197,19 @@ class TC_RIO_noqae < Test::Unit::TestCase
         rio('d0').dirs.each { |el| 
           assert(el.directory?)
         }
-        rio('d0').nodirs.each { |el| 
+        rio('d0').skipdirs.each { |el| 
           assert!(el.directory?)
         }
-        rio('d0').nodirs('*').each { |el| 
+        rio('d0').skipdirs('*').each { |el| 
           assert(el.directory?)
         }
         rio('d0').files.each { |el| 
           assert(el.file?)
         }
-        rio('d0').nofiles.each { |el| 
+        rio('d0').skipfiles.each { |el| 
           assert!(el.file?)
         }
-        rio('d0').nofiles('*').each { |el| 
+        rio('d0').skipfiles('*').each { |el| 
           assert(el.file?)
         }
         begin
@@ -244,7 +244,7 @@ class TC_RIO_noqae < Test::Unit::TestCase
         begin
           exp = all.select { |el| el =~ /[df]\d\Z/ }
           ans = []
-          rio('d0').noentries(:symlink?).each { |el| 
+          rio('d0').skipentries(:symlink?).each { |el| 
             assert!(el.symlink?)
             ans << el
           }
@@ -253,7 +253,7 @@ class TC_RIO_noqae < Test::Unit::TestCase
         begin
           exp = all.select { |el| el =~ /[d]\d\Z/ }
           ans = []
-          rio('d0').nodirs(:symlink?).each { |el| 
+          rio('d0').skipdirs(:symlink?).each { |el| 
             assert(el.directory?)
             assert!(el.symlink?)
             ans << el
@@ -263,7 +263,7 @@ class TC_RIO_noqae < Test::Unit::TestCase
         begin
           exp = all.select { |el| el =~ /[f]\d\Z/ }
           ans = []
-          rio('d0').nofiles(:symlink?).each { |el| 
+          rio('d0').skipfiles(:symlink?).each { |el| 
             assert(el.file?)
             assert!(el.symlink?)
             ans << el
@@ -284,11 +284,11 @@ class TC_RIO_noqae < Test::Unit::TestCase
           ere = /1/
           exp = all.reject { |el| el =~ ere }
           ans = []
-          rio('d0').noentries(ere).each { |el| ans << el }
+          rio('d0').skipentries(ere).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries(ere).to_a
+          ans = rio('d0').skipentries(ere).to_a
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries[ere]
+          ans = rio('d0').skipentries[ere]
           assert_equal(exp.sort,smap(ans).sort)
         end
         
@@ -299,9 +299,9 @@ class TC_RIO_noqae < Test::Unit::TestCase
           dre = /1/
           exp = all.select { |el| el =~ /[cd]2$/ }
           ans = []
-          rio('d0').nodirs(dre).each { |el| ans << el }
+          rio('d0').skipdirs(dre).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nodirs[dre]
+          ans = rio('d0').skipdirs[dre]
           assert_equal(exp.sort,smap(ans).sort)
         end
         
@@ -309,9 +309,9 @@ class TC_RIO_noqae < Test::Unit::TestCase
           dre = /1/
           exp = all.select { |el| el =~ /[d]2$/ }
           ans = []
-          rio('d0').nodirs(dre,:symlink?).each { |el| ans << el }
+          rio('d0').skipdirs(dre,:symlink?).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nodirs[dre,:symlink?]
+          ans = rio('d0').skipdirs[dre,:symlink?]
           assert_equal(exp.sort,smap(ans).sort)
         end
         
@@ -319,9 +319,9 @@ class TC_RIO_noqae < Test::Unit::TestCase
           fre = /2/
           exp = all.select { |el| el =~ /[fl]1$/ }
           ans = []
-          rio('d0').nofiles(fre).each { |el| ans << el }
+          rio('d0').skipfiles(fre).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles[fre]
+          ans = rio('d0').skipfiles[fre]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
@@ -329,9 +329,9 @@ class TC_RIO_noqae < Test::Unit::TestCase
           ere = /1/
           exp = all.select { |el| el =~ /2$/ }
           ans = []
-          rio('d0').noentries(ere).each { |el| ans << el }
+          rio('d0').skipentries(ere).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries[ere]
+          ans = rio('d0').skipentries[ere]
           assert_equal(exp.sort,smap(ans).sort)
         end
       end
@@ -342,36 +342,36 @@ class TC_RIO_noqae < Test::Unit::TestCase
         begin
           exp = all.select { |el| el =~ /([cd]2|[fl]1)$/ }
           ans = []
-          rio('d0').nodirs(dre).nofiles(fre).each { |el| ans << el }
+          rio('d0').skipdirs(dre).skipfiles(fre).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles(fre).nodirs[dre]
+          ans = rio('d0').skipfiles(fre).skipdirs[dre]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nodirs(dre).nofiles[fre]
+          ans = rio('d0').skipdirs(dre).skipfiles[fre]
           assert_equal(exp.sort,smap(ans).sort)
         end
         
         begin
           exp = all.select { |el| el =~ /([cd]2|[fl]2)$/ }
           ans = []
-          rio('d0').nodirs(dre).files(fre).each { |el| ans << el }
+          rio('d0').skipdirs(dre).files(fre).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nodirs(dre).files[fre]
+          ans = rio('d0').skipdirs(dre).files[fre]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').files(fre).nodirs[dre]
+          ans = rio('d0').files(fre).skipdirs[dre]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
         begin
           exp = all.select { |el| el =~ /([cd]2|[fl]1|n[12])$/ }
           ans = []
-          rio('d0').entries.nofiles(fre).nodirs(dre).each { |el| ans << el }
+          rio('d0').entries.skipfiles(fre).skipdirs(dre).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
 
-          ans = rio('d0').entries.nofiles(fre).nodirs[dre]
+          ans = rio('d0').entries.skipfiles(fre).skipdirs[dre]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').entries.nodirs(dre).nofiles[fre]
+          ans = rio('d0').entries.skipdirs(dre).skipfiles[fre]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles(fre).nodirs(dre).entries[]
+          ans = rio('d0').skipfiles(fre).skipdirs(dre).entries[]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
@@ -379,14 +379,14 @@ class TC_RIO_noqae < Test::Unit::TestCase
           ere = /1/
           exp = all.select { |el| el =~ /([cd]2|[fl]1|n1)$/ }
           ans = []
-          rio('d0').entries(ere).nofiles(fre).nodirs(dre).each { |el| ans << el }
+          rio('d0').entries(ere).skipfiles(fre).skipdirs(dre).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
 
-          ans = rio('d0').entries(ere).nofiles(fre).nodirs[dre]
+          ans = rio('d0').entries(ere).skipfiles(fre).skipdirs[dre]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').entries(ere).nodirs(dre).nofiles[fre]
+          ans = rio('d0').entries(ere).skipdirs(dre).skipfiles[fre]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles(fre).nodirs(dre).entries[ere]
+          ans = rio('d0').skipfiles(fre).skipdirs(dre).entries[ere]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
@@ -396,28 +396,28 @@ class TC_RIO_noqae < Test::Unit::TestCase
           fre = /f/
           exp = all.select { |el| el =~ /(d2|l2)$/ }
           ans = []
-          rio('d0').noentries(ere).nofiles(fre).nodirs(dre).each { |el| ans << el }
+          rio('d0').skipentries(ere).skipfiles(fre).skipdirs(dre).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
 
-          ans = rio('d0').noentries(ere).nofiles(fre).nodirs[dre]
+          ans = rio('d0').skipentries(ere).skipfiles(fre).skipdirs[dre]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries(ere).nodirs(dre).nofiles[fre]
+          ans = rio('d0').skipentries(ere).skipdirs(dre).skipfiles[fre]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').nofiles(fre).nodirs(dre).noentries[ere]
+          ans = rio('d0').skipfiles(fre).skipdirs(dre).skipentries[ere]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
         begin
           exp = []
           ans = []
-          rio('d0').noentries.dirs.each { |el| ans << el }
+          rio('d0').skipentries.dirs.each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          rio('d0').noentries.files.each { |el| ans << el }
+          rio('d0').skipentries.files.each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
 
-          ans = rio('d0').noentries.files[]
+          ans = rio('d0').skipentries.files[]
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries.dirs[]
+          ans = rio('d0').skipentries.dirs[]
           assert_equal(exp.sort,smap(ans).sort)
         end
 
@@ -425,9 +425,9 @@ class TC_RIO_noqae < Test::Unit::TestCase
           ere = /1/
           exp = all.select { |el| el =~ /2$/ }
           ans = []
-          rio('d0').noentries(ere).each { |el| ans << el }
+          rio('d0').skipentries(ere).each { |el| ans << el }
           assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').noentries[ere]
+          ans = rio('d0').skipentries[ere]
           assert_equal(exp.sort,smap(ans).sort)
         end
       end
@@ -440,14 +440,14 @@ class TC_RIO_noqae < Test::Unit::TestCase
       begin
         begin
           ans = []
-          rio('d0').nofiles(/2/).each { |el| ans << el }
+          rio('d0').skipfiles(/2/).each { |el| ans << el }
           exp = all.reject { |el| el =~ /[fl]\d$/ }
           assert_equal(exp.sort,smap(ans).sort)
         end
         
         begin
           ans = []
-          rio('d0').nofiles('*2').each { |el| ans << el }
+          rio('d0').skipfiles('*2').each { |el| ans << el }
           exp = ['d0/f1']
           assert_equal(exp.sort,smap(ans).sort)
         end
@@ -457,21 +457,21 @@ class TC_RIO_noqae < Test::Unit::TestCase
       begin
         begin
           ans = []
-          rio('d0').nofiles.each { |el| ans << el }
+          rio('d0').skipfiles.each { |el| ans << el }
           exp = ['d0/d1','d0/d2']
           assert_equal(exp.sort,smap(ans).sort)
         end
         
         begin
           ans = []
-          rio('d0').nodirs(/2/).each { |el| ans << el }
+          rio('d0').skipdirs(/2/).each { |el| ans << el }
           exp = ['d0/d1']
           assert_equal(exp.sort,smap(ans).sort)
         end
         
         begin
           ans = []
-          rio('d0').nodirs('*2').each { |el| ans << el }
+          rio('d0').skipdirs('*2').each { |el| ans << el }
           exp = ['d0/d1']
           assert_equal(exp.sort,smap(ans).sort)
         end
@@ -479,25 +479,25 @@ class TC_RIO_noqae < Test::Unit::TestCase
       begin
         begin
           ans = []
-          rio('d0').nofiles.dirs.each { |el| ans << el }
+          rio('d0').skipfiles.dirs.each { |el| ans << el }
           exp = ['d0/d1','d0/d2','d0/f1','d0/f2']
           assert_equal(exp.sort,smap(ans).sort)
         end
         begin
           ans = []
-          rio('d0').nofiles.dirs.each { |el| ans << el }
+          rio('d0').skipfiles.dirs.each { |el| ans << el }
           exp = ['d0/d1','d0/d2','d0/f1','d0/f2']
           assert_equal(exp.sort,smap(ans).sort)
         end
         begin
           ans = []
-          rio('d0').nofiles.dirs.each { |el| ans << el }
+          rio('d0').skipfiles.dirs.each { |el| ans << el }
           exp = ['d0/d1','d0/d2','d0/f1','d0/f2']
           assert_equal(exp.sort,smap(ans).sort)
         end
         begin
           ans = []
-          rio('d0').nofiles.dirs.each { |el| ans << el }
+          rio('d0').skipfiles.dirs.each { |el| ans << el }
           exp = ['d0/d1','d0/d2','d0/f1','d0/f2']
           assert_equal(exp.sort,smap(ans).sort)
         end

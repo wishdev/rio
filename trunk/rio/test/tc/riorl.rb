@@ -60,6 +60,28 @@ class TC_riorl < Test::RIO::TestCase
     }
     [rios,rinfo]
   end
+  def mkrios_sym
+    rinfo = {
+      :stdio  => ['stdio',"",nil,nil,"stdio:","stdio:"],
+      :stderr => ['stderr',"",nil,nil,"stderr:","stderr:"],
+      :strio => ['strio',"",nil,nil,"strio:","strio:"],
+      :temp => ['temp',@tmppath,nil,nil,"temp:#{@tmppath}","temp:#{@tmppath}"],
+    }
+    siopq = sprintf("0x%08x",$stdout.object_id)
+    rinfo[:sysio] = ['sysio',siopq,nil,nil,"sysio:#{siopq}","sysio:#{siopq}"]
+    rinfo[:cmdio] = ['cmdio','echo%20x',nil,nil,'echo x','cmdio:echo%20x']
+    rinfo[:fd] = ['fd','1',nil,nil,'fd:1','fd:1']
+    rios = {
+      :stdio => rio(:stdio),
+      :stderr => rio(:stderr),
+      :strio => rio(:strio),
+      :temp => rio(:temp),
+      :sysio => rio($stdout),
+      :cmdio => rio(?`,'echo x'),
+      :fd => rio(?#,1),
+    }
+    [rios,rinfo]
+  end
   def mkrios2()
     rinfo = {
       ?- => ['stdout',/^$/,nil,nil,/^stdout:$/,/^stdout:$/],
@@ -76,6 +98,20 @@ class TC_riorl < Test::RIO::TestCase
     fmt = "%-12s %-12s %-8s %-8s %-20s %-20s\n"
     #printf(fmt,'scheme','opaque','path','fspath','to_s','url')
     rios,rinfo = mkrios1()
+    rios.each do |k,r|
+      #pinfo(fmt,pathinfo(r))
+      assert_equal(r.scheme,rinfo[k][0])
+      assert_equal(r.opaque,rinfo[k][1])
+      assert_equal(r.path,rinfo[k][2])
+      assert_equal(r.fspath,rinfo[k][3])
+      assert_equal(r.to_s,rinfo[k][4])
+      assert_equal(r.to_url,rinfo[k][5])
+    end
+  end
+  def test_specialpaths_sym
+    fmt = "%-12s %-12s %-8s %-8s %-20s %-20s\n"
+    #printf(fmt,'scheme','opaque','path','fspath','to_s','url')
+    rios,rinfo = mkrios_sym()
     rios.each do |k,r|
       #pinfo(fmt,pathinfo(r))
       assert_equal(r.scheme,rinfo[k][0])

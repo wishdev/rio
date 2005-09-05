@@ -164,7 +164,6 @@ module RIO
 
         def each_record_init_
         end
-
         def create_selrej()
           sel_args = cx['stream_sel']
           nosel_args = cx['stream_nosel']

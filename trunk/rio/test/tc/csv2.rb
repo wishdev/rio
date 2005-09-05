@@ -27,8 +27,8 @@ class TC_csv2 < Test::RIO::TestCase
 
 
     rio('src1.csv') > rio('dst.csv')
-    assert_equal(@string,rio('dst.csv').slurp)
-    assert_equal(@string,rio('dst.csv').csv.slurp)
+    assert_equal(@string,rio('dst.csv').contents)
+    assert_equal(@string,rio('dst.csv').csv.contents)
     assert_equal(@lines,rio('dst.csv')[])
     assert_equal(@strings,rio('dst.csv').chomp[])
     assert_equal(@lines,rio('dst.csv').to_a)
@@ -96,8 +96,8 @@ class TC_csv2 < Test::RIO::TestCase
 
     rio('src1.csv') < @src
 
-    assert_equal(@string,rio('src1.csv').slurp)
-    assert_equal(@string,rio('src1.csv').csv.slurp)
+    assert_equal(@string,rio('src1.csv').contents)
+    assert_equal(@string,rio('src1.csv').csv.contents)
     assert_equal(@lines[0],rio('src1.csv').getrec)
     assert_equal(@strings[0],rio('src1.csv').chomp.getrec)
 

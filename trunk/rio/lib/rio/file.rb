@@ -64,7 +64,8 @@ module RIO
       def each(*args,&block)
         #p "#{callstr('each',*args)} ss_type=#{ss_type?}"
         if ss_type? == 'files' and !stream_iter?
-          sel = Match::Entry::Selector.new(cx['sel'],cx['nosel'])
+          #sel = Match::Entry::Selector.new(cx['sel'],cx['nosel'])
+          sel = Match::Entry::Selector.new(cx['entry_sel'])
           yield new_rio_cx(self) if sel.match?(self)
         else
           fstream.each(*args,&block)

@@ -40,9 +40,12 @@ module RIO
     module Common
 
       def ss_type?(keys)
-        case
-        when cx['ss_type'].nil? then keys[0]
-        when cx['ss_type'].in?(keys) then cx['ss_type']
+        #p cx,keys
+        case cx['ss_type']
+        when nil
+          keys[0]
+       else
+          cx['ss_type']
         end
       end
       

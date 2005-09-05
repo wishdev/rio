@@ -45,30 +45,6 @@ class TC_copydir < Test::RIO::TestCase
     @f2 = rio('d0/d2/f2')
     @f3 = rio('d0/d2/f3')
   end
-  def assert_dirs_equal(exp,d,msg="")
-    exp.each do |ent|
-      ds = rio(d,ent.filename)
-      assert(ds.exist?,"entry '#{ds}' exists")
-      assert_equal(ent.ftype,ds.ftype,"same ftype")
-      case
-      when ent.file?
-        assert(ds.file?,"entry is a file")
-        assert_equal(ent[],ds[],"file has same contents")
-      when ent.dir?
-        assert_dirs_equal(ent,ds,"subdirectories are the same")
-      end
-    end
-  end
-  def assert_rios_equal(exp,ans,msg="")
-    case
-    when exp.file?
-      assert(ans.file?,"entry is a file")
-      assert_equal(exp.readlines,ans.readlines,"file has same contents")
-    when exp.dir?
-      assert(ans.dir?,"entry is a dir")
-      assert_dirs_equal(exp,ans,"directories are the same")
-    end
-  end
   def assert_skel_equal(exp,d,msg="")
     exp.each do |ent|
       next unless ent.dir?

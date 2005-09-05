@@ -35,7 +35,7 @@ class TC_copy_to < Test::RIO::TestCase
   end
   def test_string
     ario = rio('d0/f1')
-    exp = ario.slurp
+    exp = ario.contents
     ans = "If you are seeing this, rio > string is broken"
     ario > ans
     assert_equal(exp,ans)

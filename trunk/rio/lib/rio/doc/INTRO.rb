@@ -392,15 +392,15 @@ with the block after the method.
 
 ==== Grande selection methods
 
-* +lines+, +nolines+
+* +lines+, +skiplines+
 
    rio('afile').lines(0..9)
-   rio('afile').nolines(/^\s*#/)
+   rio('afile').skiplines(/^\s*#/)
 
   Strictly speaking these are both configuration and selection
   methods. They configure the Rio to iterate through an input stream
   as lines. The arguments select which lines are actually returned.
-  Lines are included (+lines+) or excluded (+nolines+) if they match
+  Lines are included (+lines+) or excluded (+skiplines+) if they match
   *any* of the arguments as follows.
 
   If the argument is a:
@@ -409,15 +409,16 @@ with the block after the method.
   +Integer+:: the lineno is matched against it as if it were a one element range
   +Symbol+::  the symbol is +sent+ to the string; the line is included unless it returns false
   +Proc+::    the proc is called with the line as an argument; the line is included unless it returns false
+  +Array+::   an array containing any of the above, all of which must match for the line to be included
 
-* +entries+, +files+, +dirs+, +noentries+, +nofiles+, +nodirs+
+* +entries+, +files+, +dirs+, +skipentries+, +skipfiles+, +skipdirs+
 
    rio('adir').files('*.txt')
-   rio('adir').nofiles(/^\./)
+   rio('adir').skipfiles(/^\./)
 
   These methods select which entries will be returned when iterating
   throug directories.  Entries are included (+entries+,+files+,+dirs+)
-  or excluded(+noentries+,+nofiles+,+nodirs+) if they match *any* of
+  or excluded(+skipentries+,+skipfiles+,+skipdirs+) if they match *any* of
   the arguments as follows.
 
   If the argument is a:
@@ -425,8 +426,9 @@ with the block after the method.
   +RegExp+:: the filname is matched against it
   +Symbol+:: the symbol is +sent+ to the entry (a Rio); the entry is included unless it returns false
   +Proc+:: the proc is called with the entry (a Rio) as an argument; the entry is included unless it returns false
+  +Array+::   an array containing any of the above, all of which must match for the line to be included
 
-* +records+, +rows+, +norecords+, +norows+
+* +records+, +rows+, +skiprecords+, +skiprows+
 
    rio('afile').bytes(1024).records(0...10)
 
@@ -642,7 +644,7 @@ For example:
 
  rio('adir').dirs.files('README') > rio('bdir') # same thing, but only README files
 
- rio(?-,'ps -a').nolines(0,/ps$/) > anarray # copy the output of th ps command into an array, skippying
+ rio(?-,'ps -a').skiplines(0,/ps$/) > anarray # copy the output of th ps command into an array, skippying
                                             # the header line and the ps command entry
 
 === Renaming and Moving
@@ -871,8 +873,8 @@ default.
  rio('f.csv').csv.records[0]   #==>[["h0", "h1"]]
  rio('f.csv').csv[0]           #==> same thing
  rio('f.csv').csv.lines[0]     #==>["h0,h1\n"]
- rio('f.csv').csv.norecords[0] #==>[["f0", "f1"]]
- rio('f.csv').csv.nolines[0]   #==>["f0,f1\n"]
+ rio('f.csv').csv.skiprecords[0] #==>[["f0", "f1"]]
+ rio('f.csv').csv.skiplines[0]   #==>["f0,f1\n"]
 
 This distinction, of course, applies equally when using the copy
 operators and +each+
@@ -912,7 +914,7 @@ These are specified independently on the source and destination when
 using the copy operators.
 
  rio('semisep').csv(';') > rio('colonsep').csv(':')
- rio('colonsep').slurp  #==>"h0:h1\nf0:f1\n"
+ rio('colonsep').contents  #==>"h0:h1\nf0:f1\n"
 
 Rio provides two methods for selecting fields from CSV records in a
 manner similar to that provided for selecting lines -- Rio#columns and
@@ -929,7 +931,7 @@ Rio#columns can, of course be used with the +each+ and the copy
 operators:
 
  rio('f.csv').csv.columns(0..1) > rio('out').csv
- rio('out').slurp  #==>"h0,h1\nf0,f1\n"
+ rio('out').contents  #==>"h0,h1\nf0,f1\n"
 
 
 ---

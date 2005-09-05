@@ -60,7 +60,7 @@ module RIO
     #  rio("afile.csv").csv.nocolumns(2,3..5) { |array_of_fields| ... }
     #
     #  # an array containg all but the first line returning columns 5,6 and 7
-    #  rio("afile.csv").csv.columns(5..7).nolines[0]
+    #  rio("afile.csv").csv.columns(5..7).skiplines[0]
     #
     # See RIO::Doc::INTRO for complete documentation on csv mode.
     def csv(field_separator=',',record_separator=nil,&block) 

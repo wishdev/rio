@@ -8,8 +8,8 @@ require 'rio'
 require 'test/unit'
 require 'test/unit/testsuite'
 
-class TC_RIO_nolines < Test::Unit::TestCase
-  def tdir() rio(%w/qp nolines/) end
+class TC_RIO_skiplines < Test::Unit::TestCase
+  def tdir() rio(%w/qp skiplines/) end
   def assert!(a,msg="negative assertion")
     assert((!(a)),msg)
   end
@@ -44,10 +44,10 @@ class TC_RIO_nolines < Test::Unit::TestCase
     file < lines
 
     exp = lines[0..0] + lines[2..5] + lines[7...8]
-    ans = file.chomp.nolines[:empty?]
+    ans = file.chomp.skiplines[:empty?]
     assert_equal(exp.map(&:chomp),ans)
 
-    ans = file.nolines(:empty?).chomp.to_a
+    ans = file.skiplines(:empty?).chomp.to_a
     assert_equal(exp.map(&:chomp),ans)
 
     file.close
@@ -73,13 +73,13 @@ class TC_RIO_nolines < Test::Unit::TestCase
     # iterate over the first line and comment lines
     begin
       f0 = file.dup
-      ans = f0.nolines[0,/^\s*#/]
+      ans = f0.skiplines[0,/^\s*#/]
       assert_equal(exp,ans)
     end
 
     begin
       f0 = file.dup
-      ans = f0.nolines[proc { |rec,rnum,rio| rnum == 0 || rec =~ /^\s*#/ }]
+      ans = f0.skiplines[proc { |rec,rnum,rio| rnum == 0 || rec =~ /^\s*#/ }]
       assert_equal(exp,ans)
     end
     begin
@@ -87,7 +87,7 @@ class TC_RIO_nolines < Test::Unit::TestCase
       
       #$trace_states = true
       exp0 = lines[0..1] + lines[5...8] 
-      ans = f0.nolines[/^\s*#/]
+      ans = f0.skiplines[/^\s*#/]
       #p f0.cx
       #$trace_states = false
       assert_equal(exp0,ans)
@@ -102,10 +102,10 @@ class TC_RIO_nolines < Test::Unit::TestCase
 
     exp2 = lines[2..4]
     exp = exp1 - exp2
-    ans = file.lines(proc { |rec,rnum,ario| rec =~ /#{ario.filename}/ }).nolines[/^\s*#/]
+    ans = file.lines(proc { |rec,rnum,ario| rec =~ /#{ario.filename}/ }).skiplines[/^\s*#/]
     assert_equal(exp,ans)
 
-    ans = file.nolines(/^\s*#/).lines[proc { |rec,rnum,ario| rec =~ /#{ario.filename}/ }]
+    ans = file.skiplines(/^\s*#/).lines[proc { |rec,rnum,ario| rec =~ /#{ario.filename}/ }]
     assert_equal(exp,ans)
   end
 
@@ -113,30 +113,30 @@ class TC_RIO_nolines < Test::Unit::TestCase
 #    $trace_states = true
     lfile,lines = file_lines()
 
-    ans = rio('f1').nolines(2..4).lines[0..2]
+    ans = rio('f1').skiplines(2..4).lines[0..2]
     exp = lines[6..6]
 
-    ans = rio('f1').norecords(0).records(0..2).norecords(2..4).records[6]
+    ans = rio('f1').skiprecords(0).records(0..2).skiprecords(2..4).records[6]
     assert_equal(exp,ans)
 
-    ans = rio('f1').lines(0..2).nolines(0,2..4).lines[6]
+    ans = rio('f1').lines(0..2).skiplines(0,2..4).lines[6]
     assert_equal(exp,ans)
-    ans = rio('f1').nolines(0,2..4).lines[0..2,6]
+    ans = rio('f1').skiplines(0,2..4).lines[0..2,6]
 
     assert_equal(lines[1..1]+lines[6..6],ans)
 
 
-    ans = rio('f1').nolines(0).lines(0..2).nolines(2..4).lines[6]
+    ans = rio('f1').skiplines(0).lines(0..2).skiplines(2..4).lines[6]
     assert_equal(exp,ans)
-    ans = rio('f1').nolines(0).lines(0..2).nolines(2..4).lines[6]
+    ans = rio('f1').skiplines(0).lines(0..2).skiplines(2..4).lines[6]
     assert_equal(exp,ans)
-    ans = rio('f1').records(0..2).norecords(0,2..4).records[6]
+    ans = rio('f1').records(0..2).skiprecords(0,2..4).records[6]
     assert_equal(exp,ans)
-    ans = rio('f1').norecords(0,2..4).records[0..2,6]
+    ans = rio('f1').skiprecords(0,2..4).records[0..2,6]
     assert_equal(lines[1..1]+lines[6..6],ans)
 
     exp = lines[1..1] + lines[5..7]
-    ans = rio('f1').nolines(0,2..4).lines[0..2,6,/f1/]
+    ans = rio('f1').skiplines(0,2..4).lines[0..2,6,/f1/]
     assert_equal(exp,ans)
 
 
@@ -169,33 +169,33 @@ class TC_RIO_nolines < Test::Unit::TestCase
 #    $trace_states = true
     lfile,lines = file_lines()
 
-    file = lfile.dup.nolines(2..4).lines(0..2)
+    file = lfile.dup.skiplines(2..4).lines(0..2)
     exp = lines[0..1]
     #p "HEE"
 #    breakpoint
     iter_tests(file,exp)
 
-    file = lfile.dup.norecords(0).records(0..2).norecords(2..4).records(6)
+    file = lfile.dup.skiprecords(0).records(0..2).skiprecords(2..4).records(6)
     exp = lines[6..6]
     iter_tests(file,exp)
 
-    file = lfile.dup.lines(0..2).nolines(0,2..4).lines(6)
+    file = lfile.dup.lines(0..2).skiplines(0,2..4).lines(6)
     iter_tests(file,exp)
 
-    file = lfile.dup.nolines(0,2..4).lines(0..2,6)
+    file = lfile.dup.skiplines(0,2..4).lines(0..2,6)
     iter_tests(file,lines[1..1]+lines[6..6])
 
-    file = lfile.dup.nolines(0).lines(0..2).nolines(2..4).lines(6)
+    file = lfile.dup.skiplines(0).lines(0..2).skiplines(2..4).lines(6)
     iter_tests(file,exp)
 
-    file = lfile.dup.records(0..2).norecords(0,2..4).records(6)
+    file = lfile.dup.records(0..2).skiprecords(0,2..4).records(6)
     iter_tests(file,exp)
 
-    file = lfile.dup.norecords(0,2..4).records(0..2,6)
+    file = lfile.dup.skiprecords(0,2..4).records(0..2,6)
     iter_tests(file,lines[1..1]+lines[6..6])
 
     exp = lines[1..1] + lines[5..7]
-    file = lfile.dup.nolines(0,2..4).lines(0..2,6,/f1/)
+    file = lfile.dup.skiplines(0,2..4).lines(0..2,6,/f1/)
     iter_tests(file,exp)
 
 

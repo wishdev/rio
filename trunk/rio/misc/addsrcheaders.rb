@@ -8,7 +8,7 @@ NLIBDIR = rio('libn').mkdir
 OLIBDIR = rio('libo').mkdir
 
 
-header_lines = ["#--\n",rio(HEADERDIR).files('*.txt').nolines[/^#--/,/\#\+\+/],"#++\n"]
+header_lines = ["#--\n",rio(HEADERDIR).files('*.txt').skiplines[/^#--/,/\#\+\+/],"#++\n"]
 
 rio(LIBDIR).all.files("*.rb") do |f|
   #nf = rio(NLIBDIR,f.rel(LIBDIR))

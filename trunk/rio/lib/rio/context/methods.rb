@@ -40,6 +40,7 @@ require 'rio/iomode'
 
 require 'rio/context/stream'   
 require 'rio/context/dir'   
+require 'rio/context/skip'   
 require 'rio/filter'   
 require 'rio/context/closeoneof'   
 require 'rio/context/gzip'   
@@ -47,12 +48,13 @@ require 'rio/context/gzip'
 module RIO
   module Cx #:nodoc: all
     module SS
-      STREAM_KEYS = %w[records lines rows bytes nolines norows norecords nobytes]
-      ENTRY_KEYS = %w[entries files dirs nofiles nodirs noentries]
+      STREAM_KEYS = %w[records lines rows bytes skiplines skiprows skiprecords nobytes]
+      ENTRY_KEYS = %w[entries files dirs skipfiles skipdirs skipentries]
       KEYS = ENTRY_KEYS + STREAM_KEYS
     end
   end
 end
+
 module RIO
   module Cx
     module Methods

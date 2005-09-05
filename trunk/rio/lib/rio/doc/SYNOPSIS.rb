@@ -149,10 +149,10 @@ Put chomped lines that start with 'Rio' into an array
  anarray = rio('afile').chomp[/^Rio/]
 
 Iterate over the non-empty, non-comment chomped lines of a file
- rio('afile').chomp.nolines(:empty?,/^\s*#/) { |line| ... }
+ rio('afile').chomp.skiplines(:empty?,/^\s*#/) { |line| ... }
 
 Copy the output of th ps command into an array, skipping the header line and the ps command entry
- rio(?-,'ps -a').nolines(0,/ps$/) > anarray 
+ rio(?-,'ps -a').skiplines(0,/ps$/) > anarray 
 
 Prompt for input and return what was typed
  ans = rio(?-).print("Type Something: ").chomp.gets 

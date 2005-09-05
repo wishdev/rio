@@ -38,15 +38,28 @@
 module RIO
   class Rio
 
+    # undocumented
+    def open(m,*args,&block) target.open(m,*args,&block); self end
+#       if block_given?
+#         old_closeoncopy,old_closeoneof = closeoncopy?,closeoneof?
+#         begin
+#           return yield(nocloseoncopy.nocloseoneof)
+#         ensure
+#           reset.closeoncopy(old_closeoncopy).closeoneof(old_closeoneof)
+#         end
+#       end
+#       self 
+#     end
+
     # Creates a symbolic link _dest_ which points to the Rio's Rio#fspath.  
     # Raises a NotImplementedError exception on platforms that do not support symbolic links.
     # _dest_ may be a Rio, a String, or anything that will create an appropriate Rio 
-    # when passed to Rio#new 
+    # when passed to Rio#new .
     # If _dest_ already exists and is a directory, creates a symbolic link in the _dest_ directory,
-    # named with the name returned by Rio#filename
+    # named with the name returned by Rio#filename.
     # If _dest_ already exists and it is not a directory, raises Errno::EEXIST.
     # 
-    # Returns the Rio (not the symlink)
+    # Returns the Rio (not the symlink).
     #
     # Rio#symlink differs from File#symlink when the Rio or the _dest_ path has directory information.
     # In this case Rio#symlink creates a symlink that actually refers to the Rio's location 
@@ -78,16 +91,17 @@ module RIO
     #
     def readlink(*args) target.readlink(*args) end
 
-    # If called with an argument calls FileUtils#rename
-    # If called without an argument puts the Rio in a rename mode in
-    # which changes to the Rio's path affect a rename of the file
-    # on the file system.
-    # 
+    # If called with an argument calls FileUtils#rename.
+    # If called without an argument puts the Rio in "rename mode". 
     # Proxy for FileUtils#rename
     #  ario = rio('afile.cpp')
     #  ario.rename('afile.cxx') # renamed the file, but ario still references
     #                           # the old path
     # Rename Mode
+    #
+    # In rename mode changes to a Rio's path with Rio#dirname=, Rio#filename=, 
+    # Rio#basename=, and Rio#extname= also cause the object on the filesystem
+    # to be renamed.
     #
     # Change the extension of all'.cpp' files in 'adir' to '.cxx'
     #  rio('adir').rename.files('*.cpp') do |file|
@@ -168,12 +182,12 @@ module RIO
     # Seeks to a given offset _amount_ in the stream according to the
     # value of _whence_:
     #
-    #  IO::SEEK_CUR  | Seeks to <em>amount</em> plus current position
+    #  IO::SEEK_CUR  | Seeks to 'amount' plus current position
     #  --------------+----------------------------------------------------
-    #  IO::SEEK_END  | Seeks to <em>amount</em> plus end of stream (you probably
-    #                | want a negative value for <em>amount</em>)
+    #  IO::SEEK_END  | Seeks to 'amount' plus end of stream (you probably
+    #                | want a negative value for 'amount')
     #  --------------+----------------------------------------------------
-    #  IO::SEEK_SET  | Seeks to the absolute location given by <em>amount</em>
+    #  IO::SEEK_SET  | Seeks to the absolute location given by 'amount'
     #
     # Example:
     #

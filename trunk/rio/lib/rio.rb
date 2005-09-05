@@ -97,19 +97,6 @@ module RIO
       ario
     end
 
-    def open(m,*args,&block) 
-      target.open(m,*args)
-      if block_given?
-        old_closeoncopy,old_closeoneof = closeoncopy?,closeoneof?
-        begin
-          return yield(nocloseoncopy.nocloseoneof)
-        ensure
-          reset.closeoncopy(old_closeoncopy).closeoneof(old_closeoneof)
-        end
-      end
-      self 
-    end
-
     # returns the Rio#fspath, which is the path for the Rio on the underlying filesystem
     def to_s() target.to_s end
     alias :to_str :to_s

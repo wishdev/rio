@@ -70,7 +70,7 @@ module RIO
         #p callstr('copy_stream',dst)
         close_on_eof(super)
       end
-      def slurp() 
+      def contents() 
         close_on_eof(super)
       end
       def readlines(*args)

@@ -33,7 +33,7 @@ class TC_RIO_symlink0 < Test::Unit::TestCase
     assert_equal('link',lnk.ftype)
     assert_equal(dst.exist?,lnk.exist?)
     if dst.exist?
-      assert_equal(dst.slurp,lnk.slurp)
+      assert_equal(dst.contents,lnk.contents)
     end
   end
   def compare_links(exp,ans)

@@ -72,6 +72,7 @@ module RIO
         else cx.set_('stream_itertype',rt)
         end
       end
+
       def _set_selargs(sa,sel=true,&block)
         key = (sel ? 'stream_sel' : 'stream_nosel')
         cx[key] = sa
@@ -128,20 +129,20 @@ module RIO
       end
 
 
-      def nolines(*args,&block) 
-        #p callstr('nolines',*args)
+      def skiplines(*args,&block) 
+        #p callstr('skiplines',*args)
         self.lines() unless args.empty? or cx.has_key?('stream_sel')
-        _set_sstype('nolines')
+        _set_sstype('skiplines')
         _lines(args,false,&block)
       end
-      def norecords(*args,&block) 
+      def skiprecords(*args,&block) 
         self.records() unless args.empty? or cx.has_key?('stream_sel')
-        _set_sstype('norecords')
+        _set_sstype('skiprecords')
         _records(args,false,&block)
       end
-      def norows(*args,&block) 
+      def skiprows(*args,&block) 
         self.rows() unless args.empty? or cx.has_key?('stream_sel')
-        _set_sstype('norows')
+        _set_sstype('skiprows')
         _rows(args,false,&block)
       end
 

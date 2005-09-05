@@ -76,6 +76,7 @@ which can be chained to a Rio method as in this example or stored in a variable.
  array = ario.readlines
 
  ario = rio('afile')
+
 In this case the resource specified is a relative path. After the first line
 the Rio does know or care whether it
 is a path to a file nor whether it exists. Rio provides many methods that only deal with a resource
@@ -93,6 +94,7 @@ The rio constructor can be used to specify non-file-system resources, but for th
 our discussion to paths to entities on file-systems.
 
  array = ario.readlines
+
 Now that we have a Rio, we can call one of its methods; in this case _readlines_. This is an example of using
 a Rio as a proxy for the builtin IO#readlines. Given the method _readlines_, the Rio opens 'afile' for reading, 
 calls readlines on the resulting IO object, closes the IO object, and returns the lines read.
@@ -131,7 +133,7 @@ a second copy, we might do something like this:
  afile.rewind > rio('acopy2')
  afile.close
 
-Actually the 'thinking-process' of the Rio when it sees a copy-to operator is much more complex that described above.
+Actually the 'thinking process' of the Rio when it sees a copy-to operator is much more complex that described above.
 If its argument had been a rio referencing a directory, it would not have opened itself for reading, 
 but instead used FileUtils#cp to copy itself; if its argument had been a string, its contents would have ended up
 in the string; If its argument had been an array, its lines would been elements of that array; if its argument had 

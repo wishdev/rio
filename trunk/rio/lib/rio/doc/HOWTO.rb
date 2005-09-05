@@ -53,7 +53,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Read a file into a string.
    # method 1
-   string = ario.slurp
+   string = ario.contents
    # method 2
    ario > string
 
@@ -61,7 +61,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    ario >> string
    # method 2
-   string += ario.slurp
+   string += ario.contents
 
 * Read lines of a file into an array
    # method 1
@@ -111,13 +111,13 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    rio('afile.gz').gzip > string
    # method 2
-   string = rio('afile.gz').gzip.slurp
+   string = rio('afile.gz').gzip.contents
 
 * Append a gzipped file into a string
    # method 1
    rio('afile.gz').gzip >> string
    # method 2
-   string += rio('afile.gz').gzip.slurp
+   string += rio('afile.gz').gzip.contents
 
 * Iterate through all the lines of a file
    # method 1
@@ -132,7 +132,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    rio('afile.gz').gzip { |line| ... }
 
 * Iterate through all non-empty lines of a gzipped file, with each line chomped
-   rio('afile.gz').gzip.chomp.nolines(:empty?) { |line| ... }
+   rio('afile.gz').gzip.chomp.skiplines(:empty?) { |line| ... }
 
 * Iterate through the first 100 lines of a file
    # method 1
@@ -142,7 +142,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    rio('afile.rb.gz').gzip.lines(0,/^\s*#/) { |line| ... }
 
 * Iterate through the lines of a ruby file that are neither empty nor comments, with all lines chomped
-   rio('afile.rb.gz').chomp.nolines(/^\s*#/,:empty?) { |line| ... }
+   rio('afile.rb.gz').chomp.skiplines(/^\s*#/,:empty?) { |line| ... }
 
 * Read all the comment lines from a ruby file into an array with all lines chomped
    # method 1
@@ -155,7 +155,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    ario.chomp.lines(proc{ |line| line.length <= 1024}) > array
    # method 2
-   array = ario.chomp.nolines[proc{ |line| line.length > 1024}]
+   array = ario.chomp.skiplines[proc{ |line| line.length > 1024}]
    # method 3
    array = ario.chomp.lines(proc{ |line| line.length <= 1024}).to_a
 
@@ -240,21 +240,21 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 2
    array = ario.lines[proc{ |l| l.length > 128}]
    # method 3
-   array = ario.nolines[proc{ |l| l.length <= 128}]
+   array = ario.skiplines[proc{ |l| l.length <= 128}]
   
 * Copy all lines that do not start with 'zippy' into another file
    # method 1
-   ario.nolines(/^zippy/) > rio('another_file')
+   ario.skiplines(/^zippy/) > rio('another_file')
    # method 2
-   ario.lines.nolines(/^zippy/) > rio('another_file')
+   ario.lines.skiplines(/^zippy/) > rio('another_file')
    # method 3
-   rio('another_file') < ario.nolines(/^zippy/)
+   rio('another_file') < ario.skiplines(/^zippy/)
   
 * Copy the first 10 lines and lines starting with 'zippy', but exclude any lines longer than 128 bytes
    # method 1
-   ario.lines(0...10,/^zippy/).nolines(proc{ |l| l.length > 128}] > rio('another_file')
+   ario.lines(0...10,/^zippy/).skiplines(proc{ |l| l.length > 128}] > rio('another_file')
    # method 2
-   rio('another_file') < ario.lines(0...10,/^zippy/).nolines(proc{ |l| l.length > 128})
+   rio('another_file') < ario.lines(0...10,/^zippy/).skiplines(proc{ |l| l.length > 128})
   
 
 
@@ -313,19 +313,19 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Put all files excluding those that are symlinks to files in an array
    # method 1
-   array = ario.nofiles[:symlink?]
+   array = ario.skipfiles[:symlink?]
    # method 2
-   array = ario.nofiles(:symlink?).files[]
+   array = ario.skipfiles(:symlink?).files[]
    # method 3
-   array = ario.nofiles(:symlink?).to_a
+   array = ario.skipfiles(:symlink?).to_a
    # method 4
-   array = ario.files.nofiles[:symlink?]
+   array = ario.files.skipfiles[:symlink?]
 
 * Put all entries that are not files (or symlinks to files) into an array
    # method 1
-   array = ario.nofiles[]
+   array = ario.skipfiles[]
    # method 2
-   array = ario.nofiles.to_a
+   array = ario.skipfiles.to_a
 
 * Put all entries that are symlinks to files into an array
    # method 1
@@ -335,15 +335,15 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Put all directories except those named '.svn' into an array
    # method 1
-   array = ario.nodirs['.svn']
+   array = ario.skipdirs['.svn']
    # method 2
-   array = ario.nodirs[/^\.svn/]
+   array = ario.skipdirs[/^\.svn/]
    # method 3
-   array = ario.nodirs('.svn').to_a
+   array = ario.skipdirs('.svn').to_a
    # method 4
-   array = ario.nodirs('.svn').dirs[]
+   array = ario.skipdirs('.svn').dirs[]
    # method 5
-   array = ario.nodirs('.svn')[]
+   array = ario.skipdirs('.svn')[]
 
 
 ---
@@ -359,7 +359,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 2
    rio('dstfile') < rio('srcfile')
    # method 3
-   rip('dstfile').print!(rio('srcfile').slurp)
+   rip('dstfile').print!(rio('srcfile').contents)
 
 * Append the contents of one file to another file
    # method 1
@@ -367,7 +367,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 2
    rio('dstfile') << rio('srcfile')
    # method 3
-   rip('dstfile').a.print!(rio('srcfile').slurp)
+   rip('dstfile').a.print!(rio('srcfile').contents)
 
 * Copy the first 10 lines of one file to another file
    # method 1
@@ -389,7 +389,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 2
    rio('afile') < rio('http://ruby-doc.org/')
    # method 3
-   rio('afile').print!(rio('http://ruby-doc.org/').slurp)
+   rio('afile').print!(rio('http://ruby-doc.org/').contents)
 
 * Append the output of the daytime server running on the localhost to a file
    # method 1
@@ -416,7 +416,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 2
    rio('afile.gz').gzip < rio('afile')
    # method 3
-   rio('afile.gz').gzip.print!( rio('afile').slurp )
+   rio('afile.gz').gzip.print!( rio('afile').contents )
 
 * Create an ungzipped copy of a gzipped file
    # method 1
@@ -424,7 +424,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 2
    rio('afile.gz').gzip > rio('afile')
    # method 3
-   rio('afile').print!( rio('afile.gz').gzip.slurp )
+   rio('afile').print!( rio('afile.gz').gzip.contents )
 
 * Copy the first 100 lines of gzipped file on a webserver into a local file
    # method 1
@@ -448,9 +448,9 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Count the lines of code in a directory tree of ruby source files
    # method 1
-   cnt = ario.all.files('*.rb').chomp.nolines(/^\s*#/,/^\s*$/).inject(0) { |sum,l|  sum += 1 }
+   cnt = ario.all.files('*.rb').chomp.skiplines(/^\s*#/,/^\s*$/).inject(0) { |sum,l|  sum += 1 }
    # method 2
-   cnt = ario.all.files('*.rb').chomp.nolines[/^\s*#/,/^\s*$/].size
+   cnt = ario.all.files('*.rb').chomp.skiplines[/^\s*#/,/^\s*$/].size
 
 * Concatanate the contents of all .txt files in a directory into an array
    # method 1
@@ -548,7 +548,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 4
    rio(?-) < rio('afile')
    # method 5
-   rio(?-).print(rio('afile').slurp)
+   rio(?-).print(rio('afile').contents)
 
 * Emulate a simplified unix 'head' command which reads from stdin and writes the first 10 lines to stdout
    # method 1
@@ -560,7 +560,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Read the output of the 'ps' command into an array without the header line or the line representing
   the 'ps' command itself
-   ps =  rio(?-,'ps -a').nolines[0,/ps$/]
+   ps =  rio(?-,'ps -a').skiplines[0,/ps$/]
 
 * Run an external program, copying its input from one location and its output from another, 
   and make it look very much like a shell command.

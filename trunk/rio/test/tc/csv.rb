@@ -63,7 +63,7 @@ class TC_csv < Test::Unit::TestCase
   end
   def test_nocsv_lines
     rio(@src_name) > rio(@dst_name)
-    assert_equal(@string,rio(@dst_name).slurp)
+    assert_equal(@string,rio(@dst_name).contents)
     assert_equal(@lines,rio(@dst_name)[])
     assert_equal(@strings,rio(@dst_name).chomp[])
     assert_equal(@lines,rio(@dst_name).to_a)
@@ -72,7 +72,7 @@ class TC_csv < Test::Unit::TestCase
     assert_equal(@strings,rio(@dst_name).chomp.readlines)
   end
   def test_csv_lines
-    assert_equal(@string,rio(@dst_name).csv.slurp)
+    assert_equal(@string,rio(@dst_name).csv.contents)
     assert_equal(@records,rio(@dst_name).csv[])
     assert_equal(@records,rio(@dst_name).csv.chomp[])
     assert_equal(@lines,rio(@dst_name).csv.lines[])

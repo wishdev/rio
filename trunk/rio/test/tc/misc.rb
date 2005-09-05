@@ -200,16 +200,16 @@ class TC_RIO_misc < Test::Unit::TestCase
     tdir.rmtree.mkpath.chdir {
       txt = "Hello f1.txt"
       o = rio('o').puts(txt).close
-      oslurp = o.slurp
+      oslurp = o.contents
 
       n = rio('n')
       o.copy_to(n)
-      assert_equal(oslurp,n.slurp)
+      assert_equal(oslurp,n.contents)
 
       d = rio('d1').rmtree.mkpath
       n = rio(d,'o')
       o.copy_to(d)
-      assert_equal(oslurp,n.slurp)
+      assert_equal(oslurp,n.contents)
 
 #      d = rio('d2').rmtree
 #      n = rio(d,'o')
@@ -221,7 +221,7 @@ class TC_RIO_misc < Test::Unit::TestCase
       d = rio('d3').rmtree.mkpath
       n = rio(d,'o').touch
       o.copy_to(d)
-      assert_equal(oslurp,n.slurp)
+      assert_equal(oslurp,n.contents)
 
 
       return unless $supports_symlink
@@ -232,7 +232,7 @@ class TC_RIO_misc < Test::Unit::TestCase
       }
       n = rio(d,'o')
       o.copy_to(d)
-      assert_equal(oslurp,n.slurp)
+      assert_equal(oslurp,n.contents)
 
       d = rio('d6').rmtree.mkpath
       q = rio(d,'qd').mkdir
@@ -372,8 +372,8 @@ class TC_RIO_misc < Test::Unit::TestCase
     
   end
   def cmpfiles(z1,z2)
-    o = rio(z1).slurp
-    n = rio(z2).slurp
+    o = rio(z1).contents
+    n = rio(z2).contents
     o == n
   end
 
@@ -436,7 +436,7 @@ end
 #                             :chdir,
 #                             :each_entry,:each_line,:each,:each_byte,
 #                             :each_tested,:each_file,:each_directory,:each_symlink,
-#                             :to_str,:to_a,:slurp,
+#                             :to_str,:to_a,:contents,
 #                             :length,:size,:zero?,
 #                             :eof?,
 #                             :read,:readchar,:readline,:readlines,

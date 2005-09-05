@@ -97,9 +97,14 @@ module RIO
         end
 
         def ss_type?
-          return 'entries' if cx['ss_type'].nil?
-          return cx['ss_type'] if %w[files dirs entries nofiles nodirs noentries].include?(cx['ss_type'])  
-          nil
+          case cx['ss_type']
+          when nil
+            'entries'
+          when 'files', 'dirs', 'entries', 'skipfiles', 'skipdirs', 'skipentries'
+            cx['ss_type'] 
+          else
+            nil
+          end
         end
       end
 

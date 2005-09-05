@@ -77,8 +77,8 @@ module RIO
     # What constitutes an array element is determined by Rio#lines, Rio#bytes, 
     # or by an extension such as Rio#csv. Rio#lines is the default.
     # 
-    # Arguments may consist of zero or more integers, ranges, regular expressions, symbols
-    # and procs. 
+    # Arguments may consist of zero or more integers, ranges, regular expressions, symbols,
+    # procs, and arrays
     # An empty argument list selects all records
     #
     # Records are selected as follows.
@@ -87,6 +87,8 @@ module RIO
     # integer:: treated like a one element range
     # symbol::  the symbol is sent to the string. record is selected unless false is returned
     # proc::    the proc is called with the string as an argument. record is selected unless false is returned
+    # array::   the array may contain any of the other selector types. record is selected
+    #           unless any of the selectors returns false. (a logical and)
     # 
     # A record matching *any* of the selectors will be included in the array. (acts like an _or_)
     #
@@ -186,7 +188,7 @@ module RIO
     #  rio('adir').files['*.txt'] # array of all .txt files
     #
     #  rio('adir').dirs['CSV'] # array of all CSV directories
-    #  rio('adir').nodirs['CSV'] # array of all non-CSV directories
+    #  rio('adir').skipdirs['CSV'] # array of all non-CSV directories
     #
     def [](*selectors) target[*selectors] end
 
@@ -377,7 +379,7 @@ module RIO
     #  rio('afile').chomp.lines(0..9) > ary # same thing with lines chomped
     #  rio('afile').gzip.chomp.lines(0..9) > ary # same thing from a gzipped file
     #
-    #  rio('afile').nolines(0..9) > ary # ary will contain all but the first ten lines of the file
+    #  rio('afile').skiplines(0..9) > ary # ary will contain all but the first ten lines of the file
     #
     #  rio('adir') > ary # ary will contain a Rio for each entry in the directory
     #  rio('adir').files > ary # same, but only files
@@ -385,7 +387,7 @@ module RIO
     # 
     # Copying to a string
     #  rio('afile') > astring # slurp the entire contents of the file into astring
-    #  astring = rio('afile').slurp # same effect
+    #  astring = rio('afile').contents # same effect
     #
     # Copy the first line *and* every line containing the word Rio into a gzipped file
     #  rio('src').lines(1,/Rio/) > rio('dst.gz').gzip
@@ -547,5 +549,7 @@ module RIO
     #  a_nil  = ario.getrec 
     def getrec() target.getrec() end
 
+    
+    def skip(*args,&block) target.skip(*args,&block); self end 
   end
 end

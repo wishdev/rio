@@ -115,9 +115,9 @@ module RIO
         cx['retrystate'] = nil
         self
       end
-
-       def close_() 
-         #p callstr('close_')+" ioh=#{self.ioh} open?=#{open?}"
+      
+      def close_() 
+        #p callstr('close_')+" ioh=#{self.ioh} open?=#{open?}"
         return self unless self.open? 
         self.clear_selection
         self.ioh.close 
@@ -126,11 +126,12 @@ module RIO
         self
       end
       protected :close_
-
+      
+      CX_ENTRY_SEL_KEYS = %w[nostreamenum entry_sel skip_args ss_skipped]
       def clear_selection()
-        cx.delete('sel')
-        cx.delete('nosel')
-        cx.delete('nostreamenum')
+        CX_ENTRY_SEL_KEYS.each { |k|
+          cx.delete(k)
+        }
         self
       end
 

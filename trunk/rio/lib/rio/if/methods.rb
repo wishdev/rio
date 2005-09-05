@@ -42,12 +42,21 @@ module RIO
     # 
     # If called with a block behaves as if lines(*args).each(&block) had been called
     # 
+    # +lines+ returns the Rio which called it. This might seem counter-intuitive at first. 
+    # One might reasonably assume that
+    #  rio('adir').lines(0..10)
+    # would return lines. It does not. It configures the rio to return lines and returns
+    # the Rio. This enables chaining for further configuration so constructs like
+    #  rio('afile').lines(0..10).skiplines(/::/)
+    # are possible.
+    #
     # If args are provided they may be one or more of the following:
     # Regexp::  any matching record will be processed
     # Range::   specifies a range of records (zero-based) to be included
     # Integer:: interpreted as a one element range of lines to be processed
     # Proc::    a proc which will be called for each record, records are included unless nil or false is returned
     # Symbol::  a symbol which will _sent_ to each record, records are included unless nil or false is returned
+    # Array::   an array of other selectors. records are selected unless any of the matches fail.
     #
     #  rio('f.txt').lines(/^\s*#/) { |line| ... } # iterate over comment-only lines
     #  rio('f.txt').lines(/^\s*#/).each { |line| ... } # same as above
@@ -94,16 +103,12 @@ module RIO
     # and extensions such as Rio#csv.
     #
     # If args are provided they may be one or more of the following:
-    # [Regexp] 
-    #   any matching record will be iterated over by Rio#each or returned by Rio#getrec
-    # [Integer]
-    #   specifies a record-number (zero-based) to be iterated over by Rio#each or returned by Rio#getrec
-    # [Range]
-    #   specifies a range of records (zero-based) to included in the iteration
-    # [Proc]
-    #   a proc which will be called for each record, records are included unless nil or false is returned
-    # [Symbol]
-    #   a symbol which will _sent_ to each record, records are included unless nil or false is returned
+    # Regexp::  any matching record will be iterated over by Rio#each or returned by Rio#getrec
+    # Integer:: specifies a record-number (zero-based) to be iterated over by Rio#each or returned by Rio#getrec
+    # Range::   specifies a range of records (zero-based) to included in the iteration
+    # Proc::    a proc which will be called for each record, records are included unless nil or false is returned
+    # Symbol::  a symbol which will _sent_ to each record, records are included unless nil or false is returned
+    # Array::   an array of any of above. All must match for a line to be included
     #
     # Note in the following examples that since +lines+ is the default <tt>ario.records(*args)</tt>
     # is effectively the same as <tt>ario.lines(*args)</tt>.
@@ -111,23 +116,23 @@ module RIO
     #  rio('afile').records(0) { |line| ... } # iterate over the first line of 'afile'
     #  rio('afile').records(0,5..7)) { |line| ... } # iterate over lines 0,5,6 and 7
     #  rio('afile').records(/Zippy/) { |line| ... } # iterate over all lines containing 'Zippy'
-    #  rio('afile').lines(0,/^\s*#/) { |line| ... } # iterate over the first line and comment lines
-    #  rio('afile').records(0,/^\s*#/) { |line| ... } # same thing
-    #  rio('afile').lines(proc { |rec,rnum,rio| rnum == 0 || rec =~ /^\s*#/ }) { |line| ... } # same thing
-    #  rio('afile').chomp.lines(proc { |rec,rnum,rio| rec.size > 0 }) { |line| ... } # non-empty lines
-    #  # return array containing line 0, all comment lines and any line containing the filename of the Rio
-    #  rio('afile').lines[0,/^\s*#/,proc { |rec,rnum,ario| rec =~ /#{ario.filename}/ }]
     #
+    # 
+    #  rio('f.csv').puts!(["h0,h1","f0,f1"]) # Create f.csv                
+    #
+    #  rio('f.csv').csv.records[]    #==>[["h0", "h1"], ["f0", "f1"]]
+    #  rio('f.csv').csv.lines[]      #==>["h0,h1\n", "f0,f1\n"]
+    #  rio('f.csv').csv.records[0]   #==>[["h0", "h1"]]
     #
     def records(*args,&block) target.records(*args,&block); self end
 
     # Specifies records which should *not* be iterated through by Rio#each or returned by Rio#getrec
     # 
-    # If called with a block behaves as if norecords(*args).each(&block) had been called
+    # If called with a block behaves as if skiprecords(*args).each(&block) had been called
     # 
     # Returns the Rio
     #
-    # See also Rio#records, Rio#nolines, Rio#lines
+    # See also Rio#records, Rio#skiplines, Rio#lines
     #
     # If no args are provided, no records are rejected. What constitutes a record is affected by Rio#lines,Rio#bytes,
     # and extensions such as Rio#csv.
@@ -138,22 +143,23 @@ module RIO
     # Range::   specifies a range of records (zero-based) to be excluded
     # Proc::    a proc which will be called for each record, records are excluded unless nil or false is returned
     # Symbol::  a symbol which will _sent_ to each record, records are excluded unless nil or false is returned
+    # Array::   an array of any of the above, all of which must match for the array to match.
     #
     # Note in the following examples that since +lines+ is the default record 
-    # type <tt>ario.norecords(*args)</tt> is effectively 
-    # the same as <tt>ario.nolines(*args)</tt>.
+    # type <tt>ario.skiprecords(*args)</tt> is effectively 
+    # the same as <tt>ario.skiplines(*args)</tt>.
     #
-    #  rio('afile').norecords(0) { |line| ... } # iterate over all but the first line of 'afile'
-    #  rio('afile').norecords(0,5..7)) { |line| ... } # don't iterate over lines 0,5,6 and 7
-    #  rio('afile').norecords(/Zippy/) { |line| ... } # skip all lines containing 'Zippy'
-    #  rio('afile').chomp.nolines(:empty?) { |line| ... } # skip empty lines
+    #  rio('afile').skiprecords(0) { |line| ... } # iterate over all but the first line of 'afile'
+    #  rio('afile').skiprecords(0,5..7)) { |line| ... } # don't iterate over lines 0,5,6 and 7
+    #  rio('afile').skiprecords(/Zippy/) { |line| ... } # skip all lines containing 'Zippy'
+    #  rio('afile').chomp.skiplines(:empty?) { |line| ... } # skip empty lines
     #
-    def norecords(*args,&block) target.norecords(*args,&block); self end
+    def skiprecords(*args,&block) target.skiprecords(*args,&block); self end
 
     # Sets the Rio to read lines and specifies lines which should *not* be iterated through by Rio#each or 
     # returned by Rio#getrec
     # 
-    # If called with a block behaves as if <tt>nolines(*args).each(&block)</tt> had been called
+    # If called with a block behaves as if <tt>skiplines(*args).each(&block)</tt> had been called
     # 
     # Returns the Rio
     #
@@ -162,32 +168,33 @@ module RIO
     # If no args are provided, no lines are rejected.
     #
     # If args are provided they may be one or more of the following:
-    # [Regexp]  any matching line will not be processed
-    # [Integer] specifies a line-number (zero-based) to be skipped
-    # [Range]   specifies a range of lines (zero-based) to be excluded
-    # [Proc]    a proc which will be called for each line, lines are excluded unless nil or false is returned
-    # [Symbol]  a symbol which will _sent_ to each line, lines are excluded unless nil or false is returned
+    # Regexp::  any matching line will not be processed
+    # Integer:: specifies a line-number (zero-based) to be skipped
+    # Range::   specifies a range of lines (zero-based) to be excluded
+    # Proc::    a proc which will be called for each line, lines are excluded unless nil or false is returned
+    # Symbol::  a symbol which will _sent_ to each line, lines are excluded unless nil or false is returned
+    # Array::   an array of any of above. All must match for a line to be included
     #
-    #  rio('afile').nolines(0) { |line| ... } # iterate over all but the first line of 'afile'
-    #  rio('afile').nolines(0,5..7)) { |line| ... } # don't iterate over lines 0,5,6 and 7
-    #  rio('afile').nolines(/Zippy/) { |line| ... } # skip all lines containing 'Zippy'
-    #  rio('afile').chomp.nolines(:empty?) { |line| ... } # skip empty lines
+    #  rio('afile').skiplines(0) { |line| ... } # iterate over all but the first line of 'afile'
+    #  rio('afile').skiplines(0,5..7)) { |line| ... } # don't iterate over lines 0,5,6 and 7
+    #  rio('afile').skiplines(/Zippy/) { |line| ... } # skip all lines containing 'Zippy'
+    #  rio('afile').chomp.skiplines(:empty?) { |line| ... } # skip empty lines
     #
-    def nolines(*args,&block) target.nolines(*args,&block); self end
+    def skiplines(*args,&block) target.skiplines(*args,&block); self end
 
 
     
     # Sets the Rio to read rows and specifies rows which should be iterated through 
-    # by Rio#each or returned by Rio#getrec
+    # by Rio#each or returned by Rio#getrec.
     # Rio#rows is intended for use by extensions, where the concept of a row is reasonable. 
-    # In the absensence of an extension behaves like Rio#records
+    # In the absensence of an extension behaves like Rio#records.
     def rows(*args,&block) target.rows(*args,&block); self end
 
     # Sets the Rio to read rows and specifies lines which should *not* be iterated 
     # through by Rio#each or returned by Rio#getrec
-    # Rio#norows is intended for use by extensions, where the concept of a row is 
-    # reasonable. In the absensence of an extension behaves like Rio#norecords
-    def norows(*args,&block) target.norows(*args,&block); self end
+    # Rio#skiprows is intended for use by extensions, where the concept of a row is 
+    # reasonable. In the absence of an extension behaves like Rio#skiprecords
+    def skiprows(*args,&block) target.skiprows(*args,&block); self end
 
     # Sets the implicit output mode to 'a'.
     # 
@@ -383,7 +390,7 @@ module RIO
     #  dest.close     # must be explicitly closed
     # 
     #  dest = rio('destfile')
-    #  dest.print(rio('srcfile').slurp)
+    #  dest.print(rio('srcfile').contents)
     #  dest.closed?   #=> false (Rio#print is not a copy operator)
     #  dest.close
     #
@@ -565,7 +572,7 @@ module RIO
     # Sets the 'sync-mode' of the underlying IO using IO#sync=
     #      ario.sync(boolean=true,&block)   => ario
     # Sets the Rio so that its 'sync mode' will be set to +true+ or +false+ when opened, or set
-    # it immediatly if already open. When sync mode is
+    # it immediately if already open. When sync mode is
     # true, all output is immediately flushed to the underlying operating
     # system and is not buffered internally. Returns the rio. See
     # also Rio#fsync, Rio#nosync, Rio#sync?.
@@ -580,7 +587,7 @@ module RIO
     # Similar to IO#sync= false
     #      ario.nosync(&block)   => ario
     # Sets the Rio so that its 'sync mode' will be set to +false+ when opened, or set
-    # it immediatly if already open. When sync mode is
+    # it immediately if already open. When sync mode is
     # true, all output is immediately flushed to the underlying operating
     # system and is not buffered internally. Returns the rio. See
     # also Rio#fsync, Rio#sync, Rio#sync?.
@@ -594,11 +601,11 @@ module RIO
     #
     def nosync(arg=false,&block) target.nosync(arg,&block); self end
 
-    # Query the current 'sync mode' with IO#sync
+    # Query the current "sync mode" with IO#sync
     #      ario.sync?    => true or false
-    # Returns the current ``sync mode'' of _ario_. When sync mode is true,
+    # Returns the current "sync mode" of _ario_. When sync mode is true,
     # all output is immediately flushed to the underlying operating
-    # system and is not buffered by Ruby internally. See also +Rio#fsync+,
+    # system and is not buffered by Ruby internally. See also Rio#fsync,
     # Rio#sync, Rio#nosync
     #
     #  f = rio("testfile")

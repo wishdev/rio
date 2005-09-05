@@ -107,13 +107,19 @@ module Test
       def assert_dirs_equal(exp,d,msg="")
         exp.each do |ent|
           ds = rio(d,ent.filename)
-          assert(ds.exist?,"entry '#{ds}' exists")
+          assert_equal(ent.symlink?,ds.symlink?,"both symlinks, or not")
+          unless ent.symlink?
+            assert(ds.exist?,"entry '#{ds}' exists")
+          end
           assert_equal(ent.ftype,ds.ftype,"same ftype")
           assert_rios_equal(ent,ds,"sub rios are the same")
         end
       end
       def assert_rios_equal(exp,ans,msg="")
         case
+        when exp.symlink?
+          assert(ans.symlink?,"entry is a symlink")
+          assert_equal(exp.readlink,ans.readlink,"symlinks read the same")
         when exp.file?
           assert(ans.file?,"entry is a file")
           assert_equal(exp.readlines,ans.readlines,"file has same contents")

@@ -365,7 +365,9 @@ module RIO
     # Rio#rootpath
     #
     #
-    def rootpath(*args) target.rootpath(*args) end
+    def rootpath(*args) # :nodoc:
+      target.rootpath(*args) 
+    end
 
 
     # Rio#root
@@ -386,7 +388,7 @@ module RIO
     ##def getwd(*args,&block) target.getwd(*args,&block) end
 
 
-    # Returns the scheme for the Rio's URI like URI#scheme where the Rio is represented
+    # Returns the scheme for the Rio's URI-like URI#scheme where the Rio is represented
     # by a standard URI. For Rios that are not represented by standard URIs one of
     # Rio's non-standard schemes is returned. 
     #

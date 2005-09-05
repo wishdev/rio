@@ -83,7 +83,7 @@ module RIO
   module Stream
     class Open < Base
       def size() 
-        self.slurp.size
+        self.contents.size
       end
       OUTPUT_SYMS = [:print,:printf,:puts,:putc,:write,
                      :print!,:printf!,:puts!,:putc!,:write!,

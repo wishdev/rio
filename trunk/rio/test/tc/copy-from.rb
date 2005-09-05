@@ -43,18 +43,18 @@ class TC_copyfrom < Test::RIO::TestCase
     str = "HelloWorld\n"
     ario < str
     assert(ario.closed?,"Rio closes after copy-from string")
-    assert_equal(str,ario.slurp)
+    assert_equal(str,ario.contents)
     ario << str
-    assert_equal(str+str,ario.slurp)
+    assert_equal(str+str,ario.contents)
   end
 
   def test_arrayofstrings_file
     ario = rio('oua').delete!.puts!("If you are seeing this, rio < array is broken")
     str = "HelloWorld\n"
     ario < [str]
-    assert_equal(str,ario.slurp)
+    assert_equal(str,ario.contents)
     ario << [str]
-    assert_equal(str+str,ario.slurp)
+    assert_equal(str+str,ario.contents)
   end
 
 
@@ -85,7 +85,7 @@ class TC_copyfrom < Test::RIO::TestCase
     str = "HelloWorld\n"
     ario < str
     assert(ario.file?,"Copy from string creates a file")
-    assert_equal(str,ario.slurp)
+    assert_equal(str,ario.contents)
   end
 
   def test_arrayofstrings_nonex
@@ -93,7 +93,7 @@ class TC_copyfrom < Test::RIO::TestCase
     str = "HelloWorld\n"
     ario < [str]
     assert(ario.file?,"Copy from array of strings creates a file")
-    assert_equal(str,ario.slurp)
+    assert_equal(str,ario.contents)
   end
 
   def test_simple_rio0
@@ -129,8 +129,8 @@ class TC_copyfrom < Test::RIO::TestCase
     url = 'http://localhost/rio/hw.html'
     urio = rio(url)
     ario < urio
-    exp = urio.slurp
-    assert_equal(exp,ario.slurp)
+    exp = urio.contents
+    assert_equal(exp,ario.contents)
   end
   def test_uri_rio_to_dir
     ario = rio('ud').delete!.mkdir
@@ -141,7 +141,7 @@ class TC_copyfrom < Test::RIO::TestCase
     $trace_states = false
     drio = rio(ario,urio.filename)
     assert(drio.file?)
-    assert(urio.slurp,drio.slurp)
+    assert(urio.contents,drio.contents)
   end
   def test_uri_string_to_dir
     ario = rio('uds').delete!.mkdir
@@ -152,28 +152,28 @@ class TC_copyfrom < Test::RIO::TestCase
     $trace_states = false
     drio = rio(ario,urio.filename)
     assert(drio.file?)
-    assert(urio.slurp,drio.slurp)
+    assert(urio.contents,drio.contents)
   end
   def test_url_string_to_file
     ario = rio('out').delete!.touch
     url = 'http://localhost/rio/hw.html'
     ario < url
     exp = url
-    assert_equal(exp,ario.slurp)
+    assert_equal(exp,ario.contents)
   end
   def test_url_array_to_file
     ario = rio('out').delete!.touch
     url = 'http://localhost/rio/hw.html'
     ario < [url]
     exp = url
-    assert_equal(exp,ario.slurp)
+    assert_equal(exp,ario.contents)
   end
   def test_url_string_to_nonex
     ario = rio('outz').delete!
     url = 'http://localhost/rio/hw.html'
     ario < url
     exp = url
-    assert_equal(exp,ario.slurp)
+    assert_equal(exp,ario.contents)
   end
   def test_simple_ary
     dst = rio('dst').delete!.mkpath

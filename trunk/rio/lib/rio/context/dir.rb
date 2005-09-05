@@ -42,21 +42,63 @@ require 'rio/entrysel'
 module RIO
   module Cx
     module Methods
-      def dir_iter?() cx.has_key?('sel') || cx.has_key?('nosel') end
+      def dir_iter?() cx.has_key?('entry_sel') end
       
       private
 
-      def _addselkey(key,sym,*args)
-        cx[key] ||= Match::Entry::Sels.new
-        cx[key] << Match::Entry::List.new(sym,*args)
+      def _set_entry_sel_args(sel_type,*args)
+        #p callstr('_set_entry_sel_args',sel_type,*args)
+
+        es = (cx['entry_sel'] ||= {})
+        eargs = (es['args'] ||= {})
+        eargs[sel_type] ||= []
+        eargs[sel_type] += args
+      end
+
+      def _set_select(ss_type,*args,&block)
+        cx['ss_type'] = ss_type
+        _set_entry_sel_args(ss_type,*args)
+        return each(&block) if block_given?
         self
       end
 
+      def _selkey(sel_type)
+        #p callstr('_selkey',sel_type,skipping?)
+        if skipping?
+          cx['skipping'] = false
+          'skip' + sel_type
+        else
+          sel_type
+        end
+      end
+      public
 
-      def _set_select(ss_type,key,sym,*args,&block)
-        cx['ss_type'] = ss_type
-        _addselkey(key,sym,*args)
-        return each(&block) if block_given?
+      def entries(*args,&block) 
+        _set_select(_selkey('entries'),*args,&block) 
+      end
+      def files(*args,&block)   
+        _set_select(_selkey('files'),*args,&block)   
+      end
+      def dirs(*args,&block)    
+        _set_select(_selkey('dirs'),*args,&block)     
+      end
+
+      def skipentries(*args,&block) 
+        _set_select('skipentries',*args,&block) 
+      end
+      def skipfiles(*args,&block)
+        _set_select('skipfiles',*args,&block)
+      end
+      def skipdirs(*args,&block)
+        _set_select('skipdirs',*args,&block)
+      end
+
+      private
+
+      def _addselkey(key,sym,*args)
+        #p callstr('_addselkey',key,sym,*args)
+        cx[key] ||= Match::Entry::Sels.new
+        cx[key] << Match::Entry::List.new(sym,*args)
         self
       end
 
@@ -71,21 +113,6 @@ module RIO
         _addselkey('r_nosel',:dir?,*args).all_
         return each(&block) if block_given?
         self
-      end
-      def entries(*args,&block) _set_select('entries','sel',:true?,*args,&block) end
-      def files(*args,&block)   _set_select('files','sel',:file?,*args,&block)   end
-      def dirs(*args,&block)    _set_select('dirs','sel',:dir?,*args,&block)     end
-
-      def noentries(*args,&block) 
-        _set_select('noentries','nosel',:true?,*args,&block) 
-      end
-      def nofiles(*args,&block)
-        _addselkey('sel',:file?) unless args.empty?
-        _set_select('nofiles','nosel',:file?,*args,&block)
-      end
-      def nodirs(*args,&block)
-        _addselkey('sel',:dir?) unless args.empty?
-        _set_select('nodirs','nosel',:dir?,*args,&block)
       end
     end
   end

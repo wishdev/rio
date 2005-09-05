@@ -40,11 +40,9 @@ module RIO
   module Ops
     module Stream
       module Read
-        def slurp() 
+        def contents() 
           auto { ioh.gets(nil) }
         end
-        alias :to_string :slurp
-        alias :contents :slurp
         def readlines(*args)
           auto { ioh.readlines(*args) }
         end

@@ -54,7 +54,7 @@ module RIO
         end
         def ===(el) self =~ el end 
         abstract_method :=~
-                         
+                
       end
       class Any < Base
         def =~(entry) true end
@@ -74,6 +74,14 @@ module RIO
       class Symbol < Base
         def =~(entry) entry.__send__(@match_to) end
       end
+      class And < Base
+        def initialize(matches)
+          super(matches.flatten.map { |arg| Match::Entry.create(arg) })
+        end
+        def =~(el)
+          (@match_to.empty? or @match_to.all? { |sel| sel =~ el })
+        end
+      end
       def create(arg)
         case arg
         when ::String     then Glob.new(arg)
@@ -82,6 +90,7 @@ module RIO
         when ::Symbol     then Symbol.new(arg)
         when ::TrueClass  then Any.new(arg)
         when ::FalseClass then None.new(arg)
+        when ::Array      then And.new(arg)
         else raise ArgumentError,"a String,Regexp,Proc or Symbol is required (#{arg})"
         end
       end
@@ -93,9 +102,6 @@ module RIO
   module Match
     module Entry
       class List
-        def callstr(func,*args)
-          self.class.to_s+'['+self.to_s+']'+'.'+func.to_s+'('+args.join(',')+')'
-        end
         attr_reader :sym
         attr_accessor :list
         def initialize(sym,*args)
@@ -116,9 +122,14 @@ module RIO
         end
         extend Forwardable
         def_instance_delegators(:@list,:each)
+        def callstr(func,*args)
+          self.class.to_s+'['+self.to_s+']'+'.'+func.to_s+'('+args.join(',')+')'
+        end
       end
       class Sels < Array
         def <<(entry_list)
+          #p callstr('<<',entry_list)
+          
           same_sym = self.grep(entry_list)
           if same_sym.empty?
             super
@@ -126,11 +137,64 @@ module RIO
             same_sym[0].list = entry_list.list
           end
         end
+        def callstr(func,*args)
+          self.class.to_s+'['+self.to_s+']'+'.'+func.to_s+'('+args.join(',')+')'
+        end
       end
       class Selector
-        def initialize(sel,nosel)
-          @sel = sel
-          @nosel = nosel
+        attr_reader :sel,:nosel
+        def initialize(entry_sel)
+          #p callstr('initialize',entry_sel,skip_args)
+
+          @entry_sel = entry_sel
+          if @entry_sel
+            process_entry_sel()
+          else
+            @sel = @nosel = nil
+          end
+        end
+        def es_args() 
+          es = @entry_sel
+          es['args']
+        end
+        def something_selected?
+          %w[entries files dirs].any? { |k| es_args.has_key?(k) }
+        end
+        def something_skipped?
+          %w[skipentries skipfiles skipdirs].any? { |k| es_args.has_key?(k) }
+        end
+        def skip_type(skip_args)
+          
+        end
+        def process_entry_sel()
+          ea = es_args
+          raise RuntimeError, "Internal error: entry_sel_args not set" unless ea
+          if something_selected?
+            @sel = Match::Entry::Sels.new 
+            @sel << Match::Entry::List.new(:true?,*ea['entries']) if ea.has_key?('entries')
+            @sel << Match::Entry::List.new(:file?,*ea['files']) if ea.has_key?('files')
+            @sel << Match::Entry::List.new(:dir?,*ea['dirs']) if ea.has_key?('dirs')
+          end
+          if something_skipped?
+            @nosel = Match::Entry::Sels.new 
+            if ea.has_key?('skipentries')
+              @nosel << Match::Entry::List.new(:true?,*ea['skipentries'])
+            end
+            if ea.has_key?('skipfiles')
+              @nosel << Match::Entry::List.new(:file?,*ea['skipfiles'])
+              unless ea['skipfiles'].empty? or ea.has_key?('files')
+                @sel ||= Match::Entry::Sels.new 
+                @sel << Match::Entry::List.new(:file?)
+              end
+            end
+            if ea.has_key?('skipdirs')
+              @nosel << Match::Entry::List.new(:dir?,*ea['skipdirs'])
+              unless ea['skipdirs'].empty? or ea.has_key?('dirs')
+                @sel ||= Match::Entry::Sels.new 
+                @sel << Match::Entry::List.new(:dir?)
+              end
+            end
+          end
         end
         def inspect()
           str = sprintf('#<Selector:0x%08x',self.object_id)
@@ -144,7 +208,7 @@ module RIO
 
         def yes?(el)
           @sel.nil? or @sel.detect { |match_entry| match_entry =~ el }
-#          @sel.nil? or @sel.grep(el)
+          #          @sel.nil? or @sel.grep(el)
         end
         def no?(el)
           @nosel.detect { |match_entry| match_entry =~ el } unless @nosel.nil?
@@ -155,8 +219,16 @@ module RIO
         def match?(el)
           yes?(el) and not no?(el)
         end
+        def callstr(func,*args)
+          self.class.to_s+'['+self.to_s+']'+'.'+func.to_s+'('+args.join(',')+')'
+        end
+      end
+      class SelectorClassic < Selector
+        def initialize(sel,nosel)
+          @sel = sel
+          @nosel = nosel
+        end
       end
     end
-    
   end
 end

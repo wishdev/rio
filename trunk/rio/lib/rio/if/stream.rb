@@ -51,20 +51,9 @@ module RIO
 
     # Slurps the contents of the rio into a string. See also Rio#contents
     #
-    #  astring = rio('afile.txt').slurp # slurp the entire contents of afile.txt into astring
+    #  astring = rio('afile.txt').contents # slurp the entire contents of afile.txt into astring
     # 
-    # Alpha Note: Considering removing Rio#contents and Rio#slurp in favor of +to_string+. Is 
-    # this the Ruby way? Is it too confusing with a +to_s+ and +to_str+ already? Is it a good idea?
-    def slurp() target.slurp() end
-
-    # Returns the contents of the rio as a string. See also Rio#slurp 
-    #
-    #  astring = rio('afile.txt').contents # copies the entire contents of afile.txt into astring
-    #
-    # Alpha Note: Considering removing Rio#contents and Rio#slurp in favor of +to_string+. Is 
-    # this the Ruby way? Is it too confusing with a +to_s+ and +to_str+ already? Is it a good idea?
     def contents() target.contents() end
-
 
 
     # Rio#each_record
@@ -98,8 +87,8 @@ module RIO
     def lineno() target.lineno() end
 
     # Calls IO#lineno=
-    #      ario.lineno = integer    => integer
-    # Manually sets the current line number to the given value. +$.+ is
+    #  ario.lineno = integer    => integer
+    # Manually sets the current line number to the given value. <tt>$.</tt> is
     # updated only on the next read.
     #
     # f = rio("testfile")
@@ -122,35 +111,25 @@ module RIO
     #
     # To illustrate: Given a file containing three lines "L0\n","L1\n","L2\n"
     # and a Range (0..1)
-    # Each of the following would fill ay with ["L0\n", "L1\n"]
-    # 
-    #  ay = []
+    # Each of the following would fill anarray with ["L0\n", "L1\n"]
+    #
+    # Given:
+    #  anarray = []
     #  range = (0..1)
-    #  ain = rio('afile').readlines
-    #  ain.each_with_index do |line,i|
-    #    ay << line if range === i
+    #
+    #  all_lines = rio('afile').readlines
+    #  all_lines.each_with_index do |line,i|
+    #    anarray << line if range === i
     #  end
-    # 
-    #  ay = rio('afile').lines[0..1]
-    #  
+    #  # anarray == ["L0\n", "L1\n"]
+    #
+    #  anarray = rio('afile').lines[0..1] # anarray == ["L0\n", "L1\n"]
+    #
     # +recno+ counts the number of times Rio#getrec or Rio#each is used to get a record. 
     # so +recno+ will only concern parts of the file read with grande methods 
     # Rio#each, Rio#[], Rio#getrec 
     # 
     # See also Rio#lineno
-    #  f = rio("afile")
-    #  r1 = (0..1)
-    #  r2 = (100..101)
-    #
-    #  aout1 = []
-    #  f.each { |rec|
-    #    aout << rec if r1 === f.recno or r2 === f.recno
-    #  }
-    #
-    #  aout2 = f[r1,r2]
-    #
-    #  aout1 == aout2 # true
-    #
     def recno() target.recno() end
 
 
@@ -281,7 +260,7 @@ module RIO
 
     # Calls IO#puts
     #
-    # Writes the given objects to the rio as with  Rio#print  . 
+    # Writes the given objects to the rio as with Rio#print. 
     # Writes a record separator (typically a newline) after any that do not already end with a newline sequence. 
     # If called with an array argument, writes each element on a new line. 
     # If called without arguments, outputs a single record separator.
@@ -595,5 +574,51 @@ module RIO
     #
     def ungetc(*args) target.ungetc(*args); self end
     
+    # Sets the 'sync-mode' of the underlying IO using IO#sync=
+    #      ario.sync(boolean=true,&block)   => ario
+    # Sets the Rio so that its 'sync mode' will be set to +true+ or +false+ when opened, or set
+    # it immediately if already open. When sync mode is
+    # true, all output is immediately flushed to the underlying operating
+    # system and is not buffered internally. Returns the rio. See
+    # also Rio#fsync, Rio#nosync, Rio#sync?.
+    #
+    # If a block is given behaves like <tt>ario.sync(arg).each(&block)</tt>
+    #
+    #  f = rio("testfile").sync.puts("Hello World")
+    #  f.sync?     # => true
+    #
+    def sync(arg=true,&block) target.sync(arg,&block); self end
+
+    # Similar to IO#sync= false
+    #      ario.nosync(&block)   => ario
+    # Sets the Rio so that its 'sync mode' will be set to +false+ when opened, or set
+    # it immediately if already open. When sync mode is
+    # true, all output is immediately flushed to the underlying operating
+    # system and is not buffered internally. Returns the rio. See
+    # also Rio#fsync, Rio#sync, Rio#sync?.
+    #
+    # If a block is given behaves like <tt>ario.nosync.each(&block)</tt>
+    #
+    #  f = rio("testfile").sync.puts("Hello World")
+    #  f.sync?     # => true
+    #  f.nosync
+    #  f.sync?     # => false
+    #
+    def nosync(arg=false,&block) target.nosync(arg,&block); self end
+
+    # Query the current "sync mode" with IO#sync
+    #      ario.sync?    => true or false
+    # Returns the current "sync mode" of _ario_. When sync mode is true,
+    # all output is immediately flushed to the underlying operating
+    # system and is not buffered by Ruby internally. See also Rio#fsync,
+    # Rio#sync, Rio#nosync
+    #
+    #  f = rio("testfile")
+    #  f.sync?   #=> false
+    #
+    def sync?() target.sync?() end
+
+
+
   end
 end
