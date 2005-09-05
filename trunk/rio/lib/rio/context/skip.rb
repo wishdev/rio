@@ -35,45 +35,33 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
+require 'rio/context/cxx.rb'
+
 module RIO
-  module CxDir #:nodoc: all
-    private
-    
-    def _ss_keys()  Cx::SS::ENTRY_KEYS + Cx::SS::STREAM_KEYS end
-    CX_ALL_SKIP_KEYS = ['retrystate']
-    def _add_recurse_iter_cx(ario)
-      new_cx = ario.cx
-      cx.keys.reject { |k| CX_ALL_SKIP_KEYS.include?(k) }.each { |k|
-        new_cx.set_(k,cx[k])
-      }
-      ario.cx = new_cx
-      ario
-    end
-    def _add_cx(ario,keys)
-      new_cx = ario.cx
-      keys.each {|k|
-        next unless cx.has_key?(k)
-        new_cx.set_(k,cx[k])
-      }
-      ario.cx = new_cx
-    end
-    CX_DIR_ITER_KEYS = %w[sel nosel]
-    CX_STREAM_ITER_KEYS = %w[stream_rectype stream_itertype stream_sel stream_nosel]
-    def _add_iter_cx(ario)
-      if nostreamenum?
-        _add_cx(ario,CX_DIR_ITER_KEYS)
+  module Cx
+    module Methods
+      def _arg_skip(args)
+        #p callstr('_arg_skip',args,cx.inspect)
+        cx['ss_skipped'] = cx['ss_type'].sub(/^skip/,'') if cx['ss_type']
+        cx['ss_type'] = 'skip'
+        cx['skip_args'] = args
       end
-      _add_stream_iter_cx(ario)
-    end
-    def _add_stream_iter_cx(ario)
-      _add_cx(ario,CX_STREAM_ITER_KEYS)
-      new_cx = ario.cx
-      if stream_iter?
-        new_cx.set_('ss_args',cx['ss_args']) if cx.has_key?('ss_args')
-        new_cx.set_('ss_type',cx['ss_type']) if cx.has_key?('ss_type')
+      def _noarg_skip
+        cx['ss_skipped'] = cx['ss_type'].sub(/^skip/,'') if cx['ss_type']
+        cx['ss_type'] = 'skip'
+        cx['skipping'] = true
       end
-      ario.cx = new_cx
-      ario
+      def skipping?() cx['skipping'] end
+      def skip(*args,&block)
+        if args.empty?
+          _noarg_skip
+        else
+          _arg_skip(args)
+        end
+        each(&block) if block_given?
+        self
+      end
+
     end
   end
 end
