@@ -1,4 +1,4 @@
-For your perusal -- Rio 0.3.3
+New and Improved -- Rio 0.3.4
 
 == Overview
 
@@ -10,96 +10,178 @@ provided by IO, File, and Dir to an appropriate object, Rio provides a
 "grande" interface that allows many common application-level I/O and
 file-system tasks to be expressed succinctly.
 
-== New for version 0.3.3
-* Expanded support and documentation for CSV files
-  Examples:
-  * Copy, changing the separator to a semicolon
+== SYNOPSIS
 
-     rio('comma.csv').csv > rio('semicolon.csv').csv(';')
+For the following assume:
+ astring = ""
+ anarray = []
 
-  * Iterate through a file with each line parsed into an array
+Copy or append a file to a string
+ rio('afile') > astring      # copy
+ rio('afile') >> astring     # append
 
-     rio('afile.csv').csv { |array_of_fields| ...}
+Copy or append a string to a file
+ rio('afile') < astring      # copy
+ rio('afile') << astring     # append
 
-  * Create an array of arrays of selected fields
+Copy or append the lines of a file to an array
+ rio('afile') > anarray     
+ rio('afile') >> anarray
+ 
+Copy or append a file to another file
+ rio('afile') > rio('another_file')  
+ rio('afile') >> rio('another_file') 
 
-     array_of_arrays = rio('afile.csv').csv.columns(1..3,7).to_a
+Copy a file to a directory
+ rio('adir') << rio('afile')
 
-  * Create a tab separated file of accounts in a UNIX passwd file,
-    listing only the username, uid, and realname fields
+Copy a directory structure to another directory
+ rio('adir') >> rio('another_directory')
 
-     rio('/etc/passwd').csv(':').columns(0,2,4) > rio('rpt').csv("\t")
+Copy a web-page to a file
+ rio('http://rubydoc.org/') > rio('afile')
 
+Ways to get the chomped lines of a file into an array
+ anarray = rio('afile').chomp[]         # subscript operator
+ rio('afile').chomp > anarray           # copy-to operator
+ anarray = rio('afile').chomp.to_a      # to_a
+ anarray = rio('afile').chomp.readlines # IO#readlines
+ 
+Copy a gzipped file un-gzipping it
+ rio('afile.gz').gzip > rio('afile')
+
+Copy a plain file, gzipping it
+ rio('afile.gz').gzip < rio('afile')
+
+Copy a file from a ftp server into a local file un-gzipping it
+ rio('ftp://host/afile.gz').gzip > rio('afile')
+
+Iterate over the entries in a directory
+ rio('adir').entries { |entrio| ... }
+
+Iterate over only the files in a directory
+ rio('adir').files { |entrio| ... }
+
+Iterate over only the .rb files in a directory
+ rio('adir').files('*.rb') { |entrio| ... }
+
+Iterate over .rb files but not symlinks to .rb files
+ rio('adir').files('*.rb').skip(:symlink?) { |entrio| ... }
+
+Iterate over only the _dot_ files in a directory
+ rio('adir').files(/^\./) { |entrio| ... }
+
+Iterate over the files in a directory and its subdirectories, skipping
+'.svn' and 'CVS' directories
+
+ rio('adir').norecurse(/^\.svn$/,'CVS').files { |entrio| ... }
+
+Create an array of the .rb entries in a directory
+ anarray = rio('adir')['*.rb']
+
+Create an array of the .rb entries in a directory and its
+subdirectories.
+ anarray = rio('adir').all['*.rb']
+
+Iterate over the .rb files in a directory and its subdirectories
+ rio('adir').all.files('*.rb') { |entrio| ... }
+
+Iterate over the non-empty, non-comment chomped lines of a file
+ rio('afile').chomp.skip.lines(:empty?,/^\s*#/) { |line| ... }
+
+Copy the output of th ps command into an array, skipping the header
+line and the ps command entry
+ rio(?-,'ps -a').skip.lines(0,/ps$/) > anarray 
+
+Prompt for input and return what was typed
+ ans = rio(?-).print("Type Something: ").chomp.gets 
+
+Change the extension of all .htm files in a directory and its
+subdirectories to .html
+ rio('adir').rename.all.files('*.htm') do |htmfile|
+   htmfile.extname = '.html'
+ end
+
+Create a symbolic link 'asymlink' in 'adir' which refers to
+'adir/afile'
+ rio('adir/afile').symlink('adir/asymlink')
+
+Copy a CSV file, changing the separator to a semicolon
+ rio('comma.csv').csv > rio('semicolon.csv').csv(';')
+
+Iterate through a CSVfile with each line parsed into an array
+ rio('afile.csv').csv { |array_of_fields| ...}
+
+Create a tab separated file of accounts in a UNIX passwd file,
+listing only the username, uid, and realname fields
+ rio('/etc/passwd').csv(':').columns(0,2,4) > rio('rpt').csv("\t")
+
+== New for version 0.3.4
+
+* New Grande Selection parameter.
+
+  A major weakness of Rio's selection methods (lines, files, etc.)
+  has always been that it only implemented a logical OR.
+
+   rio('afile').lines(0..10,/Rio/) {...}
+  iterates through lines that are in the range 0..10 OR 
+  contain 'Rio'.
+
+   rio('adir').files(:executable?,'*.rb') {...}
+  iterates through files that are executable OR match '*.rb'
+
+  Selecting files that matched both required using a proc.
+   rio('adir').files(proc{ |f| f.executable? and f.fnmatch?('*.rb')}) {...}
+
+  Rio's grande selection methods will now accept an array of conditions
+  which must all be matched, in order to be selected. A logical AND.
+
+   rio('adir').files([:executable?,'*.rb']) {...}
+  
+  The array, of course, need not be the only paramter. 
+
+   rio('adir').files('*.exe',[:executable?,'*.rb']) {...}
+
+  selects .exe files and .rb files that are executable.
+
+* Renamed some of grande rejection methods. 
+  (based on a suggestion by Gavin Sinclair)
+   nolines => skiplines
+   nofiles => skipfiles
+  etc.
+
+* New skip() grande method
+   rio('afile').skip.lines(/Rio/)       # same as skiplines(/Rio/)
+   rio('afile').lines(/Rio/).skip(0..9) # lines with 'Rio', exclude 
+                                        # the first ten lines
+
+* Alternative syntaxes for creating Rios that have no path.
+   rio(?-)          # create a Rio refering to stdio
+   rio(:stdio)      # same thing.
+   rio.stdio        # same thing
+   RIO.stdio        # ditto
+   RIO::Rio.stdio   # once again
+
+* From Pathname added
+  * root?
+  * mountpoint?
+  * realpath
+  * cleanpath
+
+* Removed Rio#slurp in favor of Rio#contents.
+
+* Added aliases for the copy operators. (suggested by Dave Burt)
+   * copy_to >
+   * append_to >>
+   * copy_from <
+   * append_from <<
+
+* Bug fixes and corrections    
+  
 Project:: http://rubyforge.org/projects/rio/
 Documentation:: http://rio.rubyforge.org/
 Bugs:: http://rubyforge.org/tracker/?group_id=821
-
-         
-== New for version 0.3.2
-
-* Based on a suggestion by Wybo Decker and code attributed to Nobu Nokada, 
-  Rio now supports temporary directories in addition to temporary files.
-* Bug fixes
-* More tests and documentation.
-
-
-== Version 0.3.1
-
-A Rio is and can manipulate:
-* a path
-* the string representing that path
-* the file, directory, web-page, or IO object to which that path refers
-* the object created by opening that file or directory.
-
-A Rio open itself, closes itself and selects its mode based on how it
-used and the object referenced.
-
-== Grande interface
-
-With the grande interface you can:
-
-Copy...
- rio('afile') > astring                    # a file into a string
- rio('afile') < astring                    # a string into a file
- rio('afile') > anarray                    # lines of a file into array
- rio('afile') < anarray                    # an array into a file
- rio('afile') > rio('another_file')        # a file into another file
- rio('adir') > rio('another_directory')    # a directory into another
- rio('http://rubydoc.org/') > rio('afile') # a web page into a file
-
-Iterate...
- rio('adir').entries { |entrio| ... }      # over directory entries
- rio('adir').files { |entrio| ... }        # over only files
- rio('adir').dirs { |entrio| ... }         # over only directories
- rio('afile').lines { |line| ... }         # over lines in a file
-
-Create an array...
- rio('adir').files[]                       # of files
- rio('adir').dirs[]                        # of directories
- rio('afile').lines[]                      # of lines
-
-Whether copying, iterating or returning an array
-Rio provides common input manipulations
-
- rio('afile').chomp > anarray              # chomped lines to an array
- anarray = rio('afile').chomp[]            # same thing
- rio('afile.gz').gzip > rio('afile')       # ungzip a file
- rio('afile.gz').gzip < rio('afile')       # gzip a file
- rio('afile.gz').chomp { |line| ...}       # iterate chomped lines
-
-Whether copying, iterating or returning an array
-Rio provides simple input selection
-
- rio('afile').lines(0..9) > rio('file2')   # the first 10 lines
- rio('afile').lines(/Rio/) { |line| ...}   # lines containing 'Rio'
- anarray = rio('adir').files['*.rb']       # ruby files
-
-Manipulation and selection methods can be combined
-
- rio('afile').gzip.lines(/Rio/) > astring  # 'Rio' lines from gz file
- anarray = rio('afile').chomp[0..9]        # first 10 lines chomped
-
-Many more examples and documentation at http://rio.rubyforge.org/
+Email:: rio4ruby@rubyforge.org
 
 == Copyright
 Copyright (c) 2005, Christopher Kleckner. All rights reserved

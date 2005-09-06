@@ -528,6 +528,25 @@ module RIO
     def chomp(arg=true,&block) target.chomp(arg,&block); self end
 
 
+    # Queries the Rio's strip-mode.
+    # See #strip.
+    #
+    def strip?() target.strip?() end
+
+
+    # Sets the Rio to strip lines and returns the Rio
+    # 
+    # When called with a block, behaves as if strip.each(&block) had been called
+    #
+    # +strip+ causes lines returned by each, to_a, readlines, readline, gets, each_line etc.
+    # to be stripped with String#strip before iterated over or assigned
+    #
+    #  ans = rio(?-).print("A Prompt> ").strip.gets # prompt the user
+    #
+    # See also #chomp
+    def strip(arg=true,&block) target.strip(arg,&block); self end
+
+
     # Sets the Rio to gzip mode. 
     #     ario.gzip    #=> ario
     # If applied to a Rio that is being read from Reads

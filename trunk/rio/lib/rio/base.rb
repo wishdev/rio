@@ -50,6 +50,7 @@ module RIO
       'dup' => true,
       'clone' => true,
       'nil?'  => true,
+      'open'  => true,
     }.freeze
     instance_methods.each { |m| undef_method m unless KEEPSYM[m] }
   end

@@ -144,14 +144,9 @@ module RIO
       class Selector
         attr_reader :sel,:nosel
         def initialize(entry_sel)
-          #p callstr('initialize',entry_sel,skip_args)
-
           @entry_sel = entry_sel
-          if @entry_sel
-            process_entry_sel()
-          else
-            @sel = @nosel = nil
-          end
+          @sel = @nosel = nil
+          process_entry_sel() if @entry_sel
         end
         def es_args() 
           es = @entry_sel

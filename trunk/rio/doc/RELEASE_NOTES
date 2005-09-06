@@ -51,16 +51,30 @@ Suggested Reading
 
   selects .exe files and .rb files that are executable.
 
-* Alternative syntax for creating Rios that have no path.
-
-   rio(?-)       # create a Rio refering to stdio
-   rio(:stdio)   # same thing.
-
 * Renamed some of grande rejection methods. 
   (based on a suggestion by Gavin Sinclair)
-   skiplines => skiplines
-   skipfiles => skipfiles
+   nolines => skiplines
+   nofiles => skipfiles
   etc.
+
+* New skip() grande method
+   rio('afile').skip.lines(/Rio/)       # same as skiplines(/Rio/)
+   rio('afile').lines(/Rio/).skip(0..9) # lines with 'Rio', exclude 
+                                        # the first ten lines
+
+* Alternative syntaxes for creating Rios that have no path.
+
+   rio(?-)          # create a Rio refering to stdio
+   rio(:stdio)      # same thing.
+   rio.stdio        # same thing
+   RIO.stdio        # ditto
+   RIO::Rio.stdio   # once again
+
+* From Pathname added
+  * root?
+  * mountpoint?
+  * realpath
+  * cleanpath
 
 * Removed Rio#slurp in favor of Rio#contents.
 

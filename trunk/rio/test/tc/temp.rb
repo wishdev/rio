@@ -11,7 +11,7 @@ require 'extensions/symbol'
 require 'tc/testcase'
 require 'tmpdir'
 
-class TC_tempfile < Test::RIO::TestCase
+class TC_temp < Test::RIO::TestCase
   @@once = false
   def self.once
     @@once = true

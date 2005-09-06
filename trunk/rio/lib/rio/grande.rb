@@ -43,8 +43,6 @@ module RIO
       #p "#{callstr('[]',*args)} ss_type=#{cx['ss_type']} stream_iter=#{stream_iter?}"
       ss_args = cx['ss_args'] = args
       if ss_args and (ss_type = ss_type?(_ss_keys()))
-        #p "HERE"
-        #p ss_type
         return self.__send__(ss_type,*(ss_args)).to_a
       else
         return to_a()

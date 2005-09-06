@@ -42,7 +42,6 @@ end
 
 require 'rio/if/internal'
 require 'rio/if/basic'
-require 'rio/if/methods'
 require 'rio/if/grande'
 require 'rio/if/grande_entry'
 require 'rio/if/grande_stream'
