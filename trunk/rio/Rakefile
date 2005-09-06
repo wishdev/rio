@@ -125,7 +125,7 @@ end
 #  rio(ZIP_DIR) << rio('pkg').files['*.tgz','*.tar.gz','*.zip','*.gem']
 #end
 task :ziparc do |var|
-  require 'rio/kernel'
+  require 'rio'
   #$trace_states = true
   rio(ZIP_DIR) < rio('pkg').files['*.tgz','*.tar.gz','*.zip','*.gem']
 end
