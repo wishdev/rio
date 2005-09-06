@@ -549,7 +549,39 @@ module RIO
     #  a_nil  = ario.getrec 
     def getrec() target.getrec() end
 
-    
+    # Grande Exclude method
+    # 
+    # +skip+ can be used in two ways.
+    #
+    # If called with no arguments it reverses the polarity of the
+    # next non-skip grande selection method that is called. That is,
+    # it turns +lines+, +records+, +rows+, +files+, +dirs+ and +entries+
+    # into +skiplines+, +skiprecords+, +skiprows+, +skipfiles+, 
+    # +skipdirs+, and +skipentries+, respectively.
+    #
+    #  rio('afile').skip.lines(0..5) # same as rio('afile').skiplines(0..5)
+    #  rio('adir').skip.files('*~')  # same as rio('adir').skipfiles('*~')
+    #
+    # Note that it only affects the next selection method seen -- and may be
+    # used more than once. If no grande selection method is seen, +skip+ is
+    # ignored.
+    #
+    # When called with arguments it acts like Rio#skipentries for directory 
+    # Rios and like Rio#skiprecords for stream Rios.
+    #
+    #  rio('afile').lines(/Rio/).skip[0..4] # lines containg 'Rio' excluding the
+    #                                       # first five lines
+    #
+    #  rio('adir').files('*.rb').skip[:symlink?] # .rb files, but not symlinks to
+    #                                            # .rb files
+    #
+    # If a block is given, behaves as if <tt>skip(*args).each(&block)</tt> had been called.
+    #
+    # Returns the Rio.
+    #
+    # See Rio#skiplines, Rio#skiprecords, Rio#skiprows, Rio#skipfiles, 
+    # Rio#skipdirs, and Rio#skipentries.
+    #
     def skip(*args,&block) target.skip(*args,&block); self end 
   end
 end

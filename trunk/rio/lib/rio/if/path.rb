@@ -436,6 +436,26 @@ module RIO
     #
     def route_to(other) target.route_to(other)  end
 
+    # Calls Pathname#cleanpath
+    #
+    # Returns a new Rio whose path is the clean pathname of +self+ with 
+    # consecutive slashes and useless dots
+    # removed.  The filesystem is not accessed.
+    #
+    # If +consider_symlink+ is +true+, then a more conservative algorithm is used
+    # to avoid breaking symbolic linkages.  This may retain more <tt>..</tt>
+    # entries than absolutely necessary, but without accessing the filesystem,
+    # this can't be avoided.  See #realpath.
+    #
+    def cleanpath(consider_symlink=false) target.cleanpath(consider_symlink)  end
 
+    # Calls Pathname#realpath
+    #
+    # Returns a new Rio whose path is the real (absolute) pathname 
+    # of +self+ in the actual filesystem.
+    # The real pathname doesn't contain symlinks or useless dots.
+    #
+    def realpath() target.realpath()  end
+    
   end
 end

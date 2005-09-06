@@ -164,9 +164,15 @@ module RIO
 
         def each_record_init_
         end
+        def handle_skipped
+          return self unless cx.has_key?('skip_args')
+          args = cx['skip_args'] || []
+          self.skiprecords(*args)
+        end
         def create_selrej()
           sel_args = cx['stream_sel']
           nosel_args = cx['stream_nosel']
+          handle_skipped
           selrej = RIO::Match::Record::SelRej.new(self,sel_args,nosel_args)
           [selrej,selrej.rangetops]
         end

@@ -36,46 +36,40 @@
 
 
 module RIO
-  module Impl
-    module U
-      def self.getwd() ::Dir.getwd() end
-      def self.rootdir()
-        require 'rio/local'
-        ::RIO::Local::ROOT_DIR        
-      end
-      def self.join(*args)
-        ::File.join(*args)
-      end
-    end
-  end
-  module Ops
-    module Path
-      module Create
-        def join(*args) 
-          new_rio(self,*args) 
-        end
-        #alias :catpath :join
-        def join!(*args) 
-          rl.join(*args)
-          softreset
-        end
-        #alias :catpath! :join!
-        def /(arg)
-          join(arg)
-        end
+  def strio(*args) rio(:strio,*args) end
+  def stdio(*args) rio(:stdio,*args) end
+  def stderr(*args) rio(:stderr,*args) end
+  def temp(*args)  rio(:temp,*args)  end
+  def tempfile(*args)  rio(:tempfile,*args)  end
+  def tempdir(*args)  rio(:tempdir,*args)  end
+  def tcp(*args)  rio(:tcp,*args)  end
+  def cmdio(*args)  rio(:cmdio,*args)  end
+  def sysio(*args)  rio(:sysio,*args)  end
+  def fd(*args)  rio(:fd,*args)  end
 
-        def getwd(*args,&block) 
-          new_rio(RL::getwd,*args,&block) 
-        end
-        alias :cwd :getwd
-        def rootpath(*args,&block) 
-          new_rio(Impl::U.rootdir(),*args,&block) 
-        end
-        alias :root :rootpath
-        def cleanpath(*args)
-          new_rio(Impl::U.cleanpath(fspath,*args))
-        end
-      end
-    end
+  module_function :strio
+  module_function :stdio
+  module_function :stderr
+  module_function :temp
+  module_function :tempfile
+  module_function :tempdir
+  module_function :tcp
+  module_function :cmdio
+  module_function :sysio
+  module_function :fd
+end
+
+module RIO
+  class Rio
+    def self.strio(*args) rio(:strio,*args) end
+    def self.stdio(*args) rio(:stdio,*args) end
+    def self.stderr(*args) rio(:stderr,*args) end
+    def self.temp(*args)  rio(:temp,*args)  end
+    def self.tempfile(*args)  rio(:tempfile,*args)  end
+    def self.tempdir(*args)  rio(:tempdir,*args)  end
+    def self.tcp(*args)  rio(:tcp,*args)  end
+    def self.cmdio(*args)  rio(:cmdio,*args)  end
+    def self.sysio(*args)  rio(:sysio,*args)  end
+    def self.fd(*args)  rio(:fd,*args)  end
   end
 end

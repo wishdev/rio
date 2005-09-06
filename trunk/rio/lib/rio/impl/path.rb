@@ -77,6 +77,11 @@ module RIO
       def self.writable?(s,*args) ::FileTest.writable?(s,*args) end
       def self.writable_real?(s,*args) ::FileTest.writable_real?(s,*args) end
       def self.zero?(s,*args) ::FileTest.zero?(s,*args) end
+      require 'pathname'
+      def self.root?(s) ::Pathname.new(s).root? end
+      def self.mountpoint?(s) ::Pathname.new(s).mountpoint? end
+      def self.realpath(s) ::Pathname.new(s).realpath end
+      def self.cleanpath(s,*args) ::Pathname.new(s).cleanpath(*args) end
     end
   end
 end

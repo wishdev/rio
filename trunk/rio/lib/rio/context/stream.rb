@@ -97,35 +97,56 @@ module RIO
         _set_selargs(args,sel,&block)
       end
 
+      def _sel()
+        !skipping?
+      end
+      def _sel_key(key)
+        (skipping? ? 'skip'+key : key)
+      end
       public
 
       def lines(*args,&block)   
         #p callstr('lines',*args)
-        _set_sstype('lines')
-        _lines(args,&block)
+        if skipping?
+          cx['skipping'] = false
+          skiplines(*args,&block)
+        else
+          _set_sstype('lines')
+          _lines(args,_sel,&block)
+        end
       end
       def lines_(*args,&block) 
         #p callstr('lines_',*args)
         _set_sstype('lines',false)
-        _lines(args,true,false,&block)
+        _lines(args,_sel,false,&block)
       end
 
       def records(*args,&block) 
-        _set_sstype('records')
-        _records(args,&block)
+        if skipping?
+          cx['skipping'] = false
+          skiprecords(*args,&block)
+        else
+          _set_sstype('records')
+          _records(args,_sel,&block)
+        end
       end
       def records_(*args,&block) 
         _set_sstype('records',false)
-        _records(args,true,false,&block)
+        _records(args,_sel,false,&block)
       end
 
       def rows(*args,&block) 
-        _set_sstype('rows')
-        _rows(args,&block)
+        if skipping?
+          cx['skipping'] = false
+          skiprows(*args,&block)
+        else
+          _set_sstype('rows')
+          _rows(args,_sel,&block)
+        end
       end
       def rows_(*args,&block) 
         _set_sstype('rows',false)
-        _rows(args,true,false,&block)
+        _rows(args,_sel,false,&block)
       end
 
 

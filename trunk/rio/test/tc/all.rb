@@ -2,6 +2,7 @@ require 'test/unit'
 require 'tc/testcase'
 
 require 'tc/skip'
+require 'tc/skiplines'
 require 'tc/selnosel'
 require 'tc/csv'
 require 'tc/csv2'

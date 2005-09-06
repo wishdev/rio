@@ -217,16 +217,15 @@ module RIO
             nil
           end
         end
-        def process_skipped
-          return unless cx.has_key?('skip_args') or cx['skipping']
+        def handle_skipped
+          #return unless cx.has_key?('skip_args') or cx['skipping']
+          return self unless cx.has_key?('skip_args')
           args = cx['skip_args'] || []
-          skip_meth = 'skipentries'
-#          skip_meth = ss_type?(_ss_keys)
-          self.__send__(skip_meth,*args)
+          self.skipentries(*args)
         end
         def each_(*args,&block)
           #p "#{callstr('each_',*args)} sel=#{cx['sel'].inspect} nosel=#{cx['nosel'].inspect}"
-          process_skipped()
+          handle_skipped()
           sel = Match::Entry::Selector.new(cx['entry_sel'])
           selfstr = (self.to_s == '.' ? nil : self.to_s)
           self.ioh.each do |estr|

@@ -75,6 +75,7 @@ module RIO
         def size(*args) Impl::U.size(self.to_s,*args) end 
         def size?(*args) Impl::U.size?(self.to_s,*args) end 
         def zero?(*args) Impl::U.zero?(self.to_s,*args) end
+        def root?(*args) Impl::U.root?(self.to_s) end
 
       end
       module URI
@@ -256,12 +257,14 @@ module RIO
   end
 end
 require 'rio/ops/create'
+require 'rio/ops/construct'
 module RIO
   module Ops
     module Path
       module Empty
         include Ops::Path::Create
         include Ops::Path::URI
+        include Ops::Construct
       end
       module ExistOrNot
         def symlink(d) 

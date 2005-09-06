@@ -36,46 +36,18 @@
 
 
 module RIO
-  module Impl
-    module U
-      def self.getwd() ::Dir.getwd() end
-      def self.rootdir()
-        require 'rio/local'
-        ::RIO::Local::ROOT_DIR        
-      end
-      def self.join(*args)
-        ::File.join(*args)
-      end
-    end
-  end
   module Ops
-    module Path
-      module Create
-        def join(*args) 
-          new_rio(self,*args) 
-        end
-        #alias :catpath :join
-        def join!(*args) 
-          rl.join(*args)
-          softreset
-        end
-        #alias :catpath! :join!
-        def /(arg)
-          join(arg)
-        end
-
-        def getwd(*args,&block) 
-          new_rio(RL::getwd,*args,&block) 
-        end
-        alias :cwd :getwd
-        def rootpath(*args,&block) 
-          new_rio(Impl::U.rootdir(),*args,&block) 
-        end
-        alias :root :rootpath
-        def cleanpath(*args)
-          new_rio(Impl::U.cleanpath(fspath,*args))
-        end
-      end
+    module Construct
+      def strio(*args) new_rio(:strio,*args) end
+      def stdio(*args) new_rio(:stdio,*args) end
+      def stderr(*args) new_rio(:stderr,*args) end
+      def temp(*args)  new_rio(:temp,*args)  end
+      def tempfile(*args)  new_rio(:tempfile,*args)  end
+      def tempdir(*args)  new_rio(:tempdir,*args)  end
+      def tcp(*args)  new_rio(:tcp,*args)  end
+      def cmdio(*args)  new_rio(:cmdio,*args)  end
+      def sysio(*args)  new_rio(:sysio,*args)  end
+      def fd(*args)  new_rio(:fd,*args)  end
     end
   end
 end

@@ -106,6 +106,15 @@ module RIO
             nil
           end
         end
+
+        require 'Pathname'
+        def realpath
+          new_rio(Impl::U.realpath(fspath))
+        end
+        def mountpoint?
+          Impl::U.mountpoint?(fspath)
+        end
+
       end
 
       module ExistOrNot

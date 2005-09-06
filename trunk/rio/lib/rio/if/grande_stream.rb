@@ -128,7 +128,8 @@ module RIO
 
     # Specifies records which should *not* be iterated through by Rio#each or returned by Rio#getrec
     # 
-    # If called with a block behaves as if skiprecords(*args).each(&block) had been called
+    # If called with a block behaves as if <tt>skiprecords(*args).each(&block)</tt>
+    # had been called
     # 
     # Returns the Rio
     #

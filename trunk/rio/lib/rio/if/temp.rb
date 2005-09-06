@@ -37,8 +37,8 @@
 
 module RIO
   class Rio
-    def file() target.file; self end
-    def dir() target.dir; self end
+    #def file() target.file; self end
+    #def dir() target.dir; self end
       
 
   end

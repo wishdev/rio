@@ -50,7 +50,7 @@ module RIO
     # the abstract state from which all are derived
     # this level handles 
     # * some basic house keeping methods
-    # * the methods to communicate with the fs object
+    # * the methods to communicate with the rio object
     # * the state changing mechanism
     # * and some basic error handling stubs
     class Base
@@ -89,6 +89,7 @@ module RIO
       def self.new_r(riorl)
         new.init(riorl,Cx::Vars.new( { 'closeoneof' => true, 'closeoncopy' => true } ))
       end
+
       def init(riorl,cntx,iohandle=nil)
         @rl = riorl
         @cx = cntx
@@ -122,9 +123,11 @@ module RIO
           raise
         end
       end
+
       def method_missing_trace_str(sym,*args)
         "missing: "+self.class.to_s+'['+self.to_url+']'+'.'+sym.to_s+'('+args.join(',')+')'
       end
+
       def method_missing(sym,*args,&block)
         p method_missing_trace_str(sym,*args) if $trace_states
 
@@ -167,17 +170,7 @@ module RIO
 
 
       extend Forwardable
-#      def_instance_delegators(:rl,:path,:to_s,:fspath,:opaque,:host,:length)
       def_instance_delegators(:rl,:path,:to_s,:fspath,:length)
-
-#      def fspath() @rl.fspath end
-#      def path() @rl.path() end
-#      def opaque() @rl.opaque() end
-#      def scheme() @rl.scheme() end
-#      def host() @rl.host() end
-#      def to_s() @rl.to_s() end
-#      def length() @rl.length end
-
 
       def ==(other) @rl == other end
       def ===(other) self == other end

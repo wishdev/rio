@@ -37,10 +37,6 @@
 
 module RIO
   class Base < ::Object #:nodoc: all
-#    KIOSYMS = [:gets,:open,:readline,:readlines,
-#               :chop,:chomp!,:chop!,
-#               :to_a,:putc,:puts,:print,:printf,:split,:=~]
-#    @@kernel_cleaned ||= KIOSYMS.each { |sym| undef_method(sym) } 
     KEEPSYM = {
       '__id__' => true,
       '__send__' => true,
@@ -54,7 +50,6 @@ module RIO
       'dup' => true,
       'clone' => true,
       'nil?'  => true,
-#      'to_s'  => true,
     }.freeze
     instance_methods.each { |m| undef_method m unless KEEPSYM[m] }
   end

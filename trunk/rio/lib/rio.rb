@@ -40,6 +40,7 @@
 require 'rio/version'
 require 'rio/base'
 require 'rio/exception'
+
 require 'extensions/symbol'
 require 'extensions/enumerable'
 require 'extensions/string'
@@ -53,6 +54,7 @@ end
 
 require 'rio/kernel'
 require 'rio/constructor'
+require 'rio/construct'
 
 module RIO
   SEEK_SET = IO::SEEK_SET
@@ -125,6 +127,7 @@ module RIO
       require 'rio/if'
       include Enumerable
     end
+
     protected
 
     def target() @state.target end

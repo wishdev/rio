@@ -41,27 +41,35 @@ module RIO
     #  rio('afile').blockdev?     =>  true or false
     # Returns +true+ if the named file is a block device.
     def blockdev?() target.blockdev?() end
+
     # Calls FileTest#chardev?
     #  rio('afile').chardev?     =>  true or false
     # Returns +true+ if the named file is a character device.
     def chardev?() target.chardev? end
+
     # Calls FileTest#directory?
     #  rio('afile').directory?     =>  true or false
     # Returns +true+ if the named file is a directory, +false+ otherwise.
     def directory?() target.directory? end
+
+    # Alias for #directory?
     def dir?() target.dir? end
+
     # Calls FileTest#exist?
     #  rio('afile').exist?()    =>  true or false
     # Returns +true+ if the named file exists.
     def exist?() target.exist? end
+
     # Calls FileTest#file?
     #  rio('afile').file?     => true or false
     # Returns +true+ if the named file exists and is a regular file.
     def file?() target.file? end
+
     # Calls FileTest#socket?
     #  rio('afile').socket?     =>  true or false
     # Returns +true+ if the named file is a socket.
     def socket?() target.socket? end 
+
     # Calls FileTest#symlink?
     #  rio('afile').symlink?     =>  true or false
     # Returns +true+ if the named file is a symbolic link.
@@ -214,6 +222,21 @@ module RIO
     # 
     def absolute?() target.absolute?()  end
 
+    # Calls Pathname#mountpoint?
+    #
+    # Returns +true+ if <tt>self</tt> points to a mountpoint.
+    def mountpoint?() target.mountpoint?()  end
+    
+    # Calls Pathname#root?
+    #
+    # #root? is a predicate for root directories.  I.e. it returns +true+ if the
+    # pathname consists of consecutive slashes.
+    #
+    # It doesn't access the actual filesystem.  So it may return +false+ for some
+    # pathnames which points to roots such as <tt>/usr/..</tt>.
+    #
+    def root?() target.root?()  end
 
+    
   end
 end

@@ -50,4 +50,9 @@ class TC_skip < Test::RIO::TestCase
     ansrio = rio(@d0).skip(/1/)
     assert_equal(exprio[],ansrio[])
   end
+  def test_prefix_atend
+#    exprio = rio(@d0).skipentries(/1/)
+    ansrio = rio(@d0).skip[]
+#    assert_equal(exprio[],ansrio[])
+  end
 end
