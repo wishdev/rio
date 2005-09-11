@@ -87,7 +87,7 @@ module RIO
       end
       OUTPUT_SYMS = [:print,:printf,:puts,:putc,:write,
                      :print!,:printf!,:puts!,:putc!,:write!,
-                     :put_,:putrec,:<,:<<
+                     :put_,:putrec,:putrec!,:<,:<<
       ].build_hash { |sym| [sym.to_s,1] }
       def sym_state(sym,im,om)
        if OUTPUT_SYMS[sym.to_s] or RIO::Ext::OUTPUT_SYMS[sym.to_s]
@@ -140,11 +140,14 @@ module RIO
       # TEMP
       def dir?() false end
       def stream_state(cl)
+        #p callstr('stream_state',cl)
         #p "LOOP: retry:#{cx['retrystate']} => #{cl}" 
         return nil if cx['retrystate'] == cl
         cx['retrystate'] = cl
 
-        become(cl).add_rec_methods.add_filters.add_extensions.setup
+        become(cl).add_rec_methods.add_extensions.add_filters.setup
+        #become(cl).add_rec_methods.add_filters.add_extensions.setup
+        #become(cl).add_extensions.add_rec_methods.add_filters.setup
         #next_state.extend(Ops::Symlink::Existing) if symlink?
         #next_state
       end

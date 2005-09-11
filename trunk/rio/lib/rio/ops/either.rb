@@ -53,7 +53,15 @@ module RIO
   end
   module Ops
     module FileOrDir
+      module ExistOrNot
+      end
+      module NonExisting
+        include ExistOrNot
+      end
+
       module Existing
+        include ExistOrNot
+
         def chmod(mod) rtn_self { Impl::U.chmod(mod,fspath) } end
         def chown(owner,group) rtn_self { Impl::U.chown(owner,group,fspath) } end
         def must_exist() self end
@@ -117,14 +125,6 @@ module RIO
 
       end
 
-      module ExistOrNot
-      end
-      module Existing
-        include ExistOrNot
-      end
-      module NonExisting
-        include ExistOrNot
-      end
     end
   end
 end

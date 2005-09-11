@@ -57,6 +57,7 @@ module RIO
         rtn
       end
       def close_on_eof_(rtn)
+        #p callstr('close_on_eof_',rtn)
 #        p @ios
         unless @autoclosed or closed?
           handle.close()

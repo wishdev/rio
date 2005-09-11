@@ -38,6 +38,8 @@
 require 'extensions/object'
 require 'rio/grande'
 require 'rio/cp'
+require 'rio/ops/either'
+
 module RIO
   module Impl
     module U
@@ -73,7 +75,6 @@ module RIO
   module Ops
     module Dir
       module ExistOrNot
-        require 'rio/ops/either'
         include ::RIO::Ops::FileOrDir::ExistOrNot
       end
     end

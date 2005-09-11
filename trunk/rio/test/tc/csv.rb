@@ -195,34 +195,34 @@ class TC_csv < Test::Unit::TestCase
 
     src_str = @string.dup
 
-    rio(?$,src_str) >  rio(?$,dst_str='')
+    rio(?",src_str) >  rio(?",dst_str='')
     assert_equal(src_str,dst_str)
 
-    rio(?$,src_str).csv >  rio(?$,dst_str='')
+    rio(?",src_str).csv >  rio(?",dst_str='')
     assert_equal(@records.to_s,dst_str)
 
-    rio(?$,dst_str='') < rio(?$,src_str).csv
+    rio(?",dst_str='') < rio(?",src_str).csv
     assert_equal(@records.to_s,dst_str)
 
-    dst = rio(?$)
-    rio(?$,src_str) > dst.csv
+    dst = rio(?")
+    rio(?",src_str) > dst.csv
     assert_equal(@records,dst[])
 
-    dst = rio(?$)
-    dst.csv < rio(?$,src_str)
+    dst = rio(?")
+    dst.csv < rio(?",src_str)
     assert_equal(@records,dst[])
 
-    dst = rio(?$)
-    rio(?$,src_str) > dst.csv
+    dst = rio(?")
+    rio(?",src_str) > dst.csv
     assert_equal(@records,dst[])
 
-    dst = rio(?$).csv < rio(?$,src_str)
+    dst = rio(?").csv < rio(?",src_str)
     assert_equal(@records,dst[])
 
-    dst = rio(?$).csv(';') < rio(?$,src_str).csv
+    dst = rio(?").csv(';') < rio(?",src_str).csv
     assert_equal(src_str.gsub(/,/,';'),dst.contents)
 
-    rio(?$,src_str).csv > (dst = rio(?$).csv(';'))
+    rio(?",src_str).csv > (dst = rio(?").csv(';'))
     assert_equal(src_str.gsub(/,/,';'),dst.contents)
 
   end

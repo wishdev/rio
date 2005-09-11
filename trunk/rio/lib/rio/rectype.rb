@@ -54,7 +54,7 @@ module RIO
       module Output
         def put_(rec,*args)
           #p callstr('put_',rec,*args)
-          self.ioh.print(rec)
+          self.ioh.print(rec.to_s)
         end
       end
     end
@@ -77,7 +77,7 @@ module RIO
       end
       module Output
         def put_(rec,*args)
-          p callstr('put_',rec,*args)
+          #p callstr('put_',rec,*args)
           print(rec)
         end
       end

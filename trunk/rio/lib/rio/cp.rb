@@ -101,35 +101,53 @@ module RIO
         include Util::Input
         def >>(arg)
           cpclose(arg) {
-            case arg
-            when ::Array,::String,::IO then cpto_obj_(arg)
-            else _cpto_rio(arg,:<<)
-            end
-            self
+            apto_(arg)
           }
         end
         def >(arg)
           cpclose(arg) {
-            case arg 
-            when ::Array,::String then cpto_obj_(arg.clear)
-            when ::IO then cpto_obj_(arg)
-            else _cpto_rio(arg,:<)
-            end
-            self
+            cpto_(arg)
           }
         end
         alias :copy_to :>
         alias :append_to :>>
-        private
 
-        def _cpto_rio(arg,sym)
+        protected
+        def cpto_(arg)
+          case arg 
+          when ::Array then cpto_array_(arg.clear)
+          when ::String then cpto_string_(arg.clear)
+          when ::IO then cpto_obj_(arg)
+          else cpto_rio_(arg,:<)
+          end
+          self
+        end
+        def apto_(arg)
+          case arg
+          when ::Array then cpto_array_(arg)
+          when ::String then cpto_string_(arg)
+          when ::IO then cpto_obj_(arg)
+          else cpto_rio_(arg,:<<)
+          end
+          self
+        end
+
+        def cpto_array_(arg)
+          cpto_obj_(arg)
+        end
+        def cpto_string_(arg)
+          cpto_obj_(arg)
+        end
+
+        def cpto_rio_(arg,sym)
           ario = ensure_rio(arg)
           ario = ario.join(self.filename) if ario.dir?
           ario.cpclose {
             ario = ario.iostate(sym)
-            self.each do |el|
-              ario << el
-            end
+            self.copying(ario).each { |el|
+              ario.putrec(el)
+#              ario << el
+            }.copying_done(ario)
             ario
           }
         end
@@ -137,26 +155,27 @@ module RIO
 
       module Output
         include Util::Output
-        def <<(arg) cpclose { _cpfrom(arg) } end
-        def <(arg) cpclose { _cpfrom(arg) } end
+        def <<(arg) cpclose { cpfrom_(arg) } end
+        def <(arg) cpclose { cpfrom_(arg) } end
         alias :copy_from :<
         alias :append_from :<<
 
-        private
+        protected
 
-        def _cpfrom(arg)
+        def cpfrom_(arg)
             case arg
             when ::Array then cpfrom_array_(arg)
             when ::IO then cpfrom_obj_(arg)
             when ::String then self.put_(arg)
-            else _cpfrom_rio(arg)
+            else cpfrom_rio_(arg)
             end
             self
         end
-        def _cpfrom_rio(arg)
-          ensure_rio(arg).each do |el|
-            self << el
-          end
+        def cpfrom_rio_(arg)
+          ensure_rio(arg).copying(self).each { |el|
+            self.putrec(el)
+#            self << el
+          }.copying_done(self)
         end
       end
     end
@@ -222,21 +241,21 @@ module RIO
     module Dir
       module Output
         include Util::Output
-        def <<(arg)  _cpfrom(arg); self  end
-        def <(arg)  _cpfrom(arg); self end
+        def <<(arg)  cpfrom_(arg); self  end
+        def <(arg)  cpfrom_(arg); self end
         alias :copy_from :<
         alias :append_from :<<
 
         private
 
-        def _cpfrom(arg)
+        def cpfrom_(arg)
           case arg
           when ::Array then cpfrom_array_(arg)
-          else _cpfrom_rio(ensure_rio(arg))
+          else cpfrom_rio_(ensure_rio(arg))
           end
         end
-        def _cpfrom_rio(ario)
-          #p callstr('_cpfrom_rio',ario)
+        def cpfrom_rio_(ario)
+          #p callstr('cpfrom_rio_',ario)
           dest = self.join(ario.filename)
           case
           when ario.symlink?
@@ -256,14 +275,14 @@ module RIO
         def >>(arg)
           case arg
           when ::Array then cpto_obj_(arg)
-          else _cpto_rio(ensure_rio(arg))
+          else cpto_rio_(ensure_rio(arg))
           end
           self
         end
         def >(arg)
           case arg
           when ::Array then cpto_obj_(arg.clear)
-          else _cpto_rio(ensure_rio(arg))
+          else cpto_rio_(ensure_rio(arg))
           end
           self
         end
@@ -272,7 +291,7 @@ module RIO
 
         private
 
-        def _cpto_rio(ario)
+        def cpto_rio_(ario)
           ario = ario.join(self.filename) if ario.exist?
           nostreamenum.cpto_obj_(ario.mkdir)
         end

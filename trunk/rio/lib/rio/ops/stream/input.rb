@@ -84,11 +84,30 @@ module RIO
           self
         end
 
-        def getrec()
+        def get()
           until self.eof?
             raw_rec = self._get_rec
             return to_rec_(raw_rec) if @get_selrej.match?(raw_rec,@recno)
           end
+        end
+        def get_type(itertype,&block)
+          old_itertype = cx['stream_itertype']
+          _set_itertype(itertype)
+          begin
+            ans = yield
+          ensure
+            _set_itertype(old_itertype)
+          end
+          ans
+        end
+        def getline()
+          get_type('lines') { get() }
+        end
+        def getrow()
+          get_type('rows') { get() }
+        end
+        def getrec()
+          get_type('records') { get() }
         end
         private
 
@@ -102,6 +121,7 @@ module RIO
         # implemented in terms of an underlying iterator like each_line (see RIO::RecType::*)
         def each_(*args,&block)
           #p callstr('each_',*args)
+
           selrej,rangetops = create_selrej()
           want_ma = block.arity > 1
           catch(:stop_iter) do

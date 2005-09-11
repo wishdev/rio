@@ -105,7 +105,7 @@ class TC_csv2 < Test::RIO::TestCase
     assert_equal(@lines[1],rio('src1.csv').records(1).getrec)
     assert_equal(@lines[1],rio('src1.csv').rows(1).getrec)
 
-    assert_equal(@lines[1],rio('src1.csv').csv.lines(1).getrec)
+    assert_equal(@records[1],rio('src1.csv').csv.lines(1).getrec)
     assert_equal(@records[1],rio('src1.csv').csv.records(1).getrec)
 
     assert_equal(@records[8000],rio('src1.csv').csv.records(8000).getrec)
@@ -118,7 +118,7 @@ class TC_csv2 < Test::RIO::TestCase
     assert_equal(@strings[0],rec_rio.to_s)
 
     rec_rio = rio('src1.csv').csv.lines.getrec
-    assert_kind_of(::String,rec_rio)
+    assert_kind_of(::Array,rec_rio)
     assert_equal(@records[0],rec_rio.to_a)
 
     ary = rio('src1.csv').csv[]

@@ -41,7 +41,7 @@ require 'rio/context/methods'
 require 'rio/ext'
 require 'rio/symantics'
 require 'rio/filter'
-$trace_states = false
+
 module RIO
 
                    

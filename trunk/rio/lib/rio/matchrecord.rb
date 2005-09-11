@@ -84,7 +84,8 @@ module RIO
         end
         def match?(val,recno)
           #p "match?(#{val},#{recno}) select_arg=#{@select_arg}"
-          @select_arg.call(val,recno,@therio)
+          args = [val,recno,@therio]
+          @select_arg.call(*args[0,@select_arg.arity])
         end
       end
       class Symbol < Base
@@ -107,6 +108,12 @@ module RIO
           @select_arg.all? { |sel| sel.match?(val,recno) }
         end
       end
+      class Case < Base
+        def match?(val,recno)
+          #p "match?(#{val},#{recno}) select_arg=#{@select_arg}"
+          @select_arg === val
+        end
+      end
       def create(therio,arg)
         case arg
         when ::Regexp
@@ -122,7 +129,7 @@ module RIO
         when ::Array
           Match::Record::And.new(arg,therio)
         else
-          raise ArgumentError,"Argument must be a Regexp,Range,Fixnum,Proc, or Symbol"
+          Match::Record::Case.new(arg)
         end
       end
       module_function :create

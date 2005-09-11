@@ -1,6 +1,7 @@
 require 'test/unit'
 require 'tc/testcase'
 
+require 'tc/yaml'
 require 'tc/skip'
 require 'tc/skiplines'
 require 'tc/selnosel'

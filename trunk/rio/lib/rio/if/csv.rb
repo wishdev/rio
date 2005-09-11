@@ -36,41 +36,42 @@
 
 
 module RIO
-  class Rio
-    #def file() target.file end
-    #def dir() target.dir end
-    
-    # Puts a Rio in CSV mode and sets the field and record separators.
-    # In csv mode selecting with Rio#records will cause each line
-    # read to be parsed into a line with the CSV standard library.
-    # Specifying using Rio#lines to select will return unparsed strings
-    # as normal.
-    #
-    #  # copy a csv file, changing the field separator
-    #  rio('afile.csv').csv > rio('afile_semicolons.csv').csv(';')
-    #
-    # CSV mode also adds two methods Rio#columns and Rio#nocolumns which 
-    # allows selecting columns by column index using Fixnums or Ranges
-    # in a way similar to how lines are selected.
-    #
-    #  # iterate through every line but only get the first three columns
-    #  rio("afile.csv").csv.columns(0..2) { |array_of_fields| ... }
-    #
-    #  # iterate through every line but skip the columns 2 and 3 through 5
-    #  rio("afile.csv").csv.nocolumns(2,3..5) { |array_of_fields| ... }
-    #
-    #  # an array containg all but the first line returning columns 5,6 and 7
-    #  rio("afile.csv").csv.columns(5..7).skiplines[0]
-    #
-    # See RIO::Doc::INTRO for complete documentation on csv mode.
-    def csv(field_separator=',',record_separator=nil,&block) 
-      target.csv(field_separator,record_separator,&block); 
-      self 
+  module IF
+    module CSV
+      #def file() target.file end
+      #def dir() target.dir end
+      
+      # Puts a Rio in CSV mode and sets the field and record separators.
+      # In csv mode selecting with Rio#records will cause each line
+      # read to be parsed into a line with the CSV standard library.
+      # Specifying using Rio#lines to select will return unparsed strings
+      # as normal.
+      #
+      #  # copy a csv file, changing the field separator
+      #  rio('afile.csv').csv > rio('afile_semicolons.csv').csv(';')
+      #
+      # CSV mode also adds two methods #columns and #skipcolumns which 
+      # allows selecting columns by column index using Fixnums or Ranges
+      # in a way similar to how lines are selected.
+      #
+      #  # iterate through every line but only get the first three columns
+      #  rio("afile.csv").csv.columns(0..2) { |array_of_fields| ... }
+      #
+      #  # iterate through every line but skip the columns 2 and 3 through 5
+      #  rio("afile.csv").csv.skipcolumns(2,3..5) { |array_of_fields| ... }
+      #
+      #  # an array containg all but the first line returning columns 5,6 and 7
+      #  rio("afile.csv").csv.columns(5..7).skiplines[0]
+      #
+      # See RIO::Doc::INTRO for complete documentation on csv mode.
+      def csv(field_separator=',',record_separator=nil,&block) 
+        target.csv(field_separator,record_separator,&block); 
+        self 
+      end
+      # Select columns from a CSV file. See #csv and RIO::Doc::INTRO.
+      def columns(*ranges,&block) target.columns(*ranges,&block); self end
+      # Reject columns from a CSV file. See #csv and RIO::Doc::INTRO.
+      def skipcolumns(*ranges,&block) target.skipcolumns(*ranges,&block); self end
     end
-    # Select columns from a CSV file. See Rio#csv and RIO::Doc::INTRO.
-    def columns(*ranges,&block) target.columns(*ranges,&block); self end
-    # Reject columns from a CSV file. See Rio#csv and RIO::Doc::INTRO.
-    def nocolumns(*ranges,&block) target.nocolumns(*ranges,&block); self end
   end
 end
-

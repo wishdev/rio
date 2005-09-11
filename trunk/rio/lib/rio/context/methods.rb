@@ -44,6 +44,7 @@ require 'rio/context/skip'
 require 'rio/filter'   
 require 'rio/context/closeoneof'   
 require 'rio/context/gzip'   
+require 'rio/context/copying'   
 
 module RIO
   module Cx #:nodoc: all

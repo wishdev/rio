@@ -96,6 +96,7 @@ module RIO
                               :fileno,
                               :close_read,:close_write,
                               :fsync,:sync,:sync=,:fcntl,:ioctl)
+
       def method_missing(sym,*args,&block)
         #p callstr('method_missing',sym,*args)
         handle.__send__(sym,*args,&block)

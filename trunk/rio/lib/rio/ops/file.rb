@@ -36,6 +36,8 @@
 
 
 require 'rio/cp'
+require 'rio/ops/either'
+
 module RIO
   module Impl
     module U
@@ -58,7 +60,6 @@ module RIO
   module Ops
     module File
       module ExistOrNot
-        require 'rio/ops/either'
         include FileOrDir::ExistOrNot
        end
       module Existing

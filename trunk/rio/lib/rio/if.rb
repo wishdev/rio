@@ -37,6 +37,10 @@
 
 module RIO
   class Rio
+    require 'rio/if/csv'
+    include RIO::IF::CSV
+    require 'rio/if/yaml'
+    include RIO::IF::YAML
   end
 end
 
@@ -53,5 +57,4 @@ require 'rio/if/file'
 require 'rio/if/dir'
 require 'rio/if/stream'
 require 'rio/if/temp'
-require 'rio/if/csv'
 require 'rio/if/string'

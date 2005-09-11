@@ -36,17 +36,22 @@
 
 
 require 'rio/ext/csv'
+require 'rio/ext/yaml'
 module RIO
   module Ext #:nodoc: all
-    OUTPUT_SYMS = CSV::Output.instance_methods.build_hash { |sym| [sym.to_s,1] }
+    OUTPUT_SYMS = (CSV::Output.instance_methods + YAML::Output.instance_methods).build_hash { |sym| [sym.to_s,1] }
+
     module Cx
       include CSV::Cx
+      include YAML::Cx
     end
   end
   module Ext
     module Input
       def add_extensions(obj)
+        #p "add_extensions(#{obj.inspect})"
         obj.extend(CSV::Input) if obj.csv?
+        obj.extend(YAML::Input) if obj.yaml?
         obj
       end
       module_function :add_extensions
@@ -54,6 +59,7 @@ module RIO
     module Output
       def add_extensions(obj)
         obj.extend(CSV::Output) if obj.csv?
+        obj.extend(YAML::Output) if obj.yaml?
         obj
       end
       module_function :add_extensions

@@ -37,6 +37,8 @@
 
 module RIO
   class Rio
+#  module IF
+#  module Grande
     # Returns the contents of the rio as an array.
     # Rio#to_a is implemented in terms of Rio#each so the the following are roughly equivelent
     #
@@ -536,6 +538,24 @@ module RIO
     def copy_from(source) target.copy_from(source); self end
 
 
+    # Temporarily set the Rio to read records, and call #get
+    #
+    # See also Rio#records, Rio#lines, Rio#each, Rio#[]
+    #
+    def getrec() target.getrec() end
+
+    # Temporarily set the Rio to read rows, and call #get
+    #
+    # See also Rio#rows, Rio#lines, Rio#each, Rio#[]
+    #
+    def getrow() target.getrow() end
+
+    # Temporarily set the Rio to read lines, and call #get
+    #
+    # See also Rio#records, Rio#lines, Rio#each, Rio#[]
+    #
+    def getline() target.getline() end
+
     # Reads and returns the next record from a Rio, honoring the grande selection methods. 
     #
     # Returns nil on end of file.
@@ -543,11 +563,15 @@ module RIO
     # See also Rio#records, Rio#lines, Rio#each, Rio#[]
     #
     #  ario = rio('afile').lines(10..12)
-    #  line10 = ario.getrec 
-    #  line11 = ario.getrec 
-    #  line12 = ario.getrec 
-    #  a_nil  = ario.getrec 
-    def getrec() target.getrec() end
+    #  line10 = ario.get 
+    #  line11 = ario.get 
+    #  line12 = ario.get 
+    #  a_nil  = ario.get 
+    def get() target.get() end
+
+    # Writes a single record to a Rio
+    def putrec(el) target.putrec(el) end
+
 
     # Grande Exclude method
     # 

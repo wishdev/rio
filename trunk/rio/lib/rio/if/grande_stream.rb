@@ -99,8 +99,9 @@ module RIO
     # 
     # Returns the Rio
     #
-    # If no args are provided, all records are selected. What constitutes a record is affected by Rio#lines,Rio#bytes,
-    # and extensions such as Rio#csv.
+    # If no args are provided, all records are selected. 
+    # What constitutes a record is affected by Rio#lines,Rio#bytes,
+    # and extensions such as Rio#csv and Rio#yaml.
     #
     # If args are provided they may be one or more of the following:
     # Regexp::  any matching record will be iterated over by Rio#each or returned by Rio#getrec
@@ -109,6 +110,13 @@ module RIO
     # Proc::    a proc which will be called for each record, records are included unless nil or false is returned
     # Symbol::  a symbol which will _sent_ to each record, records are included unless nil or false is returned
     # Array::   an array of any of above. All must match for a line to be included
+    #
+    # Any other argument type is compared with the record using its <tt>===</tt> method.
+    #
+    # If the argument is a ::Proc it may be called with one, two or three paramaters.
+    # 1. the record
+    # 2. the recno (optional)
+    # 3. the rio (optional)
     #
     # Note in the following examples that since +lines+ is the default <tt>ario.records(*args)</tt>
     # is effectively the same as <tt>ario.lines(*args)</tt>.
@@ -136,7 +144,7 @@ module RIO
     # See also Rio#records, Rio#skiplines, Rio#lines
     #
     # If no args are provided, no records are rejected. What constitutes a record is affected by Rio#lines,Rio#bytes,
-    # and extensions such as Rio#csv.
+    # and extensions such as Rio#csv and Rio#yaml.
     #
     # If args are provided they may be one or more of the following:
     # Regexp::  any matching record will not be processed

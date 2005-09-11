@@ -55,11 +55,16 @@ module RIO
         end
         protected :csv_
         def columns(*ranges,&block)
-          @cnames = nil
-          cx['col_args'] = ranges.flatten
-          cxx('columns',true,&block)
+          if skipping?
+            cx['skipping'] = false
+            skipcolumns(*args,&block)
+          else
+            @cnames = nil
+            cx['col_args'] = ranges.flatten
+            cxx('columns',true,&block)
+          end
         end
-        def nocolumns(*ranges,&block)
+        def skipcolumns(*ranges,&block)
           @cnames = nil
           cx['nocol_args'] = ranges.flatten
           cxx('columns',true,&block)
@@ -99,8 +104,10 @@ module RIO
           #p "#{callstr('to_rec_',raw_rec,@recno)} ; itertype=#{cx['stream_itertype']}"
           case cx['stream_itertype']
           when 'lines' 
-            raw_rec.extend(RIO::Ext::CSV::Str)
-            raw_rec.csv_s_to_rec = _s_to_rec_proc(cx['csv_fs'],cx['csv_rs'])
+            unless copying_from?
+              raw_rec.extend(RIO::Ext::CSV::Str)
+              raw_rec.csv_s_to_rec = _s_to_rec_proc(cx['csv_fs'],cx['csv_rs'])
+            end
             raw_rec
           when 'records'
             _l2record(raw_rec,cx['csv_fs'],cx['csv_rs'])
@@ -153,8 +160,10 @@ module RIO
         def _l2record(line,fs,rs)
           #p callstr('_l2record',line,fs,rs,cols)
           fields = trim(::CSV.parse_line(line,fs,rs))
-          fields.extend(RIO::Ext::CSV::Ary)
-          fields.csv_rec_to_s = _rec_to_s_proc(fs,rs)
+          unless copying_from?
+            fields.extend(RIO::Ext::CSV::Ary)
+            fields.csv_rec_to_s = _rec_to_s_proc(fs,rs)
+          end
           fields
         end
         def cnames(num)

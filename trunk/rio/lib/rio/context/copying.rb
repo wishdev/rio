@@ -35,67 +35,22 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-require 'rio/cp'
-
+require 'rio/context/cxx.rb'
 module RIO
-  module Impl
-    module U
-      def self.copy_stream(s,d)
-        require 'fileutils'
-        ::FileUtils::copy_stream(s,d)
-      end
+  module Cx
+    module Methods
+      def copying_to() cx['copying_to'] = true; self end
+      def copying_to?() cx['copying_to'] end
+      def copying_to_done() cx.delete('copying_to'); self end
+
+      def copying_from() cx['copying_from'] = true; self end
+      def copying_from?() cx['copying_from'] end
+      def copying_from_done() cx.delete('copying_from'); self end
+
+      def copying(dest) dest.copying_to; copying_from end
+      def copying?() copying_to? or copying_from? end
+      def copying_done(dest) dest.copying_to_done; copying_from_done end
     end
   end
 end
-module RIO
-  module Ops
-    module Stream
-      module Output
-        include Status
-        require 'rio/ops/stream/write'
-        include Ops::Stream::Write
-        include Cp::Stream::Output
-        def putrec(rec,*args)
-          self.put_(rec,*args)
-          self
-        end
-
-        def putrec!(rec,*args)
-          rtn_close { self.put_(rec,*args) }
-        end
-
-        def close_write(&block)
-          self.ioh.close_write
-          each(&block) if block_given?
-          self
-        end
-
-        def wclose
-          self.close.softreset
-        end
-
-        def then_close(*args,&block) 
-          rtn = yield(*args)
-          wclose
-          rtn
-        end
-
-        def rtn_close(*args,&block) 
-          yield(*args)
-          wclose
-        end
-
-        def copyclose()
-          #p "#{callstr('copyclose')} closeoncopy=#{cx['closeoncopy']} ioh=#{ioh}"
-          #raise RuntimeError,"copclose"
-          if cx['closeoncopy']
-            wclose
-          else
-            self
-          end
-        end
-
-      end
-    end
-  end
-end
+      

@@ -28,9 +28,9 @@ class TC_csv_columns < Test::RIO::TestCase
     r = @records[0]
     assert_equal([[r[1],r[2],r[5]]],rio('src1.csv').csv.columns(1,2,5).to_a)
     assert_equal([r[3...6]],rio('src1.csv').csv.columns(3...6).to_a)
-    assert_equal([[r[3],r[5]]],rio('src1.csv').csv.columns(3...6).nocolumns(4).to_a)
-    assert_equal([[r[0],r[7]]],rio('src1.csv').csv.nocolumns(1..6).to_a)
-    assert_equal([[]],rio('src1.csv').csv.nocolumns.to_a)
+    assert_equal([[r[3],r[5]]],rio('src1.csv').csv.columns(3...6).skipcolumns(4).to_a)
+    assert_equal([[r[0],r[7]]],rio('src1.csv').csv.skipcolumns(1..6).to_a)
+    assert_equal([[]],rio('src1.csv').csv.skipcolumns.to_a)
     assert_equal([r],rio('src1.csv').csv.to_a)
     
   end

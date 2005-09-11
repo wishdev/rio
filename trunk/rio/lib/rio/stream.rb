@@ -43,6 +43,7 @@ require 'rio/ops/stream/output'
 require 'rio/ext'
 
 require 'rio/filter/gzip'
+#require 'rio/filter/yaml'
 #require 'rio/filter/chomp'
 #require 'rio/filter/strip'
 require 'rio/filter/closeoneof'
@@ -116,10 +117,12 @@ module RIO
       end
 
       def add_extensions()
+        #p callstr('add_extensions')
         Ext::Input.add_extensions(self)
       end
       def add_filters
         add_filter(Filter::GZipRead) if gzip?
+        #add_filter(Filter::YAML) if yaml?
         add_line_filters()
         if closeoneof?
           add_filter(Filter::CloseOnEOF)
@@ -143,6 +146,7 @@ module RIO
       end
       def add_filters
         add_filter(Filter::GZipWrite) if gzip?
+        #add_filter(Filter::YAML) if yaml?
         self
       end
 

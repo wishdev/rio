@@ -39,10 +39,16 @@ require 'zlib'
 
 module RIO
   module Filter
+    module GZipMissing
+      def binmode()
+        self
+      end
+    end
     module GZipRead
       def self.extend_object(ioh_stream)
         super
         gz = Zlib::GzipReader.new(ioh_stream.ios)
+        gz.extend Filter::GZipMissing
         ioh_stream.iostack.push(gz)
       end
     end
@@ -50,6 +56,7 @@ module RIO
       def self.extend_object(ioh_stream)
         super
         gz = Zlib::GzipWriter.new(ioh_stream.ios)
+        gz.extend Filter::GZipMissing
         ioh_stream.iostack.push(gz)
       end
     end
