@@ -128,35 +128,53 @@ module RIO
       def yaml?() target.yaml? end
 
 
-      # Select objects from a YAML file. Calls #records. See #yaml and RIO::Doc::INTRO
+      # Select objects from a YAML file. See #yaml and RIO::Doc::INTRO
       def objects(*selectors,&block) target.objects(*selectors,&block); self end
 
 
-      # Reject objects from a YAML file. Calls #skiprecords. See #yaml and RIO::Doc::INTRO
+      # Reject objects from a YAML file. See #yaml and RIO::Doc::INTRO
       def skipobjects(*selectors,&block) target.skipobjects(*selectors,&block); self end
 
 
-      # Select documents from a YAML file. Calls #rows. See #yaml and RIO::Doc::INTRO
+      # Select documents from a YAML file. See #yaml and RIO::Doc::INTRO
       def documents(*selectors,&block) target.documents(*selectors,&block); self end
 
 
       # Reject documents from a YAML file. Calls #skiprows. See #yaml and RIO::Doc::INTRO
       def skipdocuments(*selectors,&block) target.skipdocuments(*selectors,&block); self end
 
-      # Alias for #getrec
+      # Calls YAML.load.
+      #
+      # Loads a single YAML object from the stream referenced by the Rio
+      #
+      #   rio('database.yml').yaml.getobj
+      #
+      # See #yaml and RIO::Doc::INTRO
+      #
       def getobj() target.getobj() end
 
+      # Alias for #getobj
+      def load() target.load() end
 
       # Alias for #getrec
-      def getdoc() target.getdoc() end
+      #def getdoc() target.getdoc() end
 
 
-      # Alias for #putrec
+      # Calls YAML.dump, leaving the Rio open.
       def putobj(obj) target.putobj(obj); self end
 
-      # Alias for #putrec!
+      # Dumps an object to a Rio as with Rio#putobj, and closes the Rio.
+      #
+      #  rio('afile.yaml').yaml.putobj!(anobject)
+      #
+      # is identical to 
+      #
+      #  rio('afile.yaml').yaml.putobj(anobject).close
+      #
       def putobj!(obj) target.putobj!(obj); self end
 
+      # Alias for Rio#putobj!
+      def dump(obj) target.dump(obj); self end
 
     end
   end

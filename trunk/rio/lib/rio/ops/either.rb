@@ -115,7 +115,7 @@ module RIO
           end
         end
 
-        require 'Pathname'
+        require 'pathname'
         def realpath
           new_rio(Impl::U.realpath(fspath))
         end

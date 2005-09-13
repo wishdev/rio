@@ -116,9 +116,7 @@ module RIO
         def getobj()
           getrec()
         end
-        def getdoc()
-          getrow()
-        end
+
         def add_filters
           cx['yaml_close_eof'],cx['closeoneof'] = cx['closeoneof'],false
           super
@@ -169,13 +167,13 @@ module RIO
         public
 
         def dump(obj)
-          putrec(obj)
+          putrec!(obj)
         end
         def putobj(obj)
           putrec(obj)
         end
-        def putdoc(obj)
-          putrec(obj)
+        def putobj!(obj)
+          putrec!(obj)
         end
       end
     end

@@ -55,7 +55,7 @@ module RIO
     # * and some basic error handling stubs
     class Base
       KIOSYMS = [:gets,:open,:readline,:readlines,:chop,:to_a,:putc,:puts,:print,:printf,:split,
-                 :=~,:===,:==,:eql?,:sub,:sub!,:gsub,:gsub!]
+                 :=~,:===,:==,:eql?,:sub,:sub!,:gsub,:gsub!,:load]
       @@kernel_cleaned ||= KIOSYMS.each { |sym| undef_method(sym) } 
     end 
     

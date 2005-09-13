@@ -951,6 +951,41 @@ returns lines as Strings as normal when +lines+ is used.
 as <tt>(skip)objects</tt> and <tt>(skip)rows</tt> can be called as
 <tt>(skip)documents</tt>
 
+To read a single YAML document, Rio provides #getobj and #load
+For example, consider the following partial 'database.yml' from
+the rails distribution:
+
+ development:
+   adapter: mysql
+   database: rails_development
+
+ test:
+   adapter: mysql
+   database: rails_test
+
+
+To get the object represented in the yaml file:
+
+ rio('database.yml').yaml.load
+    ==>{"development"=>{"adapter"=>"mysql", "database"=>"rails_development"}, 
+        "test"=>{"adapter"=>"mysql", "database"=>"rails_test"}}
+
+Or one could read parts of the file like so:
+
+ rio('database.yml').yaml.getobj['development']['database']
+    ==>"rails_development"
+
+Single objects can be written using #putobj and #putobj!
+which is aliased to #dump
+
+ anobject = {
+   'production' => {
+     'adapter' => 'mysql',
+     'database' => 'rails_production',
+   }
+ }
+ rio('afile.yaml').yaml.dump(anobject)
+
 The YAML extension changes the way the grande copy operators
 interpret their argument. Rio#< (copy-from) and Rio#<< (append-from)
 treat an array as an array of objects which are converted using their 
@@ -999,8 +1034,6 @@ Iterate over only YAML documents that are a kind_of ::Hash use:
 
 This takes advantage of the fact that the default for matching records is <tt>===</tt>
 
- 
-
 Selecting records using a Proc can be used as normal:
 
  anarray = rio('afile.yaml').yaml(proc{|anobject| ...}).to_a
@@ -1008,7 +1041,7 @@ Selecting records using a Proc can be used as normal:
 One could even use the copy operator to convert a CSV file to a YAML representation of
 the same data:
 
- rio('afile.yaml').yaml < rio('afile.csv').csv # cool!
+ rio('afile.yaml').yaml < rio('afile.csv').csv 
 
 
 ---
