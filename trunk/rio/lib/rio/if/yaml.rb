@@ -42,25 +42,61 @@ module RIO
       #def dir() target.dir end
       
       # Puts a Rio in YAML mode.
-      # Rio uses the YAML class from the Ruby standard library to provide
-      # support for reading and writing YAML files. Normally
-      # using <tt>(skip)records</tt> is identical to <tt>(skip)lines</tt> because
-      # while +records+ only selects and does not specify the record-type,
-      # +lines+ is the default. 
-      #      
-      # The YAML extension distingishes between items selected using
-      # Rio#records, Rio#rows and Rio#lines. Rio returns objects
-      # loaded via YAML#load when +records+ is used; returns the YAML text
-      # as a String when +rows+ is used; and
-      # returns lines as Strings as normal when +lines+ is used.  
-      # +records+ is the default. In yaml-mode, <tt>(skip)records</tt> can be called
-      # as <tt>(skip)objects</tt> and <tt>(skip)rows</tt> can be called as
-      # <tt>(skip)documents</tt>
       #
-      # The YAML extension changes the way the grande copy operators
-      # interpret their argument. Rio#< (copy-from) and Rio#<< (append-from)
-      # treat an array as an array of objects which are converted using their 
-      # #to_yaml method before writing.
+      #
+      # Rio uses the YAML class from the Ruby standard library to provide
+      # support for reading and writing YAML files. Normally using
+      # <tt>(skip)records</tt> is identical to <tt>(skip)lines</tt> because
+      # while +records+ only selects and does not specify the record-type,
+      # +lines+ is the default.
+      #
+      # The YAML extension distingishes between items selected using
+      # Rio#records, Rio#rows and Rio#lines. Rio returns objects loaded via
+      # YAML#load when +records+ is used; returns the YAML text as a String
+      # when +rows+ is used; and returns lines as Strings as normal when
+      # +lines+ is used.  +records+ is the default. In yaml-mode,
+      # <tt>(skip)records</tt> can be called as <tt>(skip)objects</tt> and
+      # <tt>(skip)rows</tt> can be called as <tt>(skip)documents</tt>
+      #
+      # To read a single YAML document, Rio provides #getobj and #load For
+      # example, consider the following partial 'database.yml' from the rails
+      # distribution:
+      #
+      #  development:
+      #    adapter: mysql
+      #    database: rails_development
+      #
+      #  test:
+      #    adapter: mysql
+      #    database: rails_test
+      #
+      #
+      # To get the object represented in the yaml file:
+      #
+      #  rio('database.yml').yaml.load
+      #     ==>{"development"=>{"adapter"=>"mysql", "database"=>"rails_development"}, 
+      #         "test"=>{"adapter"=>"mysql", "database"=>"rails_test"}}
+      #
+      # Or one could read parts of the file like so:
+      #
+      #  rio('database.yml').yaml.getobj['development']['database']
+      #     ==>"rails_development"
+      #
+      # Single objects can be written using #putobj and #putobj!
+      # which is aliased to #dump
+      #
+      #  anobject = {
+      #    'production' => {
+      #      'adapter' => 'mysql',
+      #      'database' => 'rails_production',
+      #    }
+      #  }
+      #  rio('afile.yaml').yaml.dump(anobject)
+      #
+      # The YAML extension changes the way the grande copy operators interpret
+      # their argument. Rio#< (copy-from) and Rio#<< (append-from) treat an
+      # array as an array of objects which are converted using their #to_yaml
+      # method before writing.
       #
       #  rio('afile.yaml').yaml < [obj1, obj2, obj3]
       #
@@ -68,32 +104,36 @@ module RIO
       #
       #  rio('afile.yaml').yaml < [anarray]
       #
-      # If their argument is a Rio or ::IO it is iterate through as normal, 
+      # If their argument is a Rio or ::IO it is iterate through as normal,
       # with each record converted using its to_yaml method.
       #
-      # For all other objects, the result of their +to_yaml+ operator is simply written.
+      # For all other objects, the result of their +to_yaml+ operator is
+      # simply written.
       #
       #  rio('afile.yaml').yaml < anobject
       #
-      # Rio#> (copy-to) and Rio#>> (append-to) will fill an array with with all selected
-      # YAML documents in the Rio. For non-arrays, the yaml text is copied. (This may change
-      # if a useful reasonable alternative can be found)
+      # Rio#> (copy-to) and Rio#>> (append-to) will fill an array with with
+      # all selected YAML documents in the Rio. For non-arrays, the yaml text
+      # is copied. (This may change if a useful reasonable alternative can be
+      # found) rio('afile.yaml').yaml > anarray # load all YAML documents from
+      # 'afile.yaml'
       #
-      #  rio('afile.yaml').yaml > anarray # load all YAML documents from 'afile.yaml'
-      #
-      # Single objects can be written using Rio#putrec (aliased to Rio#putobj and Rio#dump)
+      # Single objects can be written using Rio#putrec (aliased to Rio#putobj
+      # and Rio#dump)
       #
       #  rio('afile.yaml').yaml.putobj(anobject)
       #
-      # Single objects can be loaded using Rio#getrec (aliase to Rio#getobj and Rio#load)
+      # Single objects can be loaded using Rio#getrec (aliase to Rio#getobj
+      # and Rio#load)
       #
       #  anobject = rio('afile.yaml').yaml.getobj
       #
-      # Note that other than this redefinition of what a record is and how the copy
-      # operators interpret their argument, a Rio in yaml-mode is just like any other
-      # Rio. And all the things you can do with any Rio come for free.
-      # They can be iterated over using #each and read into an array using #[]
-      # just like any other Rio. All the selection criteria are identical also.
+      # Note that other than this redefinition of what a record is and how the
+      # copy operators interpret their argument, a Rio in yaml-mode is just
+      # like any other Rio. And all the things you can do with any Rio come
+      # for free.  They can be iterated over using #each and read into an
+      # array using #[] just like any other Rio. All the selection criteria
+      # are identical also.
       #
       # Get the first three objects into an array:
       #
@@ -103,21 +143,18 @@ module RIO
       #
       #  rio('afile.yaml').yaml(::Hash) {|ahash| ...} 
       #
-      # This takes advantage of the fact that the default for matching records is <tt>===</tt>
-      #
-      #
+      # This takes advantage of the fact that the default for matching records
+      # is <tt>===</tt>
       #
       # Selecting records using a Proc can be used as normal:
       #
       #  anarray = rio('afile.yaml').yaml(proc{|anobject| ...}).to_a
       #
-      # One could even use the copy operator to convert a CSV file to a YAML representation of
-      # the same data:
+      # One could even use the copy operator to convert a CSV file to a YAML
+      # representation of the same data:
       #
-      #  rio('afile.yaml').yaml < rio('afile.csv').csv # cool!
+      #  rio('afile.yaml').yaml < rio('afile.csv').csv 
       #
-      #
-      # See RIO::Doc::INTRO for complete documentation on yaml mode.
       def yaml(&block) 
         target.yaml(&block); 
         self 
