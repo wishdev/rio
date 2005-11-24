@@ -80,7 +80,7 @@ module RIO
     end
 
     def initialize_copy(*args)
-      #p callstr("initialize_copy",*args)
+      #p callstr("initialize_copy",args[0].inspect)
       super
       @state = Factory.instance.clone_state(@state)
     end
@@ -99,11 +99,25 @@ module RIO
       ario
     end
 
-    # returns the Rio#fspath, which is the path for the Rio on the underlying filesystem
+    # Returns the string representation of a Rio that is used by Ruby's libraries.
+    # For Rios that exist on the file system this is Rio#fspath.
+    # For FTP and HTTP Rios, this is the URL.
+    #
+    #  rio('/a/b/c').to_s                    ==> "/a/b/c"
+    #  rio('b/c').to_s                       ==> "b/c"
+    #  rio('C:/b/c').to_s                    ==> "C:/b/c"
+    #  rio('//ahost/a/b').to_s               ==> "//ahost/a/b"
+    #  rio('file://ahost/a/b').to_s          ==> "//ahost/a/b"
+    #  rio('file:///a/b').to_s               ==> "/a/b"
+    #  rio('file://localhost/a/b').to_s      ==> "/a/b"
+    #  rio('http://ahost/index.html').to_s   ==> "http://ahost/index.html"
+    #
     def to_s() target.to_s end
+
     alias :to_str :to_s
     def dup
-      self.class.new(self.to_s)
+      #p callstr('dup',self)
+      self.class.new(self.to_rl)
     end
 
   def method_missing(sym,*args,&block) #:nodoc:
@@ -130,9 +144,11 @@ module RIO
 
     protected
 
-    def target() @state.target end
+    def target()  #:nodoc:
+      @state.target 
+    end
 
-    def callstr(func,*args)
+    def callstr(func,*args) #:nodoc:
       self.class.to_s+'.'+func.to_s+'('+args.join(',')+')'
     end
 

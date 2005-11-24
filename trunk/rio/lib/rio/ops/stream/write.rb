@@ -39,16 +39,16 @@ module RIO
   module Ops
     module Stream
       module Write
-        def puts(*argv)    rtn_self { ioh.puts(*argv) } end
-        def puts!(*argv)   rtn_close { ioh.puts(*argv); } end
-        def putc(*argv)    rtn_self { ioh.putc(*argv) } end
-        def putc!(*argv)   rtn_close { ioh.putc(*argv) } end
-        def printf(*argv)  rtn_self { ioh.printf(*argv) } end
-        def printf!(*argv) rtn_close { ioh.printf(*argv) } end
-        def print(*argv)   rtn_self { ioh.print(*argv) } end
-        def print!(*argv)  rtn_close { ioh.print(*argv) } end
-        def write(*argv)   ioh.write(*argv) end
-        def write!(*argv)  then_close { ioh.write(*argv) } end
+        def puts(*argv)    rtn_self { iow.puts(*argv) } end
+        def puts!(*argv)   rtn_close { iow.puts(*argv); } end
+        def putc(*argv)    rtn_self { iow.putc(*argv) } end
+        def putc!(*argv)   rtn_close { iow.putc(*argv) } end
+        def printf(*argv)  rtn_self { iow.printf(*argv) } end
+        def printf!(*argv) rtn_close { iow.printf(*argv) } end
+        def print(*argv)   rtn_self { iow.print(*argv) } end
+        def print!(*argv)  rtn_close { iow.print(*argv) } end
+        def write(*argv)   iow.write(*argv) end
+        def write!(*argv)  then_close { iow.write(*argv) } end
         def _!(*argv) self.close.softreset end
         #       extend Forwardable
         #       def_instance_de

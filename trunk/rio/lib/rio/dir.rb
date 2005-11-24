@@ -53,7 +53,7 @@ module RIO
       include Ops::Dir::NonExisting
       def check?() not self.exist?  end
       def when_missing(sym,*args)  gofigure(sym,*args) end
-    end # class EDir
+    end 
 
     class Existing < Base
       include Ops::Dir::Existing
@@ -64,7 +64,7 @@ module RIO
         self.rl = RIO::Dir::RL.new(self.to_uri)
         become 'Dir::Open'
       end
-    end # class EDir
+    end 
     class Open < Base
       def check?() true  end
       def open(m=nil,*args)

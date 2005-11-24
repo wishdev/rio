@@ -40,6 +40,7 @@ require 'rio/stream/base'
 require 'rio/ops/stream'
 require 'rio/ops/path'
 require 'rio/cp'
+require 'rio/piper/cp'
 
 module RIO
   module Stream
@@ -50,6 +51,7 @@ module RIO
       #include Ops::Path::Query
       include Cp::Open::Output
       include Cp::Open::Input
+      include Piper::Cp::Input
 
       def check?() true end
 
@@ -73,6 +75,7 @@ module RIO
       end
 
       protected :open_
+
     end
   end
 end
@@ -189,10 +192,13 @@ module RIO
         cx['retrystate'] = nil
         self
       end
-      def getrec()
+      def get()
         self.close_.softreset
         nil
       end
+      alias :getline :get
+      alias :getrow :get
+      alias :getrec :get
 
       def check?() true end
       def base_state() 'Stream::Reset'  end

@@ -20,6 +20,7 @@ class TC_riorl < Test::RIO::TestCase
     super
     self.class.once unless @@once
     @tmpdir = "#{::Dir::tmpdir}"
+    #p @tmpdir
     @tmppath = "#{@tmpdir}/rio"
   end
 
@@ -29,7 +30,7 @@ class TC_riorl < Test::RIO::TestCase
       begin
         h[sym] = ario.__send__(sym)
       rescue
-        h[sym] = 'error'
+       h[sym] = 'error'
       end
     end
     h
@@ -38,21 +39,40 @@ class TC_riorl < Test::RIO::TestCase
     printf(fmt, pi[:scheme].inspect,pi[:opaque].inspect,pi[:path].inspect,
            pi[:fspath].inspect,pi[:to_s].inspect,pi[:to_url].inspect)
   end
-  def mkrios1()
+  def mkrioinfo(astring)
+    rinfo = mksyminfo(astring)
+    rinfo[?-] = rinfo[:stdio]
+    rinfo[?=] = rinfo[:stderr]
+    rinfo[??] = rinfo[:temp]
+    rinfo[?"] = rinfo[:strio]
+    rinfo[?_] = rinfo[:sysio]
+    rinfo[?`] = rinfo[:cmdio]
+    rinfo[?#] = rinfo[:fd]
+    rinfo
+  end
+
+  def mksyminfo(astring)
     rinfo = {
-      ?- => ['stdio',"",nil,nil,"stdio:","stdio:"],
-      ?= => ['stderr',"",nil,nil,"stderr:","stderr:"],
-      ?" => ['strio',"",nil,nil,"strio:","strio:"],
-      ?? => ['temp',@tmppath,nil,nil,"temp:#{@tmppath}","temp:#{@tmppath}"],
+      :stdio  => ['stdio',"",nil,nil,"stdio:","stdio:"],
+      :stderr => ['stderr',"",nil,nil,"stderr:","stderr:"],
+      :temp => ['temp',@tmppath,nil,nil,"temp:#{@tmppath}","temp:#{@tmppath}"],
     }
+    strpq = sprintf("0x%08x",astring.object_id)
+    rinfo[:strio] = ['strio',strpq,nil,nil,"strio:#{strpq}","strio:#{strpq}"]
+
     siopq = sprintf("0x%08x",$stdout.object_id)
-    rinfo[?_] = ['sysio',siopq,nil,nil,"sysio:#{siopq}","sysio:#{siopq}"]
-    rinfo[?`] = ['cmdio','echo%20x',nil,nil,'echo x','cmdio:echo%20x']
-    rinfo[?#] = ['fd','1',nil,nil,'fd:1','fd:1']
+    rinfo[:sysio] = ['sysio',siopq,nil,nil,"sysio:#{siopq}","sysio:#{siopq}"]
+    rinfo[:cmdio] = ['cmdio','echo%20x',nil,nil,'echo x','cmdio:echo%20x']
+    rinfo[:fd] = ['fd','1',nil,nil,'fd:1','fd:1']
+    rinfo
+  end
+
+  def mkrios1()
+    rinfo = mkrioinfo(astring="")
     rios = {
       ?- => rio(?-),
       ?= => rio(?=),
-      ?" => rio(?"),
+      ?" => rio(?",astring),
       ?? => rio(??),
       ?_ => rio($stdout),
       ?` => rio(?`,'echo x'),
@@ -60,32 +80,83 @@ class TC_riorl < Test::RIO::TestCase
     }
     [rios,rinfo]
   end
+
   def mkrios_sym
-    rinfo = {
-      :stdio  => ['stdio',"",nil,nil,"stdio:","stdio:"],
-      :stderr => ['stderr',"",nil,nil,"stderr:","stderr:"],
-      :strio => ['strio',"",nil,nil,"strio:","strio:"],
-      :temp => ['temp',@tmppath,nil,nil,"temp:#{@tmppath}","temp:#{@tmppath}"],
-    }
-    siopq = sprintf("0x%08x",$stdout.object_id)
-    rinfo[:sysio] = ['sysio',siopq,nil,nil,"sysio:#{siopq}","sysio:#{siopq}"]
-    rinfo[:cmdio] = ['cmdio','echo%20x',nil,nil,'echo x','cmdio:echo%20x']
-    rinfo[:fd] = ['fd','1',nil,nil,'fd:1','fd:1']
+    rinfo = mksyminfo(astring="")
+
     rios = {
       :stdio => rio(:stdio),
       :stderr => rio(:stderr),
-      :strio => rio(:strio),
+      :strio => rio(:strio,astring),
       :temp => rio(:temp),
-      :sysio => rio($stdout),
-      :cmdio => rio(?`,'echo x'),
-      :fd => rio(?#,1),
+      :sysio => rio(:sysio,$stdout),
+      :cmdio => rio(:cmdio,'echo x'),
+      :fd => rio(:fd,1),
+    }
+
+    [rios,rinfo]
+  end
+  def mkrios_modfunc
+    rinfo = mksyminfo(astring="")
+    rios = {
+      :stdio => RIO.stdio,
+      :stderr => RIO.stderr,
+      :strio => RIO.strio(astring),
+      :temp => RIO.temp,
+      :sysio => RIO.sysio($stdout),
+      :cmdio => RIO.cmdio('echo x'),
+      :fd => RIO.fd(1),
     }
     [rios,rinfo]
   end
-  def mkrios2()
+  def mkrios_classmeth
+    rinfo = mksyminfo(astring="")
+    rios = {
+      :stdio => RIO::Rio.stdio,
+      :stderr => RIO::Rio.stderr,
+      :strio => RIO::Rio.strio(astring),
+      :temp => RIO::Rio.temp,
+      :sysio => RIO::Rio.sysio($stdout),
+      :cmdio => RIO::Rio.cmdio('echo x'),
+      :fd => RIO::Rio.fd(1),
+    }
+    [rios,rinfo]
+  end
+  def check_rios(rios,rinfo,fmt="%-12s %-12s %-8s %-8s %-20s %-20s\n")
+    #printf(fmt,'scheme','opaque','path','fspath','to_s','url')
+    rios.each do |k,r|
+      #pinfo(fmt,pathinfo(r))
+      assert_equal(rinfo[k][0],r.scheme)
+      assert_equal(rinfo[k][1],r.opaque)
+      assert_equal(rinfo[k][2],r.path)
+      assert_equal(rinfo[k][3],r.fspath)
+      assert_equal(rinfo[k][4],r.to_s)
+      assert_equal(rinfo[k][5],r.to_url)
+    end
+  end
+  def test_specialpaths
+    rios,rinfo = mkrios1()
+    check_rios(rios,rinfo)
+  end
+
+  def test_specialpaths_sym
+    rios,rinfo = mkrios_sym()
+    check_rios(rios,rinfo)
+  end
+  def test_specialpaths_modfunc
+    rios,rinfo = mkrios_modfunc()
+    check_rios(rios,rinfo)
+  end
+  def test_specialpaths_classmeth
+    rios,rinfo = mkrios_classmeth()
+    check_rios(rios,rinfo)
+  end
+
+  def mkrios_open()
     rinfo = {
       ?- => ['stdout',/^$/,nil,nil,/^stdout:$/,/^stdout:$/],
-      ?? => ['file',%r|//#{@tmppath}\d+\.\d+|,%r|#{@tmppath}\d+\.\d+|,%r|#{@tmppath}\d+\.\d+|,/#{@tmppath}\d+\.\d+/,/#{@tmppath}\d+\.\d+/],
+      ?? => ['file',%r|//#{@tmppath}\d+\.\d+|,%r|#{@tmppath}\d+\.\d+|,%r|#{@tmppath}\d+\.\d+|,
+             /#{@tmppath}\d+\.\d+/,/#{@tmppath}\d+\.\d+/],
     }
     siopq = sprintf("0x%08x",$stdout.object_id)
     rios = {
@@ -94,39 +165,10 @@ class TC_riorl < Test::RIO::TestCase
     }
     [rios,rinfo]
   end
-  def test_specialpaths
+  def test_specialpaths_open
     fmt = "%-12s %-12s %-8s %-8s %-20s %-20s\n"
     #printf(fmt,'scheme','opaque','path','fspath','to_s','url')
-    rios,rinfo = mkrios1()
-    rios.each do |k,r|
-      #pinfo(fmt,pathinfo(r))
-      assert_equal(r.scheme,rinfo[k][0])
-      assert_equal(r.opaque,rinfo[k][1])
-      assert_equal(r.path,rinfo[k][2])
-      assert_equal(r.fspath,rinfo[k][3])
-      assert_equal(r.to_s,rinfo[k][4])
-      assert_equal(r.to_url,rinfo[k][5])
-    end
-  end
-  def test_specialpaths_sym
-    fmt = "%-12s %-12s %-8s %-8s %-20s %-20s\n"
-    #printf(fmt,'scheme','opaque','path','fspath','to_s','url')
-    rios,rinfo = mkrios_sym()
-    rios.each do |k,r|
-      #pinfo(fmt,pathinfo(r))
-      assert_equal(r.scheme,rinfo[k][0])
-      assert_equal(r.opaque,rinfo[k][1])
-      assert_equal(r.path,rinfo[k][2])
-      assert_equal(r.fspath,rinfo[k][3])
-      assert_equal(r.to_s,rinfo[k][4])
-      assert_equal(r.to_url,rinfo[k][5])
-    end
-  end
-
-  def test_specialpaths_op
-    fmt = "%-12s %-12s %-8s %-8s %-20s %-20s\n"
-    #printf(fmt,'scheme','opaque','path','fspath','to_s','url')
-    rios,rinfo = mkrios2()
+    rios,rinfo = mkrios_open()
     rios.each do |k,r|
       #pinfo(fmt,pathinfo(r))
       assert_equal(rinfo[k][0],r.scheme)

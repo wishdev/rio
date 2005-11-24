@@ -1,7 +1,13 @@
 require 'test/unit'
 require 'tc/testcase'
 
-require 'tc/yaml'
+#require 'tc/yaml'
+require 'tc/dir_iter'
+require 'tc/piper'
+require 'tc/cmdpipe'
+require 'tc/base'
+require 'tc/split'
+require 'tc/route'
 require 'tc/skip'
 require 'tc/skiplines'
 require 'tc/selnosel'
@@ -34,6 +40,7 @@ require 'tc/eq'
 require 'tc/expand_path'
 require 'tc/ext'
 require 'tc/getrec'
+require 'tc/get'
 require 'tc/lines'
 require 'tc/methods'
 require 'tc/misc'
@@ -46,8 +53,8 @@ require 'tc/qae'
 require 'tc/qae_riovar'
 require 'tc/records'
 require 'tc/rename'
-require 'tc/symlink'
-require 'tc/symlink0'
-require 'tc/symlink1'
+require 'tc/symlink' unless $mswin32
+require 'tc/symlink0' unless $mswin32
+require 'tc/symlink1' unless $mswin32
 
 

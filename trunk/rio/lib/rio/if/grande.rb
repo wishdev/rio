@@ -406,6 +406,51 @@ module RIO
     # Alias for Rio#> (copy-to grande operator)
     def copy_to(destination) target.copy_to(destination); self end
 
+
+    # Grande Pipe Operator
+    # 
+    # The Rio pipe operator is actually an alternative syntax for calling the copy-to operator, designed to 
+    # allow several copy operation to be performed in one line of code, with behaviour that mimics
+    # the pipe operator commonly available in shells.
+    #
+    # If +destination+ is a +cmdio+, a <tt>cmdpipe</tt> Rio is returned, and none of the commands are run.
+    #
+    # Otherwise the +cmdpipe+ Rio is run with the output of the pipe being copied to the destination.
+    # In this case a Rio representing the +destination+ is returned.
+    # 
+    # If destination is not a Rio it is passed to the Rio constructor as is done with the copy-to operator
+    # except that if +destination+ is a String it is assumed to be a command instead of a path.
+    #
+    #  rio('afile') | rio(?-,'grep i') | rio(?-) # returns rio(?-)
+    #                                            # equivelent to rio(?-, 'grep i') < rio('afile') > rio(?-)
+    #
+    #  rio('infile') | rio(?-, 'acmd') | rio(?-, 'acmd2') | rio('outfile')
+    #  # same as
+    #  # acmd = rio(?-,'acmd')
+    #  # acmd2 = rio(?-,'acmd2')
+    #  # out = rio('outfile')
+    #  # acmd < rio('infile')
+    #  # acmd2 < acmd
+    #  # out < acmd2
+    # 
+    #  rio('afile') | 'acmd' | 'acmd2' | rio('outfile') # same thing
+    #
+    #  acmdpipe = rio(?-,'acmd') | 'acmd2'
+    #  rio('afile') | acmdpipe | rio('outfile') # same thing
+    #
+    #  acmdpipe1 = rio(?|,'acmd','acmd2')
+    #  rio('afile') | acmdpipe1 | rio('outfile') # same thing
+    #
+    #  acmdpipe2 = rio('afile') | 'acmd' | 'acmd2'
+    #  acmdpipe2 | rio('outfile') # same thing
+    #
+    # The grande pipe operator can not be used to create a +cmdpipe+ Rio that includes a destination.
+    # This must be done using a Rio constructor
+    #  cmd_with_output = rio(?|,'acmd',rio('outfile'))
+    #  rio('afile') | cmd_with_output # same as above
+    #
+    def |(destination) target | destination end
+
     # Grande Append-To Operator
     # 
     # The append-to grande-operator is the same as Rio#> (copy-to) except that it opens the destination
@@ -556,7 +601,8 @@ module RIO
     #
     def getline() target.getline() end
 
-    # Reads and returns the next record from a Rio, honoring the grande selection methods. 
+    # Reads and returns the next record or entry from a Rio, 
+    # honoring the grande selection methods. 
     #
     # Returns nil on end of file.
     #
@@ -567,6 +613,11 @@ module RIO
     #  line11 = ario.get 
     #  line12 = ario.get 
     #  a_nil  = ario.get 
+    # 
+    #  ario = rio('adir').entries('*.txt')
+    #  ent1 = ario.get
+    #  ent2 = ario.get
+    #
     def get() target.get() end
 
     # Writes a single record to a Rio

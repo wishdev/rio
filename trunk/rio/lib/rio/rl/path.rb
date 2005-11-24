@@ -36,77 +36,130 @@
 
 
 require 'rio/rl/uri'
+require 'rio/rl/pathmethods'
+
 module RIO
   module RL
     class PathBase < Base
       RESET_STATE = 'Path::Reset'
 
       RIOSCHEME = 'path'
+      HOST = URI::REGEXP::PATTERN::HOST
+      SCHEME = URI::REGEXP::PATTERN::SCHEME
 
       def initialize(pth,*args)
-        @host = nil
+
+        @host = nil  # host or nil
+        @fspath = nil
         case pth
+        when ::Hash
+          @host = pth[:host]
+          @fspath = RL.url2fs(pth[:path])
+          @base = pth[:base]
+        when RL::Base
+          @host = pth.host
+          @fspath = RL.url2fs(pth.path)
+          @base = pth.base
         when ::URI
-          @uri = pth.dup
-          @uri.path = '/' if pth.absolute? and pth.path == ''
-          @pth = @uri.path
-        when %r|^file://(localhost)?(/.*)?$|
-          @host = $1
-          @pth = $2 || '/'
+          u = pth.dup
+          u.path = '/' if pth.absolute? and pth.path == ''
+          @fspath = RL.url2fs(u.path)
+          @host = u.host
+        when %r|^file://(#{HOST})?(/.*)?$|
+          @host = $1 || ''
+          @fspath = $2 ? RL.url2fs($2) : '/'
         else
-          @pth = pth
-          @uri= nil
+          self.fspath = pth
         end
-        @pth.sub!(%r|/\.$|,'/')
-        @wd = nil
-        if !args.empty? and args[-1].kind_of?(::Hash) and (b = args.pop['base'])
-          @wd = case b
-                when %r%^file://(localhost)?(/.*)?$% then $2 || '/'
+        args = _get_base_from_args(args)
+        self.join(*args) unless args.empty?
+        unless self.absolute? or @base
+          @base = RL.fs2url(::Dir.getwd)+'/'
+        end
+        @fspath.sub!(%r|/\.$|,'/')
+      end
+      def pathroot()
+        return nil unless absolute?
+        rrl = self.clone
+        if self.urlpath =~ %r%^(/[a-zA-Z]):%
+          $1+':/'
+        else
+          '/'
+        end
+      end
+      include PathMethods
+
+      def _get_base_from_args(args)
+        @base = nil
+        if !args.empty? and args[-1].kind_of?(::Hash) and (b = args.pop[:base])
+          @base = case b
+                when %r%^file://(#{HOST})?(/.*)?$% then b
                 when %r%^/% then b
                 else RL.fs2url(::Dir.getwd)+'/'+b
                 end
-          @wd.squeeze('/')
+          @base.squeeze('/')
         end
-        self.join(*args) unless args.empty?
-        @wd = @pth if @pth[0] == ?/
-        @wd = RL.fs2url(::Dir.getwd)+'/' unless @wd
+        args
       end
-
-      def parse_url(str)
-        ::URI.parse(::URI.escape(str,ESCAPE))
-      end
-
-      def initialize_copy(*args)
-        super
-        @uri = nil
-      end
-
-      def init_paths()
-        @uri = nil
-      end
-      def path=(pt)
-        @uri = nil
-        @pth = pt
-      end
-      def join(*args)
-        return self if args.empty?
-        sa = args.map(&:to_s).map { |s| ::URI.escape(s,ESCAPE) }
-        sa.unshift(@pth) unless @pth.empty?
-        @uri = nil
-        @pth = sa.join('/').squeeze('/')
-      end
-      
-      def uri() 
-        @uri ||= (absolute? ? ::URI::FILE.new('file',nil,@host,nil,nil,@pth,nil,nil,nil) : ::URI.parse(@pth))
-      end
-      def url() 
-        if uri and uri.scheme
-          self.uri.to_s 
+      def base(arg=nil) 
+        self.base = arg unless arg.nil?
+        if absolute? 
+          #p self.dirname
+          urlpath 
         else
-          self.scheme+SUBSEPAR+self.opaque 
+          @base
         end
       end
-      def to_s() RL.url2fs(@pth) end
+      def base=(arg) @base = arg end
+
+#      def urlpath() @pth end
+#      def urlpath=(arg) @pth = arg end
+      def urlpath() RL.fs2url(@fspath) end
+      def urlpath=(arg) @fspath = RL.url2fs(arg) end
+
+      def path() self.fspath() end
+      def path=(arg) self.fspath = arg end
+      def path_no_slash() self.path.sub(/\/$/,'') end
+      def use_host?
+        !(@host.nil? || @host.empty? || @host == 'localhost')
+      end
+
+      def fspath() 
+        if use_host?
+          '//' + @host + @fspath
+        else 
+          @fspath
+        end
+      end
+      def fspath=(pt)
+        if pt =~ %r|^//(#{HOST})(/.*)?$|
+          @host = $1
+          @fspath = $2 || '/'
+        else
+          @fspath = pt
+        end
+      end
+
+      def opaque() (absolute? ? "//#{@host}#{self.urlpath}" : self.urlpath) end
+
+      def scheme() (absolute? ? 'file' : 'path') end
+      def host() @host end
+      def host=(arg) @host = arg end
+
+      def absolute?() 
+        (@fspath =~ %r%^([a-zA-Z]:)?/%  ? true : false)
+      end
+      alias abs? absolute?
+
+      def abs()
+        return self if absolute?
+        self.class.new(@base, @fspath) 
+      end
+    
+      def uri() 
+        (absolute? ? 
+         ::URI::FILE.new('file',nil,@host,nil,nil,RL.fs2url(@fspath),nil,nil,nil) : ::URI.parse(RL.fs2url(@fspath)))
+      end
 
       def self.splitrl(s)
         sch,opq,whole = split_riorl(s)
@@ -115,41 +168,11 @@ module RIO
         else [opq]
         end
       end
-      def scheme() (absolute? ? 'file' : 'path') end
-      def opaque() (absolute? ? "//#{@host}#{@pth}" : @pth) end
-      def fspath() RL.url2fs(@pth) end
-      def fs2url(pth) RL.fs2url(pth) end
-      def url2fs(pth) RL.url2fs(pth) end
-      def wd=(wd) @wd = wd end
-      def route_from(other)
-        rfrl = self.class.new(uri.route_from(other.uri))
-        rfrl.wd = other.path
-        rfrl
-      end
-      def route_to(other)
-        rtrl = self.class.new(uri.route_to(other.uri))
-        rtrl.wd = self.abs
-        rtrl
-      end
-      def merge(other)
-        self.class.new(uri.merge(other.uri))
-      end
-      def base(arg=nil) 
-        unless arg.nil?
-          self.wd = arg
-        end
-        (absolute? ? @pth : @wd) 
-      end
 
-      def abs()
-        return self if absolute?
-        self.class.new(@wd + @pth) 
+
+      def dirname()
+        Impl::U.dirname(self.path_no_slash)
       end
-      def path_no_slash() @pth.sub(/\/$/,'') end
-      def path() @pth end
-      def absolute?() @pth[0] == ?/ end
-      def host() @host ||= uri.host end
-      alias abs? absolute?
 
     end
   end

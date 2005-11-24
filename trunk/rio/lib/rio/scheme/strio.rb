@@ -50,6 +50,22 @@ module RIO
       def initialize(str="")
         @str = str
       end
+
+      def opaque() sprintf('0x%08x',@str.object_id) end
+
+      # must be able to process both
+      # parse('rio:strio',string)
+      # parse('rio:strio:0xHEXIOS')
+      SPLIT_RE = %r|0x([0-9a-fA-F]+)$|
+      def self.splitrl(s)
+        sub,opq,whole = split_riorl(s)
+        if bm = SPLIT_RE.match(opq)
+          oid = bm[1].hex
+          str = ObjectSpace._id2ref(oid)
+          [str]
+        end
+      end
+
       def open(m,*args)
         ::StringIO.new(@str,m.to_s,*args)
       end

@@ -50,6 +50,7 @@ module RIO
       '?'    => 'temp',
       '['    => 'aryio',
       '`'    => 'cmdio',
+      '|'    => 'cmdpipe',
       '#'    => 'fd',
 
       ?_    => 'sysio',
@@ -59,6 +60,7 @@ module RIO
       ??    => 'temp',
       ?[    => 'aryio',
       ?`    => 'cmdio',
+      ?|    => 'cmdpipe',
       ?#    => 'fd',
     }.freeze
   end
@@ -67,26 +69,38 @@ module RIO
   module RL #:nodoc: all
     PESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;?:@&=+$,]",false, 'N').freeze
     ESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;\/?:@&=+$,]",false, 'N').freeze
+    def escape(pth,esc=ESCAPE)
+      ::URI.escape(pth,esc)
+    end
+    def unescape(pth)
+      ::URI.unescape(pth)
+    end
     def fs2url(pth)
-#      Base.fs2url(pth)
-      pth.sub!(/^[a-zA-Z]:/,'')
+      #pth.sub!(/^[a-zA-Z]:/,'')
       pth = URI.escape(pth,ESCAPE)
-#      (Local::SEPARATOR == '/' ? pth : pth.gsub(Local::SEPARATOR,%r|/|))
+      pth = '/' + pth if pth =~ /^[a-zA-Z]:/
+      pth
+      #      (Local::SEPARATOR == '/' ? pth : pth.gsub(Local::SEPARATOR,%r|/|))
     end
 
     def url2fs(pth)
 #      pth = pth.chop if pth.length > 1 and pth[-1] == ?/      cwd = RIO::RL.fs2url(::Dir.getwd)
 
-      pth = pth.chop if pth != '/' and pth[-1] == ?/
+      #pth = pth.chop if pth != '/' and pth[-1] == ?/
       pth = ::URI.unescape(pth)
+      if pth =~ %r#^/[a-zA-Z]:#
+        pth = pth[1..-1] 
+      end
+      pth
 #      (Local::SEPARATOR == '/' ? pth : pth.gsub(%r|/|,Local::SEPARATOR))
     end
 
     def getwd()
-      ::URI::FILE.build({:path => fs2url(::Dir.getwd)+'/'})
+      #::URI::FILE.build({:path => fs2url(::Dir.getwd)+'/'})
+      ::URI::FILE.build({:path => fs2url(::Dir.getwd)})
     end
 
-    module_function :url2fs,:fs2url,:getwd
+    module_function :url2fs,:fs2url,:getwd,:escape,:unescape
   end
 end
 module RIO
@@ -98,14 +112,14 @@ module RIO
     SUBSEPAR = ':'
 
     class Base
-      def self.subscheme(s)
-#        sch,opq,whole = split_riorl(s)
-#        sch
-        /^rio:([^:]+):/.match(s)[1]
-#        s[4...s.index(SUBSEPAR,4)]
-#        e = s.index(SUBSEPAR,b)
-#        s.split(SUBSEPAR,3)[1]
+      def initialize(*args)
+        
       end
+
+      def self.subscheme(s)
+        /^rio:([^:]+):/.match(s)[1]
+      end
+
       def self.split_riorl(s)
         body = s[SCHC.length...s.length]
         m = SPLIT_RIORL_RE.match(body) 
@@ -122,27 +136,36 @@ module RIO
         new(*(parms+a))
       end
 
-      def rl()
-        SCHC+self.url
-      end
-      def riorl() SCHC+self.url end
+      def rl() SCHC+self.url end
+
+#      def riorl() SCHC+self.url end
 
       def to_s() self.fspath || '' end
       def ==(other) self.to_s == other.to_s end
       def ===(other) self == other end
       def =~(other) other =~ self.to_str end
       def length() self.to_s.length end
+
       def fspath() nil end
       def path() nil end
 
       def to_rl() self.rl end
 
       def url() self.scheme+SUBSEPAR+self.opaque end
+      def close() nil end
+
+      def fs2url(pth) RL.fs2url(pth) end
+      def url2fs(pth) RL.url2fs(pth) end
+      def escape(pth,esc=RL::ESCAPE)
+        RL.escape(pth,esc)
+      end
+      def unescape(pth)
+        RL.unescape(pth)
+      end
+
       def callstr(func,*args)
         self.class.to_s+'['+self.to_s+']'+'.'+func.to_s+'('+args.join(',')+')'
       end
-      def close() nil end
-
     end
   end
 end

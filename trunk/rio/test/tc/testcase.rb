@@ -20,6 +20,7 @@ module RIOSupport
 
 end
 $supports_symlink = RIOSupport.supports_symlink
+$mswin32 = (RUBY_PLATFORM =~ /mswin32/)
 module RIO_TestCase 
   module Util
     def make_lines_file(n_lines=8,*args)
@@ -102,7 +103,13 @@ module Test
         assert((!(a)),msg)
       end
       def assert_array_equal(a,b,msg="array same regardless of order")
-        assert_equal(smap(a).sort,smap(b).sort,msg)
+        if a.nil?
+          assert_nil(b)
+        elsif b.nil?
+          assert_nil(a)
+        else
+          assert_equal(smap(a).sort,smap(b).sort,msg)
+        end
       end
       def assert_dirs_equal(exp,d,msg="")
         exp.each do |ent|

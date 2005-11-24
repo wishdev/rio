@@ -38,16 +38,17 @@
 module RIO
   module Ops
     module Construct
-      def strio(*args) new_rio(:strio,*args) end
-      def stdio(*args) new_rio(:stdio,*args) end
-      def stderr(*args) new_rio(:stderr,*args) end
-      def temp(*args)  new_rio(:temp,*args)  end
-      def tempfile(*args)  new_rio(:tempfile,*args)  end
-      def tempdir(*args)  new_rio(:tempdir,*args)  end
-      def tcp(*args)  new_rio(:tcp,*args)  end
-      def cmdio(*args)  new_rio(:cmdio,*args)  end
-      def sysio(*args)  new_rio(:sysio,*args)  end
-      def fd(*args)  new_rio(:fd,*args)  end
+      def strio(*args,&block) Rio.rio(:strio,*args,&block) end
+      def stdio(*args,&block) Rio.rio(:stdio,*args,&block) end
+      def stderr(*args,&block) Rio.rio(:stderr,*args,&block) end
+      def temp(*args,&block)  Rio.rio(:temp,*args,&block)  end
+      def tempfile(*args,&block)  Rio.rio(:tempfile,*args,&block)  end
+      def tempdir(*args,&block)  Rio.rio(:tempdir,*args,&block)  end
+      def tcp(*args,&block)  Rio.rio(:tcp,*args,&block)  end
+      def cmdio(*args,&block)  Rio.rio(:cmdio,*args,&block)  end
+      def cmdpipe(*args,&block)  Rio.rio(:cmdpipe,*args,&block)  end
+      def sysio(*args,&block)  Rio.rio(:sysio,*args,&block)  end
+      def fd(*args,&block)  Rio.rio(:fd,*args,&block)  end
     end
   end
 end

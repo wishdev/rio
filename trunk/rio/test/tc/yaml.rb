@@ -29,6 +29,16 @@ class TC_yaml < Test::RIO::TestCase
     super
   end
 
+  def test_copyop
+    objs = rio(TRIO).yaml[]
+    assert_equal(TOBJS,objs)
+    out = rio('out.yaml').delete
+    yout = rio(out).yaml
+    yout < objs
+    p objs
+    rio(?",ostring = "").yaml < yout
+    p ostring
+  end
   def test_read
   end
   def test_get
@@ -48,7 +58,7 @@ class TC_yaml < Test::RIO::TestCase
 
     obj = rio(TRIO).yaml.rows.get
     assert_instance_of(::String,obj)
-    assert_equal(rio(TRIO).lines[0..3].to_s.chomp,obj)
+    assert_equal(rio(TRIO).lines[0..2].to_s,obj)
   end
   def test_getrec
     exp = TOBJS[0]

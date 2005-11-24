@@ -45,8 +45,6 @@ module RIO
       def opaque() '' end
       def self.splitrl(s) nil end
       #def path() self.class.const_get(:RIOPATH) end
-      def path() nil end
-      def fspath() nil end
       def to_s() url() end
     end
   end
@@ -57,6 +55,9 @@ module RIO
       protected(:ios=)
       def initialize(ios=nil)
         @ios = ios
+      end
+      def initialize_copy(*args)
+        @ios = @ios.clone unless @ios.nil?
       end
       def open(*args)
         @ios

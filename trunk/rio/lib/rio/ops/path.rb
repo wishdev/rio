@@ -81,7 +81,8 @@ module RIO
       module URI
         def abs(base=nil)
           if base.nil?
-            new_rio(rl.abs)
+            nrio = new_rio(rl.abs)
+            nrio
           else
             new_rio(rl,ensure_rio(base).abs.to_uri).abs
           end
@@ -93,8 +94,15 @@ module RIO
         def route_from(other)
           new_rio(rl.abs.route_from(ensure_rio(other).rl.abs))
         end
-        def rel(other)
-          route_from(other)
+        def rel(other=nil)
+          if other.nil?
+            base = self.abs.dirname
+          else
+            new_rio(self.rl.abs.route_from(ensure_rio(other).rl.abs))
+          end
+          base = other.nil? ? self.abs : ensure_rio(other).dup
+          base += '/' if base.directory? and base.to_s[-1] != '/'
+          route_from(base)
         end
 #        def rel(other=nil)
 #          if other.nil?
@@ -131,15 +139,9 @@ module RIO
         end
         def split()
           require 'rio/to_rio'
-          pth = rl.path_no_slash
-          parts = pth.split(RIO::Local::SEPARATOR)
-          if abs?
-            rooturi = rl.uri.clone
-            rooturi.path = '/'
-            parts[0] = rooturi
-          end
-          # give each rio the correct base
-          parts.inject([rio(parts.shift)]) { |ary,d| ary << rio(d,{ 'base' => ary[-1].abs.to_url+'/'} ) }.extend(ToRio::Array)
+          parts = self.rl.split
+          # map to rios and extend the array with to_array
+          parts.map { |arl| rio(arl) }.extend(ToRio::Array)
         end
         def basename(*args)
           unless args.empty?
@@ -148,22 +150,26 @@ module RIO
           end
           #p self.ext?.inspect
           fn = Impl::U.basename(rl.path_no_slash,self.ext?)
-          new_rio(fn,{'base' => _calc_base()})
+          new_rio(fn,{:base => _calc_base()})
         end
         def filename()
           fn = Impl::U.basename(rl.path_no_slash)
-          new_rio(fn,{'base' => _calc_base()})
+          new_rio(fn,{:base => _calc_base()})
         end
         def _calc_base()
           dn = Impl::U.dirname(rl.path_no_slash)
-          if dn[0] == ?/
-            dn 
-          else
-            self.base.to_url + dn + '/'
-          end
+          dn[0] == ?/ ? dn : self.base.to_url + dn + '/' #'
+#          if dn[0] == ?/
+#            dn 
+#          else
+#            self.base.to_url + dn + '/'
+#          end
         end
+        private :_calc_base
+
         def dirname(*args)
-          new_rio(Impl::U.dirname(rl.path_no_slash,*args))
+          #new_rio(Impl::U.dirname(rl.path_no_slash,*args))
+          new_rio(rl.dirname)
         end
 
         def sub(re,arg)

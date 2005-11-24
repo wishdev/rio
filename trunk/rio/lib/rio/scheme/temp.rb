@@ -54,9 +54,9 @@ module RIO
       #def path() nil end
       def scheme() self.class.const_get(:RIOSCHEME) end
       def opaque()
-        td = @tmpdir.to_s
+        td = self.escape(@tmpdir.to_s)
         td += '/' unless td.nil? or td.empty? or (td.ends_with?('/') and td != '/')
-        td+@prefix
+        td + self.escape(@prefix)
       end
       
       SPLIT_RE = %r|(?:(.*)/)?([^/]*)$|.freeze
@@ -134,15 +134,15 @@ module RIO
         @tempobj = nil
       end
       def check?() true end
-      def dir(prefix=rl.prefix,tmpdir=rl.tmpdir)
+      def mkdir(prefix=rl.prefix,tmpdir=rl.tmpdir)
         self.rl = RIO::Temp::Dir::RL.new(prefix, tmpdir)
         become 'Dir::Existing'
       end
-      def mkdir()
-        dir()
-      end
+#      def mkdir()
+#        dir()
+#      end
       def chdir(&block)
-        dir.chdir(&block)
+        self.mkdir.chdir(&block)
       end
       def file(prefix=rl.prefix,tmpdir=rl.tmpdir)
         self.rl = RIO::Temp::File::RL.new(prefix, tmpdir)

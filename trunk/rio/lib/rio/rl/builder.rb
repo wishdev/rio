@@ -44,58 +44,18 @@ module RIO
   module RL
     class Builder
 
-      def self.canon(a)
-        #puts "canon: #{a.inspect}" 
-        case a[0]
-        when ::String
-          case a[0]
-          when /^[a-z][a-z]+:/
-            a[0] = 'rio:'+a[0] unless a[0] =~ /^rio:/
-            a
-          when %r|^/|
-            a[0] = 'rio:file://'+a[0]
-            a
-          else
-            a[0] = 'rio:path:'+a[0]
-            a
-          end
-        when RIO::Rio
-          a[0] = a[0].to_rl
-          canon(a)
-        when RL::Base
-          a
-        when ::URI
-          a
-        when ?? , ?= , ?_ , ?",?[,?#,?`
-          a[0] = 'rio:'+CHMAP[a[0]]+':'
-          a
-        when ?-
-          a[0] = ( a.size == 1 ? 'rio:'+CHMAP[a[0]]+':' : 'rio:cmdio:' )
-          a
-        when ?$
-          a[0] = 'rio:strio:'
-          a
-        when ::IO
-          a.unshift('rio:sysio:')
-          a
-        when ::StringIO
-          a.unshift('rio:strio:')
-          a
-        else
-          a[0] = a[0].to_s
-          canon(a)
-        end
-      end
-
-
       def self.build(*a)
         #puts "build: #{a.inspect}" 
         a.flatten!
         case a[0]
         when ::String
           case a[0]
+          when /^[a-zA-Z]:/
+            a[0] = 'rio:file:///'+a[0]
           when /^[a-z][a-z]+:/
             a[0] = 'rio:'+a[0] unless a[0] =~ /^rio:/
+          when %r|^//|
+            a[0] = 'rio:file:'+a[0]
           when %r|^/|
             a[0] = 'file://'+a[0]
             return Factory.instance.riorl_class('file').new(*a)
@@ -105,9 +65,10 @@ module RIO
         when RIO::Rio
           a[0] = a[0].to_rl
         when RL::Base
-          #p 'heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
           a0 = a.shift
-        return a0.class.new(a0.uri.dup,*a)
+          #p 'THERE',a0,a0.clone
+          return a0.clone
+          #return a0.class.new(a0.clone,*a)
         when ::URI
           a0 = a.shift
           cl = Factory.instance.riorl_class(a0.scheme)
@@ -115,7 +76,7 @@ module RIO
           return o
         when ::Symbol
           a[0] = 'rio:' + a[0].to_s + ':'
-        when ?? , ?= , ?_ , ?", ?[, ?#, ?`
+        when ?? , ?= , ?_ , ?", ?[, ?#, ?`, ?|
           a[0] = 'rio:'+CHMAP[a[0]]+':'
         when ?-
           a[0] = ( a.size == 1 ? 'rio:'+CHMAP[a[0]]+':' : 'rio:cmdio:' )

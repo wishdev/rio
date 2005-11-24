@@ -65,7 +65,7 @@ module RIO
         end
 
         def close_write(&block)
-          self.ioh.close_write
+          self.iow.close_write
           each(&block) if block_given?
           self
         end
@@ -86,7 +86,7 @@ module RIO
         end
 
         def copyclose()
-          #p "#{callstr('copyclose')} closeoncopy=#{cx['closeoncopy']} ioh=#{ioh}"
+          #p "#{callstr('copyclose')} closeoncopy=#{cx['closeoncopy']} iow=#{iow}"
           #raise RuntimeError,"copclose"
           if cx['closeoncopy']
             wclose

@@ -55,7 +55,7 @@ module RIO
     #  }
     #  # the working directory here is /home
     #
-    def chdir(&block) target.chdir(&block) end
+    def chdir(&block) target.chdir(&block);self end
 
 
 
@@ -66,7 +66,7 @@ module RIO
     # a directory structure using a Rio. See Rio#each and Rio#all.
     #
     # Calls the block passing a Rio for each entry found. The Rio inherits
-    # attrubutes from the directory Rio.
+    # file attrubutes from the directory Rio.
     #
     # Returns itself
     #

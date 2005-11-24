@@ -71,7 +71,7 @@ module RIO
       protected
 
       def edir()
-        rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
+        #rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
         next_state = become('Dir::Existing')
         next_state.extend(Ops::Symlink::Existing) if symlink?
         next_state
@@ -97,7 +97,7 @@ module RIO
       def check?() not exist? end
 
       def ndir() 
-        rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
+        #rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
         become('Dir::NonExisting')
       end
       def nfile() become('File::NonExisting') end

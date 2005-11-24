@@ -45,6 +45,7 @@ require 'rio/context/stream'
 require 'stringio'
 require 'rio/record'
 require 'rio/cp'
+require 'rio/piper/cp'
 
 
 module RIO
@@ -56,16 +57,17 @@ module RIO
         include Enumerable
         include Grande
         include Cp::Stream::Input
+        include Piper::Cp::Input
       end
     end
   end
 end
+require 'rio/piper'
 module RIO
   module Ops
     module Stream
       module Input
         public
-
         def each(*args,&block)
           #p callstr('each',*args)
           each_(*args,&block)
@@ -138,7 +140,7 @@ module RIO
             end
             return self
           end
-          closeoneof? ? ioh.close_on_eof_(self) : self
+          closeoneof? ? ior.close_on_eof_(self) : self
         end
 
         # iterate over the records, yielding only with matching records
@@ -150,14 +152,14 @@ module RIO
           get_arg = self.get_arg_
           self.each_record_init_(*args)
           catch(:stop_iter) {
-            until ioh.eof?
+            until ior.eof?
               break unless raw_rec = self._get_rec(get_arg)
               rangetops = check_passed_ranges(selrej,@recno) if rangetops and @recno > rangetops[0]
               yield to_rec_(raw_rec) if selrej.match?(raw_rec,@recno)
             end
             return self
           }
-          closeoneof? ? ioh.close_on_eof_(self) : self
+          closeoneof? ? ior.close_on_eof_(self) : self
         end
         alias :each_row_ :each_
         def clear_selection()
@@ -203,7 +205,7 @@ module RIO
         end
 
         def on_closeoneof
-          #p "on_closeoneof #{self.object_id} #{self.ioh.object_id}"
+          #p "on_closeoneof #{self.object_id} #{self.ior.object_id}"
           self.close
         end
 
@@ -219,21 +221,21 @@ module RIO
         public
         
         def rewind(&block)
-          self.ioh.rewind
+          self.ior.rewind
           @recno = -1
           each(&block) if block_given?
           self
         end
 
         def close_read(&block)
-          self.ioh.close_read
+          self.ior.close_read
           each(&block) if block_given?
           self
         end
 
         def copy_stream(dst)
           #p callstr('copy_stream',dst)
-          ioh.copy_stream(dst)
+          ior.copy_stream(dst)
           self
         end
 

@@ -36,6 +36,7 @@
 
 
 require 'rio/cp'
+require 'rio/piper/cp'
 require 'rio/ops/either'
 
 module RIO
@@ -67,6 +68,7 @@ module RIO
         include FileOrDir::Existing
         include Cp::File::Output
         include Cp::File::Input
+        include Piper::Cp::Input
 
         def selective?
           %w[stream_sel stream_nosel].any? { |k| cx.has_key?(k) }

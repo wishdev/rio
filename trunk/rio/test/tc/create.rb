@@ -21,6 +21,16 @@ class TC_RIO_create < Test::Unit::TestCase
     ario = RIO.cwd
     assert_kind_of(RIO::Rio,ario)
     cwd = RIO::RL.fs2url(::Dir.getwd)
+    assert_equal("#{cwd}",ario.urlpath)
+
+    ario = RIO.cwd
+    assert_kind_of(RIO::Rio,ario)
+    cwd = ::Dir.getwd
+    assert_equal("#{cwd}",ario.path)
+
+    ario = RIO.cwd
+    assert_kind_of(RIO::Rio,ario)
+    cwd = ::Dir.getwd
     assert_equal(cwd,ario.to_s)
 
     ario = RIO.root.join('tmp')

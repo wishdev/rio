@@ -9,10 +9,6 @@ Rio is a convenience class wrapping much of the functionality of
 IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 To create the documentation for Rio run the command
-  rake rdoc
-from the distribution directory. 
-
-If your don't have rake installed, install it, until you do try:
   ruby RUNME.1st.rb
 from the distribution directory.
 
@@ -23,6 +19,47 @@ Suggested Reading
 * RIO::Doc::INTRO
 * RIO::Doc::HOWTO
 * RIO::Rio
+
+== New for version 0.3.6
+* Pipe operator and command pipes
+
+  Pipe multiple commands
+   rio('afile') | rio(?-,'acmd') | 'another_cmd' | ?-
+
+  Run the same series of commands, with different input and/or output
+   cmdpipe = rio(?-,'acmd') | rio(?-,'another_cmd')
+   rio('infile1') | cmdpipe | rio('outfile1')
+   rio('infile2') | cmdpipe | rio('outfile2')
+
+   cmdpipe2 = rio(?|,'cmd1','cmd2',rio('outfile'))   # create a cmdpipe Rio
+   rio('infile1') | cmdpipe2       # run with input coming from a file
+   rio(?-) | cmdpipe2              # same commands with input from stdin
+
+
+== New for version 0.3.5
+* Partial support for MS Windows drive and UNC path specifications
+  
+  The separator must be '/'. Back-slashes are not supported.
+
+  Drives and UNC paths may be specified as expected:
+   rio("D:/adir/afile")
+   rio('//ahost/adir/afile')
+
+  This support has introduced a change in the behaviour
+  of Rio#path. Rio#path now returns the path on the 
+  file-system for Rios that are on the file-system; returns the path
+  portion of the URL for FTP, HTTP and other Rios that
+  have a path, and return nil for Rios that have no path
+   rio('/a/b/c').path                     #==> "/a/b/c"
+   rio('b/c').path                        #==> "b/c"
+   rio('C:/b/c').path                     #==> "C:/b/c"
+   rio('//ahost/a/b').path                #==> "//ahost/a/b"
+   rio('file://ahost/a/b').path           #==> "//ahost/a/b"
+   rio('file:///a/b').path                #==> "/a/b"
+   rio('file://localhost/a/b').path       #==> "/a/b"
+   rio('http://ahost/index.html').path    #==> "/index.html"
+   rio('stdin:').path                     #==> nil
+
 
 == New for version 0.3.4
 * New Grande Selection parameter.

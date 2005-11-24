@@ -310,7 +310,6 @@ class TC_RIO_misc < Test::Unit::TestCase
     
   end
   def test_specialio
-    return unless $supports_symlink
     tdir = rio(ttdir,'test_specialio').rmtree.mkpath
     msg = "Hello File\n"
     fname = 'f.txt'

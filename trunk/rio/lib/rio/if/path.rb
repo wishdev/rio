@@ -40,13 +40,10 @@ module RIO
 
     # Returns the path for the Rio, which is defined differently for different types of Rios.
     #
-    # For Rios representing paths on the underlying file system this returns 
-    # URI::FILE#path or URI::Generic#path depending on whether the Rio is absolute or not. 
-    # Note that this is not necessarily the same as Rio#fspath, but rather
-    # a URL path as defined in RFC1738.
-    #
-    # For Rios that have a URI representation this returns URI#path 
-    #
+    # For Rios representing paths on the underlying file system this is an alias 
+    # Rio#fspath. For Rios with paths that are not on the file system this is an
+    # alias for Rio#urlpath.
+    # 
     # Otherwise this returns nil.
     # 
     def path(*args) target.path(*args) end
@@ -71,6 +68,10 @@ module RIO
     # Returns the path for the Rio on the underlying file system
     # Returns nil if the Rio is not on the filesystem (i.e. stdin: or http: Rios)
     def fspath(*args) target.fspath(*args) end
+
+    # Returns the path portion of the URL representation of the rio 
+    # Returns nil if the Rio URL has no path (i.e. stdin: or http: Rios)
+    def urlpath(*args) target.urlpath(*args) end
 
     # Proxy for File#expand_path
     #
@@ -98,7 +99,7 @@ module RIO
     #  rio('/tmp/afile').rel('/tmp')   #=> rio('afile')
     #  rio('zippy/afile').rel('zippy') #=> rio('afile')
     #
-    def rel(other) target.rel(other)  end
+    def rel(other=nil) target.rel(other)  end
 
 
     # Returns a new Rio whose path is the base path that is used by 

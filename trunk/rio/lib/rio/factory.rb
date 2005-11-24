@@ -82,6 +82,9 @@ module RIO
                           when 'strio'
                             require 'rio/scheme/strio'
                             StrIO
+                          when 'cmdpipe'
+                            require 'rio/scheme/cmdpipe'
+                            CmdPipe
                           when 'aryio'
                             require 'rio/scheme/aryio'
                             AryIO
@@ -116,20 +119,8 @@ module RIO
     def reset_state(rl)
       mod = subscheme_module(rl.scheme)
       mod.const_get(:RESET_STATE) unless mod.nil?
-      #p st
-#       @reset_class[st] ||= case st
-#                            when 'Path::Reset'
-#                              require 'rio/path/reset'
-#                              Path::Reset
-#                            when 'Stream::Open'
-#                              require 'rio/stream/open'
-#                              Stream::Open
-#                            else
-#                              raise ArgumentError,"Unknown RESET_STATE (#{st})"
-#                            end
-      
-
     end
+
     STATE2FILE = {
       'Path::Reset' => 'rio/path/reset',
       'Path::Empty' => 'rio/path',
@@ -167,6 +158,12 @@ module RIO
       'StrIO::Stream::Output' => 'rio/scheme/strio',
       'StrIO::Stream::InOut' => 'rio/scheme/strio',
       'StrIO::Stream::Open' => 'rio/scheme/strio',
+
+      'CmdPipe::Stream::Reset' => 'rio/scheme/cmdpipe',
+#      'CmdPipe::Stream::Open' => 'rio/scheme/cmdpipe',
+#      'CmdPipe::Stream::Input' => 'rio/scheme/cmdpipe',
+#      'CmdPipe::Stream::Output' => 'rio/scheme/cmdpipe',
+#      'CmdPipe::Stream::InOut' => 'rio/scheme/cmdpipe',
 
       'HTTP::Stream::Input' => 'rio/scheme/http',
       'HTTP::Stream::Open' => 'rio/scheme/http',
@@ -225,7 +222,7 @@ module RIO
       create_handle(state2class(reset_state(riorl)).new_r(riorl))
     end
     def clone_state(state)
-      create_handle(state.clone)
+      create_handle(state.target.clone)
     end
     def create_handle(new_state)
       hndl = Handle.new(new_state)

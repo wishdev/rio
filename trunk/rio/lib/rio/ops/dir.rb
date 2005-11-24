@@ -191,6 +191,13 @@ module RIO
           read_()
         end
 
+        def get()
+          self.each_ent_ { |d|
+            return d
+          }
+          return nil
+        end
+
         def rewind() ioh.rewind(); self end
         def seek(integer) ioh.seek(integer); self end
 
@@ -224,30 +231,43 @@ module RIO
           args = cx['skip_args'] || []
           self.skipentries(*args)
         end
+        def handle_ent_(estr,selfstr,sel,&block)
+          begin
+            erio = new_rio_cx(selfstr ? Impl::U.join(selfstr,estr) : estr )
+            
+            if stream_iter?
+              _add_stream_iter_cx(erio).each(&block) if erio.file? and sel.match?(erio)
+            else
+              yield _add_iter_cx(erio) if sel.match?(erio)
+            end
+            
+            if cx.has_key?('all') and erio.directory?
+              rsel = Match::Entry::SelectorClassic.new(cx['r_sel'],cx['r_nosel'])
+              _add_recurse_iter_cx(erio).each(&block) if rsel.match?(erio)
+            end
+            
+          rescue ::Errno::ENOENT, ::URI::InvalidURIError => ex
+            $stderr.puts(ex.message+". Skipping.")
+          end
+        end
         def each_(*args,&block)
           #p "#{callstr('each_',*args)} sel=#{cx['sel'].inspect} nosel=#{cx['nosel'].inspect}"
           handle_skipped()
           sel = Match::Entry::Selector.new(cx['entry_sel'])
           selfstr = (self.to_s == '.' ? nil : self.to_s)
           self.ioh.each do |estr|
-            next if estr =~ /^\.(\.)?$/
-            begin
-              erio = new_rio_cx(selfstr ? Impl::U.join(selfstr,estr) : estr )
- 
-              if stream_iter?
-                _add_stream_iter_cx(erio).each(&block) if erio.file? and sel.match?(erio)
-              else
-                yield _add_iter_cx(erio) if sel.match?(erio)
-              end
-
-              if cx.has_key?('all') and erio.directory?
-                rsel = Match::Entry::SelectorClassic.new(cx['r_sel'],cx['r_nosel'])
-                _add_recurse_iter_cx(erio).each(&block) if rsel.match?(erio)
-              end
-              
-            rescue ::Errno::ENOENT, ::URI::InvalidURIError => ex
-              $stderr.puts(ex.message+". Skipping.")
-            end
+            next if 
+            handle_ent_(estr,selfstr,sel,&block) unless estr =~ /^\.(\.)?$/
+          end
+          closeoneof? ? self.close : self
+        end
+        def each_ent_(*args,&block)
+          #p "#{callstr('each_',*args)} sel=#{cx['sel'].inspect} nosel=#{cx['nosel'].inspect}"
+          handle_skipped()
+          sel = Match::Entry::Selector.new(cx['entry_sel'])
+          selfstr = (self.to_s == '.' ? nil : self.to_s)
+          while estr = self.ioh.read
+            handle_ent_(estr,selfstr,sel,&block) unless estr =~ /^\.(\.)?$/
           end
           closeoneof? ? self.close : self
         end

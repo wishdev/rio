@@ -562,12 +562,18 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
   the 'ps' command itself
    ps =  rio(?-,'ps -a').skiplines[0,/ps$/]
 
-* Run an external program, copying its input from one location and its output from another, 
+* Run an external program, copying its input from one location and its output to another, 
   and make it look very much like a shell command.
+
+   infile = rio(?","Hello Kitty\n")
+   outfile = rio('out.txt')
+
    # method 1
-   ans = ""
    cat = rio(?-,'cat').w!
-   cat <"Hello Kitty\n" >ans
+   cat <infile >outfile
+
+   # method 2
+   infile | 'cat' | outfile
    
 ---
 

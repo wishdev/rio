@@ -50,6 +50,7 @@ module RIO
       module Ops
         module Output
           def wclose()
+            #p "wclose #{self}"
             ioh.close_write
             return self.close.softreset if ioh.closed?
             self

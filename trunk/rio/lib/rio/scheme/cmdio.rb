@@ -43,8 +43,12 @@ module RIO
     class RL < RL::SysIOBase 
       RIOSCHEME = 'cmdio'
       RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
+      attr_reader :cmd
       def initialize(cmd="")
-        @cmd = cmd
+        case cmd
+        when self.class then @cmd = cmd.cmd
+        else @cmd = cmd
+        end
       end
       def opaque() 
         URI.escape(@cmd,RIO::RL::ESCAPE)
@@ -53,6 +57,8 @@ module RIO
         @cmd
       end
       def open(m)
+        #p "opening #{@cmd}"
+        #raise RuntimeError, "Should Not Open"
         ::IO.popen(@cmd,m.to_s)
       end
 

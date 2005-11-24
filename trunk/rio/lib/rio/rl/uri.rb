@@ -41,82 +41,72 @@ module RIO
     class URIBase < Base
       attr_reader :uri
       attr_writer :base
+      SCHEME = URI::REGEXP::PATTERN::SCHEME
       def initialize(u,*args)
         #p callstr('initialize',u,*args)
         # u should be a ::URI or something that can be parsed to one
-        args = get_base(*args)
+        args = _get_base_from_args(args)
         @uri =  _mkuri(u)
         self.join(*args)
         @uri.path = '/' if @uri.absolute? and @uri.path == ''
       end
       def initialize_copy(*args)
-        #p callstr('initialize_copy',*args)
-
         super
         @uri = @uri.clone unless @uri.nil?
         @base = @base.clone unless @base.nil?
       end
+      def _get_base_from_args(args)
+        #      args.each { |a| p "get_base len=#{args.length} #{a.class}##{a.to_s}" }
+        @base = nil
+        if !args.empty? and args[-1].kind_of?(::Hash) and (b = args.pop[:base])
+          @base = case b
+                  when URIBase then  b.uri if b.uri.absolute?
+                  when ::URI then b if b.absolute?
+                  when ::String then  ::URI.parse(b) if b  =~ /^#{SCHEME}:/
+                  end
+        end
+        args
+      end
+      def pathroot() '/' end
       def _mkuri(arg)
         (arg.kind_of?(::URI) ?  arg.dup : parse_url(arg.to_s))
       end
       def base(arg=nil)
-        @base = _mkuri(arg) unless arg.nil? or @uri.absolute?
-        (@base.nil? ? @uri : @base)
+        self.base = arg unless arg.nil? or @uri.absolute?
+        @base || @uri
       end
-      def join(*args)
-#        self.class.joinuri(self.uri,*args)
-        return @uri if args.empty?
-        sa = args.map(&:to_s).map { |str| ::URI.escape(str,ESCAPE) }
-        sa.unshift @uri.path unless @uri.path.empty?
-        @uri.path = sa.join('/')
-        @uri.path.gsub!(%r|/+|,'/')
+      def base=(arg) @base = _mkuri(arg) end
+      require 'rio/rl/pathmethods'
+      include PathMethods
+
+      def urlpath=(pt) @uri.path = pt end
+      def urlpath() @uri.path end
+
+      def path=(pt) self.urlpath = pt end
+      def path() self.urlpath end
+      def path_no_slash() self.path.sub(/\/$/,'') end
+
+      def opaque() 
+        u = @uri.dup
+        u.scheme = nil
+        u.to_s
       end
 
-      def parse_url(str)
-        ::URI.parse(::URI.escape(str,ESCAPE))
-      end
+      def scheme() @uri.scheme end
+      def host() @uri.host end
+      def host=(arg) @uri.host = arg end
 
-      def url() self.uri.to_s end
-      def fs2url(pth) RL.fs2url(pth) end
-      def url2fs(pth) RL.url2fs(pth) end
-      def fspath() RL.url2fs(@uri.path) end
-
-      def route_from(other)
-        self.class.new(@uri.route_from(other.uri),other)
-      end
-      def route_to(other)
-        self.class.new(@uri.route_to(other.uri),self.abs)
-      end
-      def merge(other)
-        self.class.new(@uri.merge(other.uri))
-      end
-      def get_base(*args)
-        #      args.each { |a| p "get_base len=#{args.length} #{a.class}##{a.to_s}" }
-        @base = nil
-        if args.length > 0
-          b = args.pop
-          @base = case b
-                  when URIBase then  b.uri if b.uri.absolute?
-                  when ::URI then b if b.absolute?
-                  when ::String then  ::URI.parse(b) if b  =~ /^[a-z]+:/
-                  end
-          args.push b unless @base
-        end
-        args
-      end
-      def abs()
-        return self if @uri.absolute?
-        self.class.new(@base.merge(@uri),@base) 
-      end
-      def path_no_slash
-        path.sub(/\/$/,'')
-      end
-      def path=(pt)
-        @uri.path = pt
-      end
-      extend Forwardable
-      def_instance_delegators(:@uri,:to_s,:path,:absolute?,:host)
+      def absolute?() @uri.absolute? end
       alias abs? absolute?
+
+      def abs()
+        return self if absolute?
+        self.class.new(@base.merge(@uri),{:base => @base}) 
+      end
+
+      def url() @uri.to_s end
+      def to_s() self.url end
+
     end
   end
 end

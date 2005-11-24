@@ -39,7 +39,7 @@ require 'yaml'
 
 module RIO
   module Ext
-    module YAML
+    module YAML #:nodoc: all
       module Cx
         def yaml(&block) 
           cxx('yaml',true,&block) 
@@ -73,10 +73,13 @@ module RIO
           else super
           end
         end
-        def cpto_io_(arg)
-          self.each { |obj|
-            arg << obj.to_yaml + $/
-          }
+        def cpto_io_(ioarg)
+          recs = self.to_a
+          if recs.size == 1
+            YAML.dump(recs[0],ioarg)
+          else
+            YAML.dump(recs,ioarg)
+          end
         end
         def cpto_obj_(arg)
           self.each { |obj|
@@ -89,9 +92,7 @@ module RIO
           }
         end
         def cpto_string_(string)
-          self.each { |el|
-            string << el.to_yaml + $/
-          }
+          string << YAML.dump_stream(self.contents)
         end
         def get_(arg=nil)
           case cx['stream_itertype']
@@ -141,7 +142,7 @@ module RIO
 
         def cpfrom_(arg)
             case arg
-            when ::Array then cpfrom_array_(arg)
+            #when ::Array then cpfrom_array_(arg)
             when Rio,::IO,::StringIO then super
             else self.put_(arg)
             end
@@ -154,9 +155,7 @@ module RIO
           self
         end
         def cpfrom_rio_(ario)
-          ario.each { |el|
-            self.put_(el)
-          }
+          ioh.puts(::YAML.dump_stream(*ario[]))
           self
         end
         def put_(obj)

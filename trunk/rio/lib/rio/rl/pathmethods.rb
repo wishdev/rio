@@ -35,45 +35,61 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
+require 'rio/rl/uri'
 module RIO
-  module HTTP #:nodoc: all
-    RESET_STATE = 'HTTP::Stream::Open'
-    
-    require 'rio/rl/uri'
-    class RL < RIO::RL::URIBase
-      def self.splitrl(s) 
-        sub,opq,whole = split_riorl(s)
-        [whole] 
+  module RL
+    module PathMethods
+      def urlroot()
+        return nil unless absolute?
+        cp = self.clone
+        cp.urlpath = self.pathroot
+        cp.url
       end
-      require 'open-uri'
-      def open(*args)
-        self.uri.open
+      def _parts()
+        pr = self.pathroot
+        ur = self.urlroot.sub(/#{pr}$/,'')
+        up = self.urlpath.sub(/^#{pr}/,'')
+
+        [ur,pr,up]
       end
-    end
-
-    module Stream
-
-      require 'rio/stream/open'
-      require 'rio/ops/path'
-      class Open < RIO::Stream::Open
-        include Ops::Path::Status
-        include Ops::Path::URI
-        include Ops::Path::Query
-        def input() 
-          self.rl.base = self.ioh.base_uri
-          stream_state('HTTP::Stream::Input') 
+      def split()
+        if absolute?
+          parts = self._parts
+          sparts = []
+          sparts << parts[0] + parts[1]
+          sparts += parts[2].split('/')
+        else
+          sparts = self.urlpath.split('/')
         end
+        require 'rio/to_rio'
+        rlparts = sparts.map { |str| self.class.new(str) }
+        (1...sparts.length).each { |i|
+          rlparts[i].base = rlparts[i-1].abs.url + '/'
+        }
+        rlparts
       end
 
-      require 'rio/stream'
-      class Input < RIO::Stream::Input
-        include Ops::Path::Status
-        include Ops::Path::URI
-        include Ops::Path::Query
-        extend Forwardable
-        def_instance_delegators(:ioh,:meta,:status,:charset,:content_encoding,:content_type,:last_modified,:base_uri)
+      def join(*args)
+        return self if args.empty?
+        sa = args.map { |arg| ::URI.escape(arg.to_s,ESCAPE) }
+        sa.unshift(self.urlpath) unless self.urlpath.empty?
+        self.urlpath = sa.join('/').squeeze('/')
+      end
+
+      def parse_url(str)
+        ::URI.parse(::URI.escape(str,ESCAPE))
+      end
+
+      def route_from(other)
+        self.class.new(uri.route_from(other.uri),{:base => other.url})
+      end
+      def route_to(other)
+        self.class.new(uri.route_to(other.uri),{:base => self.url})
+      end
+      def merge(other)
+        self.class.new(uri.merge(other.uri))
       end
 
     end
-  end 
-end # module RIO
+  end
+end

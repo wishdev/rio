@@ -16,12 +16,14 @@ class TC_skip < Test::RIO::TestCase
       rio('f2') < (0..1).map { |i| "L#{i}:d0/f2\n" }
       rio('g1') < (0..1).map { |i| "L#{i}:d0/g1\n" }
       rio('g2') < (0..1).map { |i| "L#{i}:d0/g2\n" }
-      rio('x1').symlink('n1')
-      rio('x2').symlink('n2')
-      rio('f1').symlink('l1')
-      rio('f2').symlink('l2')
-      rio('d1').symlink('c1')
-      rio('d2').symlink('c2')
+      if $supports_symlink
+        rio('x1').symlink('n1')
+        rio('x2').symlink('n2')
+        rio('f1').symlink('l1')
+        rio('f2').symlink('l2')
+        rio('d1').symlink('c1')
+        rio('d2').symlink('c2')
+      end
     }
   end
   def setup

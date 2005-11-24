@@ -47,7 +47,7 @@ module RIO
           not self.closed?
         end
         def closed?() self.ioh.nil?  end
-        def eof?() closed? or ioh.eof? end
+        def eof?() closed? or ior.eof? end
       end
     end
 

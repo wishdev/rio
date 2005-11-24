@@ -36,16 +36,8 @@
 
 
 module RIO
-  def strio(*args) rio(:strio,*args) end
-  def stdio(*args) rio(:stdio,*args) end
-  def stderr(*args) rio(:stderr,*args) end
-  def temp(*args)  rio(:temp,*args)  end
-  def tempfile(*args)  rio(:tempfile,*args)  end
-  def tempdir(*args)  rio(:tempdir,*args)  end
-  def tcp(*args)  rio(:tcp,*args)  end
-  def cmdio(*args)  rio(:cmdio,*args)  end
-  def sysio(*args)  rio(:sysio,*args)  end
-  def fd(*args)  rio(:fd,*args)  end
+  require 'rio/ops/construct'
+  include Ops::Construct
 
   module_function :strio
   module_function :stdio
@@ -55,21 +47,23 @@ module RIO
   module_function :tempdir
   module_function :tcp
   module_function :cmdio
+  module_function :cmdpipe
   module_function :sysio
   module_function :fd
 end
 
 module RIO
   class Rio
-    def self.strio(*args) rio(:strio,*args) end
-    def self.stdio(*args) rio(:stdio,*args) end
-    def self.stderr(*args) rio(:stderr,*args) end
-    def self.temp(*args)  rio(:temp,*args)  end
-    def self.tempfile(*args)  rio(:tempfile,*args)  end
-    def self.tempdir(*args)  rio(:tempdir,*args)  end
-    def self.tcp(*args)  rio(:tcp,*args)  end
-    def self.cmdio(*args)  rio(:cmdio,*args)  end
-    def self.sysio(*args)  rio(:sysio,*args)  end
-    def self.fd(*args)  rio(:fd,*args)  end
+    def self.strio(*args,&block) rio(:strio,*args,&block) end
+    def self.stdio(*args,&block) rio(:stdio,*args,&block) end
+    def self.stderr(*args,&block) rio(:stderr,*args,&block) end
+    def self.temp(*args,&block)  rio(:temp,*args,&block)  end
+    def self.tempfile(*args,&block)  rio(:tempfile,*args,&block)  end
+    def self.tempdir(*args,&block)  rio(:tempdir,*args,&block)  end
+    def self.tcp(*args,&block)  rio(:tcp,*args,&block)  end
+    def self.cmdio(*args,&block)  rio(:cmdio,*args,&block)  end
+    def self.cmdpipe(*args,&block)  rio(:cmdpipe,*args,&block)  end
+    def self.sysio(*args,&block)  rio(:sysio,*args,&block)  end
+    def self.fd(*args,&block)  rio(:fd,*args,&block)  end
   end
 end

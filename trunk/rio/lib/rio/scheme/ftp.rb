@@ -50,8 +50,6 @@ module RIO
         sub,opq,whole = split_riorl(s)
         [whole] 
       end
-      def to_s() self.url end
-      def scheme() self.uri.scheme end
       def open(*args)
         RIO::FTP::Conn.new(@uri)
       end
@@ -62,8 +60,6 @@ module RIO
           sub,opq,whole = split_riorl(s)
           [whole] 
         end
-        def to_s() self.url end
-        def scheme() self.uri.scheme end
         def open(*args)
           @uri.open
         end

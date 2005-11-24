@@ -45,9 +45,11 @@ class TC_RIO_expand_path < Test::Unit::TestCase
 
   def test_expand_path_from_base_rio
     @tdir.chdir do
-      rel = rio('groovy')
-      base = rio('/tmp')
-      exp = rio(base,rel)
+      srel = 'groovy'
+      sbase = '/tmp'
+      rel = rio(srel)
+      base = rio(sbase)
+      exp = File.expand_path(srel,sbase)
       ans = rel.expand_path(base)
       assert_kind_of(RIO::Rio,ans)
       assert_equal(exp,ans)
@@ -56,39 +58,31 @@ class TC_RIO_expand_path < Test::Unit::TestCase
 
   def test_expand_path_from_base_string
     @tdir.chdir do
-      rel = rio('groovy')
-      base = rio('/tmp')
-      exp = rio(base,rel)
-      ans = rel.expand_path(base.to_s)
+      srel = 'groovy'
+      sbase = '/tmp'
+      rel = rio(srel)
+      base = rio(sbase)
+      exp = File.expand_path(srel,sbase)
+      ans = rel.expand_path(sbase)
       assert_kind_of(RIO::Rio,ans)
-      assert_equal(exp.to_s,ans.to_s)
+      assert_equal(exp,ans)
     end
   end
 
   def test_expand_path_from_tilde
-    return unless $supports_symlink
     @tdir.chdir do
-      file = rio('groovy')
-      rel = rio('~/' + file.to_s)
-      home =  rio(RIO::RL.fs2url(ENV['HOME'].dup))
-      exp = rio(home,file)
-      ans = rel.expand_path
-      assert_equal(exp.to_s,ans.to_s)
+      srel = 'groovy'
+      sbase = '~'
+      rel = rio(srel)
+      base = rio(sbase)
+      exp = File.expand_path(srel,sbase)
+      ans = rel.expand_path(sbase)
+      assert_kind_of(RIO::Rio,ans)
+      assert_equal(exp,ans)
     end
   end
 
-  def test_expand_path_from_tilde_user
-    return unless $supports_symlink
-    @tdir.chdir do
-      home =  rio(RIO::RL.fs2url(ENV['HOME'].dup))
-      user =  RIO::RL.fs2url(ENV['USER'].dup)
-      file = rio('groovy')
-      rel = rio('~' + user)
-      exp = rio(home)
-      ans = rel.expand_path
-      assert_equal(exp.to_s,ans.to_s)
-    end
-  end
+
 
 
 end

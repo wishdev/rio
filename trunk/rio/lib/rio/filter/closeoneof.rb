@@ -67,37 +67,17 @@ module RIO
         rtn
       end
         
-      def copy_stream(dst) 
-        #p callstr('copy_stream',dst)
-        close_on_eof(super)
-      end
-      def contents() 
-        close_on_eof(super)
-      end
-      def readlines(*args)
-        close_on_eof(super)
-      end
-      def each_line(*args,&block)
-        close_on_eof(super)
-      end
-      def each_byte(*args,&block)
-        close_on_eof(super)
-      end
-      def each_bytes(nb,*args,&block)
-        close_on_eof(super)
-      end
-      def readline(*args)
-        close_on_eof(super)
-      end
-      def read(*args)
-        close_on_eof(super)
-      end
-      def readchar(*args)
-        close_on_eof(super)
-      end
-      def gets(*args)
-        close_on_eof(super)
-      end
+      def readlines(*args)            close_on_eof(super) end
+      def each_line(*args,&block)     close_on_eof(super) end
+      def each_byte(*args,&block)     close_on_eof(super) end
+      def each_bytes(nb,*args,&block) close_on_eof(super) end
+      def readline(*args)             close_on_eof(super) end
+      def read(*args)                 close_on_eof(super) end
+      def readchar(*args)             close_on_eof(super) end
+      def gets(*args)                 close_on_eof(super) end
+
+      def copy_stream(dst)            close_on_eof(super) end
+      def contents()                  close_on_eof(super) end
     end
   end
 end

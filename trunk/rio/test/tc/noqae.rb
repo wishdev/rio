@@ -40,12 +40,19 @@ class TC_RIO_noqae < Test::Unit::TestCase
           }
           rio('f1') < (0..1).map { |i| "L#{i}:d0/f1\n" }
           rio('f2') < (0..1).map { |i| "L#{i}:d0/f2\n" }
-          rio('x1').symlink('n1')
-          rio('x2').symlink('n2')
-          rio('f1').symlink('l1')
-          rio('f2').symlink('l2')
-          rio('d1').symlink('c1')
-          rio('d2').symlink('c2')
+          if $supports_symlink
+            rio('x1').symlink('n1')
+            rio('x2').symlink('n2')
+            rio('f1').symlink('l1')
+            rio('f2').symlink('l2')
+            rio('d1').symlink('c1')
+            rio('d2').symlink('c2')
+          else
+            rio('f1') > rio('l1')
+            rio('f2') > rio('l2')
+            rio('d1') > rio('c1')
+            rio('d2') > rio('c2')
+          end
         }
 
         rio('d1').mkpath.chdir {
@@ -72,10 +79,12 @@ class TC_RIO_noqae < Test::Unit::TestCase
       end
     end
   end
-
+  def all()
+    all = ['d0/d1','d0/d2','d0/c1','d0/c2','d0/f1','d0/f2','d0/l1','d0/l2']
+    all += ['d0/n1','d0/n2'] if $supports_symlink
+    all
+  end
   def test_noqae_fs
-    return unless $supports_symlink
-    all = ['d0/d1','d0/d2','d0/c1','d0/c2','d0/f1','d0/f2','d0/n1','d0/n2','d0/l1','d0/l2']
     rio('qp/noqae').chdir do
       begin
 
@@ -187,10 +196,7 @@ class TC_RIO_noqae < Test::Unit::TestCase
   end
 
   def test_noqae_fs_de
-    return unless $supports_symlink
-    all = ['d0/d1','d0/d2','d0/c1','d0/c2','d0/f1','d0/f2','d0/n1','d0/n2','d0/l1','d0/l2']
-    wd = ::Dir.getwd
-    rio('qp/noqae').chdir
+    @@tdir.abs.chdir
     begin
       begin
         ans = []
@@ -212,6 +218,7 @@ class TC_RIO_noqae < Test::Unit::TestCase
         rio('d0').skipfiles('*').each { |el| 
           assert(el.file?)
         }
+        return unless $supports_symlink
         begin
           exp = all.select { |el| el =~ /[lnc]\d\Z/ }
           ans = []
@@ -272,12 +279,11 @@ class TC_RIO_noqae < Test::Unit::TestCase
         end
       end
     end
-    rio(wd).chdir
+    #rio(wd).chdir
   end
   def test_noqae_fs_re
-    return unless $supports_symlink
-    all = ['d0/d1','d0/d2','d0/c1','d0/c2','d0/f1','d0/f2','d0/n1','d0/n2','d0/l1','d0/l2']
-    rio('qp/noqae').chdir do
+    
+    @@tdir.abs.chdir do
       begin
 
         begin
@@ -309,10 +315,12 @@ class TC_RIO_noqae < Test::Unit::TestCase
           dre = /1/
           exp = all.select { |el| el =~ /[d]2$/ }
           ans = []
-          rio('d0').skipdirs(dre,:symlink?).each { |el| ans << el }
-          assert_equal(exp.sort,smap(ans).sort)
-          ans = rio('d0').skipdirs[dre,:symlink?]
-          assert_equal(exp.sort,smap(ans).sort)
+          if $supports_symlink
+            rio('d0').skipdirs(dre,:symlink?).each { |el| ans << el }
+            assert_equal(exp.sort,smap(ans).sort)
+            ans = rio('d0').skipdirs[dre,:symlink?]
+            assert_equal(exp.sort,smap(ans).sort)
+          end
         end
         
         begin

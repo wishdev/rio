@@ -198,6 +198,19 @@ module RIO
   #
   # This is Rio's interface to IO#popen
   #
+  # ===== Creating a Rio Pipe
+  #
+  # A Rio Pipe is a sequence of Rios that are run with the output of each being
+  # copied to the input of the next.
+  #
+  # <tt>rio(?|, ario, ...)</tt> (mnemonic: '|' is the Unix pipe operator)
+  #
+  # <tt>rio(:cmdpipe, ario, ...)</tt>
+  #
+  #
+  # See also Rio#|
+  #
+  #
   def rio(*args,&block)  # :yields: self
     Rio.rio(*args,&block) 
   end

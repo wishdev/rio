@@ -161,7 +161,8 @@ class TC_copydir < Test::RIO::TestCase
   end
   def test_tofile
     dst = rio('dst').delete!.touch
-    assert_raise(Errno::ENOTDIR) {
+    exp = ($mswin32 ? Errno::ENOENT : Errno::ENOTDIR)
+    assert_raise(exp) {
       @d0 > dst
     }
   end

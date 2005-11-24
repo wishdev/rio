@@ -1,4 +1,4 @@
-New and Improved -- Rio 0.3.4
+Piping Hot -- Rio 0.3.6
 
 == Overview
 
@@ -9,6 +9,25 @@ consistent interface. In addition to forwarding the interfaces
 provided by IO, File, and Dir to an appropriate object, Rio provides a
 "grande" interface that allows many common application-level I/O and
 file-system tasks to be expressed succinctly.
+
+== New
+
+Support for Pipe operator
+ # Pipe multiple commands
+ rio('afile') | rio(?-,'acmd') | 'another_cmd' | ?-
+
+ # run the same series of commands, with different input and/or output
+ cmdpipe = rio(?-,'acmd') | rio(?-,'another_cmd')
+ rio('infile1') | cmdpipe | rio('outfile1')
+ rio('infile2') | cmdpipe | rio('outfile2')
+
+ cmdpipe2 = rio(?|,'cmd1','cmd2','outfile')   # create a cmdpipe Rio
+ rio('infile1') | cmdpipe2       # run with input coming from a file
+ rio(?-) | cmdpipe2              # same commands with input from stdin
+
+Improved support for MS Windows path specifications
+ rio('D:/adir/afile')
+ rio('//ahost/adir/afile')
 
 == SYNOPSIS
 

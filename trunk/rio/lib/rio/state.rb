@@ -79,7 +79,7 @@ module RIO
       end
 
       def initialize_copy(*args)
-        #p callstr('enter state initialize_copy',*args)
+        #p callstr('initialize_copy',args[0].inspect)
         super
         @rl = @rl.clone unless @rl.nil?
         @cx = @cx.clone unless @cx.nil?
@@ -89,7 +89,12 @@ module RIO
       def self.new_r(riorl)
         new.init(riorl,Cx::Vars.new( { 'closeoneof' => true, 'closeoncopy' => true } ))
       end
-
+      def clone_rio()
+        cp = Rio.new(self.rl)
+        cp.cx = self.cx
+        cp.ioh = self.ioh.clone unless self.ioh.nil?
+        cp
+      end
       def init(riorl,cntx,iohandle=nil)
         @rl = riorl
         @cx = cntx
@@ -105,6 +110,11 @@ module RIO
       def copy_state(other)
         init(other.rl,other.cx,other.ioh)
       end
+
+      alias :ior :ioh
+      alias :iow :ioh
+
+
 
       # Section: State Switching
 
@@ -170,7 +180,7 @@ module RIO
 
 
       extend Forwardable
-      def_instance_delegators(:rl,:path,:to_s,:fspath,:length)
+      def_instance_delegators(:rl,:path,:to_s,:fspath,:urlpath,:length)
 
       def ==(other) @rl == other end
       def ===(other) self == other end
@@ -199,6 +209,14 @@ module RIO
       def ensure_rio(arg0)
         return arg0 if arg0.kind_of?(::RIO::Rio)
         new_rio(arg0)
+      end
+      def ensure_cmd_rio(arg)
+        case arg
+        when ::String then new_rio(:cmdio,arg)
+        when ::Fixnum then new_rio(arg)
+        when Rio then arg.clone
+        else ensure_rio(arg)
+        end
       end
 
       include Symantics

@@ -44,10 +44,11 @@ module RIO
       def initialize(ios,*args)
         @ios = ios
       end
-      def initialize_copy(*args)
-        #p callstr('ioh:initialize_copy',*args)
+      def initialize_copy(other)
+        #p callstr('ioh:initialize_copy',other)
         super
-        @ios = @ios.clone unless @ios.nil?
+        #p @ios
+        @ios = other.ios.clone unless other.ios.nil?
       end
       def callstr(func,*args)
         self.class.to_s+'['+self.to_s+']'+'.'+func.to_s+'('+args.join(',')+')'
@@ -128,9 +129,19 @@ module RIO
         end
       end
       def closed?() @ios.nil? end
+      def each(&block)
+        while filename = handle.read
+          yield filename
+        end
+      end
+      def each0(&block)
+        handle.each { |filename|
+          yield filename
+        }
+      end
       extend Forwardable
       def_instance_delegators(:handle,
-                              :each,:read,
+                              :read,
                               :pos,:pos=,:tell,:seek,:rewind)
     end
   end

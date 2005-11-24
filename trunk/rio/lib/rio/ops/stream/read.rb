@@ -41,41 +41,41 @@ module RIO
     module Stream
       module Read
         def contents() 
-          auto { ioh.gets(nil) }
+          auto { ior.gets(nil) }
         end
         def readlines(*args)
-          auto { ioh.readlines(*args) }
+          auto { ior.readlines(*args) }
         end
         def read(*args)
-          auto { ioh.read(*args) }
+          auto { ior.read(*args) }
         end
         def ungetc(*args)
-          ioh.ungetc(*args)
+          ior.ungetc(*args)
           self
         end
         def each_line(*args,&block)
           auto { 
-#            self.ioh.each_line(*args,&block) 
-            self.ioh.each_line { |line|
+#            self.ior.each_line(*args,&block) 
+            self.ior.each_line { |line|
               yield line
             } #(*args,&block) 
           }
         end
         def each_byte(*args,&block)
-          auto { ioh.each_byte(*args,&block) }
+          auto { ior.each_byte(*args,&block) }
         end
         def each_bytes(nb,*args,&block)
           #p callstr('each_bytes',nb,*args)
           auto {
-            until ioh.eof?
-              break unless s = ioh.read(nb)
+            until ior.eof?
+              break unless s = ior.read(nb)
               yield s
             end
           }
         end
 
         extend Forwardable
-        def_instance_delegators(:ioh,:readline,:readchar,:gets,:lineno)
+        def_instance_delegators(:ior,:readline,:readchar,:gets,:lineno)
       end 
     end 
   end

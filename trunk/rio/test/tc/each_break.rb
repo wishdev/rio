@@ -133,33 +133,38 @@ class TC_each_break < Test::Unit::TestCase
   end
   def test_dir_readmore
     ans = []
-    @d1.each { |ent| ans << ent; break }
-    assert(@d1.open?)
+    ### LOOK INTO THIS
+    ### Something changed in ruby 1.8.3
+    ### See the file q/dir_readmore.q for a simple example
+    dir1 = rio(@d1)
+    dir1.each { |ent| 
+      ans << ent; 
+      break 
+    }
+    assert(dir1.open?)
     assert_equal(@e1[0..0],ans)
 
     ans = []
-    @d1.each { |ent| ans << ent; break }
-    assert(@d1.closed?)
+    #$trace_states = true
+    dir1.each { |ent| ans << ent; break }
+    assert(dir1.closed?)
     assert_equal([],ans)
 
-    ans = []
-    @d1.each { |ent| ans << ent; break }
-    assert(@d1.open?)
-    assert_equal(@e1[0..0],ans)
+    dir2 = rio(@d2)
 
     ans = []
-    @d2.each { |ent| ans << ent; break }
-    assert(@d2.open?)
+    dir2.each { |ent| ans << ent; break }
+    assert(dir2.open?)
     assert_equal(@e2[0..0],ans)
 
     ans = []
-    @d2.each { |ent| ans << ent; break }
-    assert(@d2.open?)
+    dir2.each { |ent| ans << ent; break }
+    assert(dir2.open?)
     assert_equal(@e2[1..1],ans)
 
     ans = []
-    @d2.each { |ent| ans << ent; break }
-    assert(@d2.closed?)
+    dir2.each { |ent| ans << ent; break }
+    assert(dir2.closed?)
     assert_equal([],ans)
 
   end

@@ -25,11 +25,11 @@
 # from the distribution directory.
 #++
 
-begin
-  require 'rubygems'
-  require 'rake/gempackagetask'
-rescue Exception
-end
+#begin
+#  require 'rubygems'
+#  require 'rake/gempackagetask'
+#rescue Exception
+#end
 
 require 'rake/clean'
 require 'rake/packagetask'
@@ -61,7 +61,7 @@ module PKG
     fl.exclude( /\bsvn\b/ )
     fl.exclude( 'test/qp' )
     fl.exclude( 'test/coverage' )
-#    fl.exclude( 'doc/rdoc' )
+    fl.exclude( 'doc/rdoc' )
   end
   OUT_DIR = 'pkg'
   OUT_FILES = %w[.gem .tar.gz .zip].map { |ex| OUT_DIR + '/' + FULLNAME + ex }
@@ -108,6 +108,7 @@ rd = Rake::RDocTask.new do |rdoc|
   rdoc.title    = PKG::TITLE
   rdoc.options = RDOC_OPTIONS
   DOC_FILES.to_a.each do |glb|
+    next if glb =~ /yaml.rb$/
     rdoc.rdoc_files.include( glb )
   end
   rdoc.template = 'doc/generators/template/html/rio.rb'
@@ -115,9 +116,7 @@ end
 
 CLOBBER << "test/rio.log"
 task :test do |t|
-  chdir 'test' do
-    ruby "-I../lib -I. runtests.rb"
-  end
+    sh "cd test;ruby -I../lib -I. runtests.rb"
 end
 
 #task :package => [:gen_files] do |var|
@@ -146,17 +145,17 @@ end
 task :gen_files => [:gen_changelog, :gen_version]
 CLOBBER << "ChangeLog" << "VERSION" 
 task :no_old_pkg do
-  unless Dir["pkg/#{PKG::FULLNAME}*"].empty?
-    $stderr.puts("packages for version #{PKG::VERSION} exist!")
-    $stderr.puts("Either delete them, or change the version number.")
-    exit(-1)
-  end
+#  unless Dir["pkg/#{PKG::FULLNAME}*"].empty?
+#    $stderr.puts("packages for version #{PKG::VERSION} exist!")
+#    $stderr.puts("Either delete them, or change the version number.")
+#    exit(-1)
+#  end
 end
 
 task :package => [:no_old_pkg, :gen_files]
-PKG::OUT_FILES.each do |f|
-  file f => [:package]
-end
+#PKG::OUT_FILES.each do |f|
+#  file f => [:package]
+#end
 
 Rake::PackageTask.new( PKG::NAME, PKG::VERSION ) do |p|
   p.need_tar_gz = true
@@ -223,7 +222,7 @@ else
 
     s.author = "Christopher Kleckner"
     s.email = "rio4ruby@rubyforge.org"
-    s.homepage = "rio.rubyforge.org"
+    s.homepage = "http://rio.rubyforge.org/"
     s.rubyforge_project = "rio"
   end
 

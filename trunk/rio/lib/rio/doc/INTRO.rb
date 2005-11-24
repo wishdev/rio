@@ -936,6 +936,8 @@ operators:
 
 ==== YAML mode
 
+<b>YAML Mode is currently in work. Please disregard this section</b>
+
 Rio uses the YAML class from the Ruby standard library to provide
 support for reading and writing YAML files. Normally
 using <tt>(skip)records</tt> is identical to <tt>(skip)lines</tt> because

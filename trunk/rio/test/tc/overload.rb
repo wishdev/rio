@@ -5,6 +5,7 @@ if $0 == __FILE__
 end
 require 'rio'
 require 'test/unit'
+require 'tc/testcase'
 
 class TC_RIO_overload < Test::Unit::TestCase
   def test_overload
@@ -72,19 +73,21 @@ class TC_RIO_overload < Test::Unit::TestCase
       fh.close
       assert_equal(line0,rio('dst2').contents)
       
-      rio('src.gz').gzip < rio('src')
-      rio('dst3') < rio('src.gz').gzip
-      assert_equal(line0,rio('dst3').contents)
+      unless $mswin32
+        rio('src.gz').gzip < rio('src')
+        rio('dst3') < rio('src.gz').gzip
+        assert_equal(line0,rio('dst3').contents)
 
-      str = 'Hello World'
-     rio('src.gz').gzip > str
-    assert_equal(line0,str)
+        str = 'Hello World'
+        rio('src.gz').gzip > str
+        assert_equal(line0,str)
 
-      rio('src') > rio('src.gz').gzip 
-      rio('src.gz').gzip > str
-      assert_equal(line0,str)
-      rio('src.gz').gzip >> str
-      assert_equal(line0+line0,str)
+        rio('src') > rio('src.gz').gzip 
+        rio('src.gz').gzip > str
+        assert_equal(line0,str)
+        rio('src.gz').gzip >> str
+        assert_equal(line0+line0,str)
+      end
       
     }
 
