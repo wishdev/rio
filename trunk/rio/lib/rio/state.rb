@@ -166,7 +166,7 @@ module RIO
 
       # Section: Error Handling
       def gofigure(sym,*args)
-        cs = "#{sym}("+args.map(&:to_s).join(',')+")"
+        cs = "#{sym}("+args.map{|el| el.to_s}.join(',')+")"
         msg = "Go Figure! rio('#{self.to_s}').#{cs} Failed"
         error(msg,sym,*args)
       end

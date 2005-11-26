@@ -34,19 +34,16 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
-#
 
 module RIO
-  # :stopdoc:
-  module Version #:nodoc: all
-    VERSION = '0.3.7'
-
-    N = VERSION.split('.').freeze
-    MAJOR = N[0].freeze
-    MINOR = N[1].freeze
-    TEENY = N[2].freeze
-
+  module Util #:nodoc: all
+    def build_sym_hash(syms)
+      result = {}
+      syms.each do |sym|
+        result[sym.to_s] = 1
+      end
+      result
+    end
+    module_function :build_sym_hash
   end
-  VERSION = Version::VERSION
-  # :startdoc:
 end

@@ -5,9 +5,6 @@ if $0 == __FILE__
 end
 
 require 'rio'
-require 'test/unit'
-require 'test/unit/testsuite'
-require 'extensions/symbol'
 require 'tc/testcase'
 
 class TC_dirss < Test::Unit::TestCase
@@ -35,9 +32,9 @@ class TC_dirss < Test::Unit::TestCase
     indir = rio('tdir')
     #indir = @d[1]
     $trace_states = true
-    p indir.map(&:to_s)
+    p indir.map{|el| el.to_s}
     ary = indir[]
-    #p ary.map(&:to_s)
+    #p ary.map{|el| el.to_s}
     p indir,indir.ioh
     newext = '.txt'
     indir.files.rename.each { |ent|
@@ -55,9 +52,9 @@ class TC_dirss < Test::Unit::TestCase
     indir = rio('tdir')
     #indir = @d[1]
     $trace_states = true
-    p indir.map(&:to_s)
+    p indir.map{|el| el.to_s}
     ary = indir[]
-    #p ary.map(&:to_s)
+    #p ary.map{|el| el.to_s}
     p indir,indir.ioh
     newext = '.txt'
     indir.files.rename.each { |ent|

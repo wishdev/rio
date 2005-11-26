@@ -60,7 +60,6 @@ rdoc_files = [
 ]
 
 cmd = sprintf("rdoc %s %s",RDOC_OPTIONS.join(' '),rdoc_files.join(' '))
-rio(?-) << rio(?-,cmd)
 
 docindex = (rdoc_dir/'index.html').abs.to_url
 msg = "Please point your browser at '#{docindex}'" 
@@ -70,6 +69,5 @@ puts
 puts lin
 puts "> " + msg + " >"
 puts lin
-
 
 

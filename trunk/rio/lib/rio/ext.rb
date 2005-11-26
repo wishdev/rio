@@ -37,9 +37,10 @@
 
 require 'rio/ext/csv'
 require 'rio/ext/yaml'
+require 'rio/util'
 module RIO
   module Ext #:nodoc: all
-    OUTPUT_SYMS = (CSV::Output.instance_methods + YAML::Output.instance_methods).build_hash { |sym| [sym.to_s,1] }
+    OUTPUT_SYMS = Util::build_sym_hash(CSV::Output.instance_methods + YAML::Output.instance_methods)
 
     module Cx
       include CSV::Cx

@@ -5,10 +5,8 @@ if $0 == __FILE__
 end
 
 require 'rio'
-require 'test/unit'
-require 'test/unit/testsuite'
-require 'extensions/symbol'
 require 'tc/testcase'
+
 class TC_rename < Test::RIO::TestCase
   @@once = false
   def self.once

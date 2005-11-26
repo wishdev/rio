@@ -41,9 +41,6 @@ require 'rio/version'
 require 'rio/base'
 require 'rio/exception'
 
-require 'extensions/symbol'
-require 'extensions/enumerable'
-require 'extensions/string'
 require 'forwardable'
 $trace_states = false
 module RIO 

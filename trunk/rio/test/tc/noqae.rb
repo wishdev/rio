@@ -5,9 +5,6 @@ if $0 == __FILE__
 end
 
 require 'rio'
-require 'test/unit'
-require 'test/unit/testsuite'
-require 'extensions/symbol'
 require 'tc/testcase'
 class TC_RIO_noqae < Test::Unit::TestCase
   @@tdir = rio(%w/qp noqae/)
@@ -19,7 +16,7 @@ class TC_RIO_noqae < Test::Unit::TestCase
   def assert!(a,msg="negative assertion")
     assert((!(a)),msg)
   end
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map{|el| el.to_s} end
   def setup
     s_dir = ''
     #$trace_states = true

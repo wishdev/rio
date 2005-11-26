@@ -1,4 +1,4 @@
-$:.unshift '../lib'
+$:.unshift 'lib'
 require 'rubygems'
 require 'rio'
 require 'rio/doc'
@@ -35,14 +35,14 @@ spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary = PKG::SUMMARY
   s.files = PKG::FILES.map { |rf| rf.to_s }
-  s.add_dependency( 'extensions', '>= 0.6.0' )
+          #s.add_dependency( 'extensions', '>= 0.6.0' )
 
   s.require_path = 'lib'
   s.autorequire = 'rio'
 
   s.has_rdoc = true
-  #s.extra_rdoc_files = ['doc/generators/template/html/rio.rb']
-  RDOC_OPTIONS = ['--line-numbers', '-m RIO::Doc::SYNOPSIS' ]
+
+  RDOC_OPTIONS = ['--line-numbers','-mRIO::Doc::SYNOPSIS','-Tdoc/generators/template/html/rio.rb']
   s.rdoc_options << RDOC_OPTIONS 
 end
 

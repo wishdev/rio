@@ -7,11 +7,9 @@ end
 require 'rio'
 require 'test/unit'
 require 'test/unit/testsuite'
-require 'extensions/object'
 
 class TC_RIO_dirent < Test::Unit::TestCase
-  require 'extensions/symbol'
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map { |el| el.to_s } end
   def tdir() rio(%w/qp dirent/) end
   def mkafile(*args)
     file = rio(*args)
@@ -83,7 +81,7 @@ class TC_RIO_dirent < Test::Unit::TestCase
         re = /1/
         exp = []
         rio('d0').entries(re).each { |ent| exp << ent }
-        rio('d0').files.each { |ent| exp << ent unless ent.in?(exp) }
+        rio('d0').files.each { |ent| exp << ent unless exp.include?(ent) }
 
         ans = []
         rio('d0').entries(re).files.each { |ent| ans << ent }
@@ -94,7 +92,7 @@ class TC_RIO_dirent < Test::Unit::TestCase
         re = /1/
         exp = []
         rio('d0').entries(re).each { |ent| exp << ent }
-        rio('d0').dirs.each { |ent| exp << ent unless ent.in?(exp) }
+        rio('d0').dirs.each { |ent| exp << ent unless exp.include?(ent) }
 
 
         ans = []

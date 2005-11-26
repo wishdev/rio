@@ -13,8 +13,7 @@ class TC_RIO_edf < Test::Unit::TestCase
   def assert!(a,msg="negative assertion")
     assert((!(a)),msg)
   end
-  require 'extensions/symbol'
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map{|el| el.to_s} end
   def mkafile(*args)
     file = rio(*args)
     file < (0..1).map { |i| "L#{i}:#{file.to_s}\n" }

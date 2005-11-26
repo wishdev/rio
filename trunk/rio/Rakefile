@@ -25,11 +25,11 @@
 # from the distribution directory.
 #++
 
-#begin
-#  require 'rubygems'
-#  require 'rake/gempackagetask'
-#rescue Exception
-#end
+begin
+  require 'rubygems'
+  require 'rake/gempackagetask'
+rescue Exception
+end
 
 require 'rake/clean'
 require 'rake/packagetask'
@@ -39,6 +39,7 @@ require 'rake/testtask'
 # General actions  ##############################################################
 
 $:.push 'lib'
+require 'rio/version'
 require 'rio/doc'
 
 SVN_REPOSITORY_URL = 'file:///loc/svn/'
@@ -51,7 +52,7 @@ XMP_FILES = FileList['ex/*']
 module PKG
   NAME = "rio"
   TITLE = RIO::TITLE
-  VERSION = RIO::VERSION
+  VERSION = '0.3.7'
   FULLNAME = PKG::NAME + "-" + PKG::VERSION
   SUMMARY = RIO::SUMMARY
   DESCRIPTION = RIO::DESCRIPTION
@@ -102,11 +103,12 @@ task :doc => [:rdoc] do
 #    ruby %{-I../lib ../bin/webgen -V 2 }
 end
 
-RDOC_OPTIONS = ['--line-numbers', '-m RIO::Doc::SYNOPSIS' ]
+RDOC_OPTIONS = ['--line-numbers']
 rd = Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = 'doc/rdoc'
   rdoc.title    = PKG::TITLE
   rdoc.options = RDOC_OPTIONS
+  rdoc.main = 'RIO::Doc::SYNOPSIS'
   DOC_FILES.to_a.each do |glb|
     next if glb =~ /yaml.rb$/
     rdoc.rdoc_files.include( glb )
@@ -207,7 +209,7 @@ else
     #### Dependencies, requirements and files
 
     s.files = PKG::FILES.to_a
-    s.add_dependency( 'extensions', '>= 0.6.0' )
+    # s.add_dependency( 'extensions', '>= 0.6.0' )
 
     s.require_path = 'lib'
     s.autorequire = 'rio'

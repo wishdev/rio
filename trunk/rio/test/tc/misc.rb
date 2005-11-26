@@ -4,8 +4,6 @@ if $0 == __FILE__
   $:.unshift File.expand_path('../lib/')
 end
 require 'rio'
-require 'test/unit'
-require 'test/unit/testsuite'
 require 'tc/testcase'
 
 #require 'tc_myfirsttests'
@@ -246,9 +244,7 @@ class TC_RIO_misc < Test::Unit::TestCase
 
     }
   end
-  require 'extensions/symbol'
-  def pa(a) p a.map( &:to_s ) end
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map { |el| el.to_s } end
   def emap(d,a)
     exp = a.map { |f| File.join(d,f) }.sort
   end

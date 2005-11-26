@@ -9,11 +9,10 @@ require 'test/unit'
 require 'test/unit/testsuite'
 
 class TC_RIO_fileno < Test::Unit::TestCase
-  require 'extensions/symbol'
   def assert!(a,msg="negative assertion")
     assert((!(a)),msg)
   end
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map{|el| el.to_s} end
   def tdir() rio(%w/qp fileno/) end
   def mkafile(*args)
     file = rio(*args)

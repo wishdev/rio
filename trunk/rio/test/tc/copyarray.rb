@@ -5,9 +5,6 @@ if $0 == __FILE__
 end
 
 require 'rio'
-require 'test/unit'
-require 'test/unit/testsuite'
-require 'extensions/symbol'
 require 'tc/testcase'
 
 class TC_copyarray < Test::Unit::TestCase
@@ -111,7 +108,7 @@ class TC_copyarray < Test::Unit::TestCase
     out = rio('out').delete!.mkpath
     assert(out[].empty?)
     inputdir = rio(@d[1])
-    out < inputdir[].map(&:to_s)
+    out < inputdir[].map{|el| el.to_s}
     assert_equal(@l[0],rio(out,@f[0].basename).lines[])
     assert_equal(@l[1],rio(out,@f[1].basename).lines[])
     assert_equal(@l[0],rio(out,@f[0]).lines[])

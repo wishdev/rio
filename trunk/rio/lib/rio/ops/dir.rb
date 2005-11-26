@@ -35,7 +35,6 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-require 'extensions/object'
 require 'rio/grande'
 require 'rio/cp'
 require 'rio/ops/either'

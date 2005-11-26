@@ -53,15 +53,15 @@ class TC_RIO_each < Test::Unit::TestCase
       
       ans = []
       rio('basic.txt').chomp.lines(/2/).each { |line| ans.push(line) }
-      assert_equal([expa[1],expa[4],expa[6]].map(&:chomp),ans)
+      assert_equal([expa[1],expa[4],expa[6]].map{|el| el.chomp},ans)
       
       ans = []
       rio('basic.txt').chomp.lines(/2/) { |line| ans.push(line) }
-      assert_equal([expa[1],expa[4],expa[6]].map(&:chomp),ans)
+      assert_equal([expa[1],expa[4],expa[6]].map{|el| el.chomp},ans)
       
       ans = []
       rio('basic.txt').lines(/2/).chomp { |line| ans.push(line) }
-      assert_equal([expa[1],expa[4],expa[6]].map(&:chomp),ans)
+      assert_equal([expa[1],expa[4],expa[6]].map{|el| el.chomp},ans)
       
       
       expb = ["L1: 0:0\nL2: 3:2\nL3: 6:4\nL4: 9:6\n", "L5: 12:8\nL6: 15:10\nL7: 18:12\nLin", "e Z\n"]

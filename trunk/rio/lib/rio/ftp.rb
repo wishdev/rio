@@ -133,7 +133,7 @@ module RIO
           self
         end
         def cpto_err(sym,*args)
-          cs = "#{sym}("+args.map(&:to_s).join(',')+")"
+          cs = "#{sym}("+args.map{|el| el.to_s}.join(',')+")"
           msg = "Go Figure! rio('#{self.to_s}').#{cs} Failed"
 
           raise ArgumentError,"#{msg}\nArgument to '#{sym}' must be a Rio was a '#{args[0].class}'\n"

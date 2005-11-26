@@ -1,7 +1,7 @@
 require 'rio'
 require 'test/unit'
 require 'test/unit/testsuite'
-require 'extensions/symbol'
+
 
 
 module RIOSupport
@@ -48,7 +48,7 @@ module RIO_TestCase
   def assert_array_equal(a,b,msg="array same regardless of order")
     assert_equal(smap(a).sort,smap(b).sort,msg)
   end
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map { |el| el.to_s } end
   def mkafile(*args)
     file = rio(*args)
     file < (0..1).map { |i| "L#{i}:#{file.to_s}\n" }
@@ -136,7 +136,6 @@ module Test
         end
       end
 
-      def smap(a) a.map( &:to_s ) end
       def self.make_lines_file(n_lines=8,*args)
         file = rio(*args)
         lines = (0...n_lines).map { |i| "L#{i}:#{file}" + $/ }

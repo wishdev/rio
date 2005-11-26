@@ -44,7 +44,7 @@ module RIO
           def gets(*args) super.__send__(:#{sym}) end
           def readline(*args) super.__send__(:#{sym}) end
           def each_line(*args,&block) super { |l| yield l.__send__(:#{sym}) } end
-          def readlines(*args) super.map(&:#{sym}) end
+          def readlines(*args) super.map{|el| el.__send__(:#{sym})} end
          end
          include IOE
         end

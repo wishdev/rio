@@ -72,7 +72,7 @@ class TC_RIO_methods < Test::Unit::TestCase
 #    $trace_states = true
     @dir.mkpath.chdir
     @lines = (0..5).map { |n| "Line#{n}" }
-    @chlines = @lines.map(&:chomp)
+    @chlines = @lines.map{|el| el.chomp}
     ::File.open('lines','w') do |f|
       @lines.each do |li|
         f.puts(li)

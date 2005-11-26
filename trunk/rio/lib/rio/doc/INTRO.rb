@@ -171,7 +171,7 @@ to stdin or stdout until an I/O operation is specified.
  rio(?")
 * create a Rio that refers to a string of your choosing
  astring = ""
- rio(?","")
+ rio(?",astring)
 
 ===== Creating a Rio that refers to a Temporary object
 
@@ -182,13 +182,7 @@ or a directory, depending on how you use it:
  rio(??)
  rio(??,basename='rio',tmpdir=Dir::tmpdir)
 
-To force it to become a file
- rio(??).file
-or just write to it.
-
 To force it to become a directory:
- rio(??).dir
-or
  rio(??).mkdir
 or
  rio(??).chdir
@@ -289,10 +283,10 @@ Rio#join and Rio#/ do the same thing, but the operator version
 
 The arguments to +join+ and <tt>/</tt> do not need to be Rios, of course
    ario = rio('adir')
-   ario/'afile.rb'           #=> rio('ario/afile.rb')
-   ario.join('b','c','d')    #=> rio('ario/b/c/d')
-   ario/'b'/'c'/'d'          #=> rio('ario/b/c/d')
-   ario /= 'e'               #=> rio('ario/b/c/d/e')
+   ario/'afile.rb'           #=> rio('adir/afile.rb')
+   ario.join('b','c','d')    #=> rio('adir/b/c/d')
+   ario/'b'/'c'/'d'          #=> rio('adir/b/c/d')
+   ario /= 'e'               #=> rio('adir/b/c/d/e')
 
 ==== Manipulating a Rio path by treating it as a string.
 
@@ -335,19 +329,19 @@ list of all of Rio's configuration methods.
 
 Rio's configuration mehods fall into three categories.
 
-[IO manipulators]
+* I/O manipulators
 
-  An IO manipulator alters the behavior of a Rio's underlying IO
+  An I/O manipulator alters the behavior of a Rio's underlying IO
   object. These affect the behaviour of I/O methods which are
   forwarded directly to the underlying object as well as the grande
   I/O methods.
 
-[Grande configuration methods]
+* Grande configuration methods
 
   The grande configuration methods affect the behaviour of Rio's
   grande I/O methods
 
-[Grande selection methods]
+* Grande selection methods
 
   The grande selection methods select what data is returned by Rio's
   grande I/O methods
@@ -849,7 +843,7 @@ mode selection.
 
 Rio uses the CSV class from the Ruby standard library to provide
 support for reading and writing comma-separated-value files. Normally
-using <tt>(no)records</tt> is identical to <tt>(no)lines</tt> because
+using <tt>(skip)records</tt> is identical to <tt>(skip)lines</tt> because
 while +records+ only selects and does not specify the record-type,
 +lines+ is the default.
 

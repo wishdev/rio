@@ -7,12 +7,11 @@ end
 require 'rio'
 require 'test/unit'
 require 'test/unit/testsuite'
-require 'extensions/symbol'
 
 class TC_RIO_qae_riovar < Test::Unit::TestCase
   @@tdir = rio(%w/qp qae/)
   @@once = false
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map { |el| el.to_s } end
   def self.once()
     @@tdir.rmtree.mkpath.chdir do
       rio('d0').mkpath.chdir {

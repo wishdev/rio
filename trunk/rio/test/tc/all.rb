@@ -3,7 +3,7 @@ require 'tc/testcase'
 
 #require 'tc/yaml'
 require 'tc/dir_iter'
-require 'tc/piper'
+require 'tc/piper' unless $mswin32
 require 'tc/cmdpipe'
 require 'tc/base'
 require 'tc/split'

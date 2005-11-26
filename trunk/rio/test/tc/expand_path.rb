@@ -9,7 +9,6 @@ require 'test/unit'
 require 'test/unit/testsuite'
 
 class TC_RIO_expand_path < Test::Unit::TestCase
-  require 'extensions/symbol'
   def initialize(*args)
     super
     @once = false
@@ -18,7 +17,7 @@ class TC_RIO_expand_path < Test::Unit::TestCase
   def assert!(a,msg="negative assertion")
     assert((!(a)),msg)
   end
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map{|el| el.to_s} end
   def setup
     s_dir = ''
     #$trace_states = true

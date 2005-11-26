@@ -81,17 +81,17 @@ module RIO
 end
 
 
-
+require 'rio/util'
 module RIO
   module Stream
     class Open < Base
       def size() 
         self.contents.size
       end
-      OUTPUT_SYMS = [:print,:printf,:puts,:putc,:write,
-                     :print!,:printf!,:puts!,:putc!,:write!,
-                     :put_,:putrec,:putrec!,:<,:<<
-      ].build_hash { |sym| [sym.to_s,1] }
+      OUTPUT_SYMS = Util::build_sym_hash([:print,:printf,:puts,:putc,:write,
+                                          :print!,:printf!,:puts!,:putc!,:write!,
+                                          :put_,:putrec,:putrec!,:<,:<< ])
+
       def sym_state(sym,im,om)
        if OUTPUT_SYMS[sym.to_s] or RIO::Ext::OUTPUT_SYMS[sym.to_s]
          om ||= (sym.to_s == '<<' ? 'a' : 'w')

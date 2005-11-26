@@ -4,7 +4,13 @@ if $0 == __FILE__
   $:.unshift File.expand_path('../lib/')
 end
 
-require 'rio'
+if ENV['TEST_RIO'] == 'gem'
+  require 'rubygems'
+  require_gem 'rio'
+else
+  require 'rio'
+end
+
 require 'tc/testcase'
 
 class TC_dir_iter < Test::RIO::TestCase

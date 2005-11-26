@@ -8,9 +8,7 @@ require 'test/unit'
 require 'test/unit/testsuite'
 
 class TC_RIO_paths < Test::Unit::TestCase
-  require 'extensions/symbol'
-  def pa(a) p a.map( &:to_s ) end
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map { |el| el.to_s } end
   def pmap(a)
     a.sort
   end

@@ -56,8 +56,8 @@ module RIO
       def initialize(ios=nil)
         @ios = ios
       end
-      def initialize_copy(*args)
-        @ios = @ios.clone unless @ios.nil?
+      def initialize_copy(cp)
+        @ios = cp.ios.clone unless cp.ios.nil?
       end
       def open(*args)
         @ios

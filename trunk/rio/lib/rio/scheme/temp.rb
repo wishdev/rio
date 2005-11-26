@@ -36,7 +36,7 @@
 #
 require 'tmpdir'
 module RIO
-  module Temp
+  module Temp #:nodoc: all
     RESET_STATE = 'Temp::Reset'
 
     require 'rio/rl/base'
@@ -55,7 +55,7 @@ module RIO
       def scheme() self.class.const_get(:RIOSCHEME) end
       def opaque()
         td = self.escape(@tmpdir.to_s)
-        td += '/' unless td.nil? or td.empty? or (td.ends_with?('/') and td != '/')
+        td += '/' unless td.nil? or td.empty? or (td != '/' and td[-1] == ?/)
         td + self.escape(@prefix)
       end
       

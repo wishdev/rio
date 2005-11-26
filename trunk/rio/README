@@ -27,10 +27,6 @@ Rio is a convenience class wrapping much of the functionality of
 IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 To create the documentation for Rio run the command
-  rake rdoc
-from the distribution directory. 
-
-If your don't have rake installed try:
   ruby RUNME.1st.rb
 from  the distribution directory.
 
@@ -43,12 +39,9 @@ Suggested Reading
 * RIO::Rio
 
 To install Rio untar the distribution and type
-  rake install
-
-If you don't have rake installed, get it.
-
-Until you do, you may want to try
-  ruby setup.rb
+  ruby setup.rb config
+  ruby setup.rb setup
+  ruby setup.rb install
 
 Rio is also available as a gem. If you have rubygems installed use:
   gem install rio
@@ -56,12 +49,6 @@ Rio is also available as a gem. If you have rubygems installed use:
 To use Rio as a rubygem:
   require 'rubygems'
   require 'rio'
-
-
-To build the documentation without rake, try
- rdoc --op doc/rdoc -m RIO::Doc::SYNOPSIS README lib/rio/doc/*.rb lib/rio.rb lib/rio/if/*.rb lib/rio/kernel.rb
- 
-Then point your browser at doc/rdoc.
 
 To read the documentation without running rdoc, read the files:
 * lib/rio/doc/SYNOPSIS.rb

@@ -7,9 +7,8 @@ end
 require 'rio'
 require 'test/unit'
 require 'test/unit/testsuite'
-require 'extensions/symbol'
 
-def smap(a) a.map( &:to_s ) end
+def smap(a) a.map { |el| el.to_s } end
 
 class TC_RIO_pa < Test::Unit::TestCase
   def test_pa

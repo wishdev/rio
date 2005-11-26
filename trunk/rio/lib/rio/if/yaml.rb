@@ -37,7 +37,7 @@
 
 module RIO
   module IF
-    module YAML
+    module YAML #:nodoc: all
       #def file() target.file end
       #def dir() target.dir end
       

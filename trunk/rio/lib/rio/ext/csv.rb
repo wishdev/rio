@@ -174,7 +174,11 @@ module RIO
           dat = _l2a(line,fs,rs)
           names = cnames(dat.length)
           dat = trim(dat)
-          (0...names.length).build_hash { |i| [names[i],dat[i]] } 
+          rw = {}
+          (0...names.length).each { |i|
+            rw[names[i]] = dat[i]
+          }
+          rw
         end
 
         def _rec_to_s_proc(fs,rs)

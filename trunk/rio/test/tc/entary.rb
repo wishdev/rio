@@ -5,13 +5,10 @@ if $0 == __FILE__
 end
 
 require 'rio'
-require 'test/unit'
-require 'test/unit/testsuite'
 require 'tc/testcase'
 
 class TC_RIO_entary < Test::Unit::TestCase
-  require 'extensions/symbol'
-  def smap(a) a.map( &:to_s ) end
+  def smap(a) a.map { |el| el.to_s } end
   def tdir() rio(%w/qp entary/) end
   def mkafile(*args)
     file = rio(*args)
