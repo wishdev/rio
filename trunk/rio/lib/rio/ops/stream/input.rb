@@ -91,6 +91,9 @@ module RIO
             raw_rec = self._get_rec
             return to_rec_(raw_rec) if @get_selrej.match?(raw_rec,@recno)
           end
+          self.close if closeoneof?
+          nil
+#          (closeoneof? ? self.on_eof_close{ nil } : nil)
         end
         def get_type(itertype,&block)
           old_itertype = cx['stream_itertype']
@@ -138,9 +141,9 @@ module RIO
                 end
               end
             end
-            return self
+            return closeoneof? ? self.close : self
           end
-          closeoneof? ? ior.close_on_eof_(self) : self
+          closeoneof? ? self.close : self
         end
 
         # iterate over the records, yielding only with matching records
@@ -159,7 +162,7 @@ module RIO
             end
             return self
           }
-          closeoneof? ? ior.close_on_eof_(self) : self
+          closeoneof? ? self.close : self
         end
         alias :each_row_ :each_
         def clear_selection()
@@ -204,7 +207,7 @@ module RIO
           selrej.rangetops
         end
 
-        def on_closeoneof
+        def on_closeoneof()
           #p "on_closeoneof #{self.object_id} #{self.ior.object_id}"
           self.close
         end

@@ -40,16 +40,6 @@ module RIO
 
     # undocumented
     def open(m,*args,&block) target.open(m,*args,&block); self end
-#       if block_given?
-#         old_closeoncopy,old_closeoneof = closeoncopy?,closeoneof?
-#         begin
-#           return yield(nocloseoncopy.nocloseoneof)
-#         ensure
-#           reset.closeoncopy(old_closeoncopy).closeoneof(old_closeoneof)
-#         end
-#       end
-#       self 
-#     end
 
     # Creates a symbolic link _dest_ which points to the Rio's Rio#fspath.  
     # Raises a NotImplementedError exception on platforms that do not support symbolic links.
@@ -123,10 +113,10 @@ module RIO
     def rename!(*args,&block) target.rename!(*args,&block); self end
     
 
-    # For directories proxies Dir#read, otherwise proxies IO#read
+    # For directories calls Dir#read, otherwise calls IO#read
     #
-    # Proxy for IO#read
-    #      ario.read([integer [, buffer]])    => string, buffer, or nil
+    # For streams calls IO#read
+    #  ario.read([integer [, buffer]])    => string, buffer, or nil
     # Reads at most _integer_ bytes from the I/O stream, or to the end of
     # file if _integer_ is omitted or is +nil+. If the optional _buffer_
     # argument is present, it must reference a String, which will receive
@@ -137,15 +127,15 @@ module RIO
     #
     #  rio("testfile").read(16) #=> "This is line one"
     #
-    # Proxy for Dir#read
-    #     dir.read => ario or nil
+    # For directories calls Dir#read
+    #  dir.read => ario or nil
     #------------------------------------------------------------------------
-    #     Reads the next entry from _dir_ and returns it as a Rio. Returns
-    #     +nil+ at the end of the stream.
-    #        d = rio("testdir")
-    #        d.read   #=> rio(".")
-    #        d.read   #=> rio("..")
-    #        d.read   #=> rio("config.h")
+    # Reads the next entry from _dir_ and returns it as a Rio. Returns
+    # +nil+ at the end of the stream.
+    #  d = rio("testdir")
+    #  d.read   #=> rio(".")
+    #  d.read   #=> rio("..")
+    #  d.read   #=> rio("config.h")
     #
     def read(*args) target.read(*args)end
     
@@ -166,18 +156,18 @@ module RIO
     #  f.rewind.readline #=> "This is line one\n"
     #
     # Proxy for Dir#rewind
-    #     ario.rewind => ario
+    #  ario.rewind => ario
     #------------------------------------------------------------------------
-    #     Repositions _ario_ to the first entry.
+    # Repositions _ario_ to the first entry.
     #
-    #        d = rio("testdir")
-    #        d.read          #=> rio(".")
-    #        d.rewind.read   #=> rio(".")
+    #  d = rio("testdir")
+    #  d.read          #=> rio(".")
+    #  d.rewind.read   #=> rio(".")
     def rewind(&block) target.rewind(&block); self end
 
-    # For directories proxies Dir#seek, otherwise proxies IO#seek
+    # For directories calls Dir#seek, otherwise calls IO#seek
     #
-    # Proxy for IO#seek
+    # For streams calls IO#seek
     #      ario.seek(amount, whence=SEEK_SET) -> ario
     # Seeks to a given offset _amount_ in the stream according to the
     # value of _whence_:
@@ -194,25 +184,25 @@ module RIO
     #  f = rio("testfile")
     #  f.seek(-28, IO::SEEK_END).readline                  #=> "happily ever after. The End\n"
     #
-    # Proxy for Dir#seek
+    # For directories calls Dir#seek
     #     ario.seek( integer ) => ario
     # Seeks to a particular location in _ario_. _integer_ must be a value
-    # returned by +Dir#tell+ or Rio#tell.
+    # returned by Rio#tell.
     #
-    #        d = rio("testdir")       #=> #<RIO::Rio:0x401b3c40>
-    #        d.read                   #=> rio(".")
-    #        i = d.tell               #=> 12
-    #        d.read                   #=> rio("..")
-    #        d.seek(i)                #=> #<RIO::Rio:0x401b3c40>
-    #        d.read                   #=> rio("..")
+    #  d = rio("testdir")       #=> #<RIO::Rio:0x401b3c40>
+    #  d.read                   #=> rio(".")
+    #  i = d.tell               #=> 12
+    #  d.read                   #=> rio("..")
+    #  d.seek(i)                #=> #<RIO::Rio:0x401b3c40>
+    #  d.read                   #=> rio("..")
     def seek(*args) target.seek(*args); self end
     #def seek(amount,whence=IO::SEEK_SET) target.seek(amount,whence) end
 
 
 
-    # For directories proxies Dir#pos, otherwise proxies IO#pos
+    # For directories calls Dir#pos, otherwise calls IO#pos
     #
-    # Proxy for IO#pos
+    # For streams calls IO#pos
     #      ario.pos     => integer
     #      ario.tell    => integer
     # Returns the current offset (in bytes) of _ario_.
@@ -223,24 +213,24 @@ module RIO
     #  f.pos    #=> 17
     #
     #
-    # Proxy for Dir#pos
+    # For directories calls Dir#pos
     #     ario.pos => integer
     #     ario.tell => integer
     # Returns the current position in _dir_. See also +Rio#seek+.
     #
-    #        d = rio("testdir")
-    #        d.pos   #=> 0
-    #        d.read  #=> rio(".")
-    #        d.pos   #=> 12
+    #     d = rio("testdir")
+    #     d.pos   #=> 0
+    #     d.read  #=> rio(".")
+    #     d.pos   #=> 12
     #
     def pos() target.pos end
 
     # See Rio#pos
     def tell() target.tell end
 
-    # For directories proxies Dir#pos=, otherwise proxies IO#pos=
+    # For directories calls Dir#pos=, otherwise calls IO#pos=
     #
-    # Proxy for IO#pos=
+    # For streams calls IO#pos=
     #      ario.pos = integer    => 0
     # Seeks to the given position (in bytes) in _ario_.
     #
@@ -248,7 +238,7 @@ module RIO
     #  f.pos = 17
     #  f.gets   #=> "This is line two\n"
     #
-    # Proxy for Dir#pos=
+    # For directories calls Dir#pos=
     #     ario.pos = integer     => integer
     #------------------------------------------------------------------------
     # Synonym for +Rio#seek+, but returns the position parameter.
@@ -261,6 +251,11 @@ module RIO
     #        d.read                   #=> rio("..")
     #
     def pos=(integer) target.pos = integer end
+
+    # For Streams calls IO#reopen, otherwise closes and re-opens 
+    # the Rio.
+    #
+    def reopen(mode=nil) target.reopen(mode); self end
   end
 end
 

@@ -44,4 +44,9 @@ module Kernel
   end
   module_function :rio
   alias :io :rio
+#  alias :old :print
+#  def print(*args)
+#    old(*args)
+#    raise RuntimeError,"Called P"
+#  end
 end

@@ -48,7 +48,10 @@ module RIO
 
     class RL < RL::PathBase 
       def open(m)
+        require 'rio/iowrap'
         ::File.open(self.fspath,m.to_s)
+        #fs.file.open(self.fspath,m.to_s)
+        #RIO::IOWrap::Stream.new(fs.file.open(self.fspath,m.to_s))
       end
     end
   end
@@ -57,7 +60,7 @@ module RIO
 
     class RL < RL::PathBase 
       def open()
-        ::Dir.open(self.fspath)
+        fs.dir.open(self.fspath)
       end
     end
   end

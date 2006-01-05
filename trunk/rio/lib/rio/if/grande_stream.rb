@@ -40,7 +40,7 @@ module RIO
 
     # Sets the rio to read lines and returns the Rio
     # 
-    # If called with a block behaves as if lines(*args).each(&block) had been called
+    # If called with a block behaves as if <tt>lines(*args).each(&block)</tt> had been called
     # 
     # +lines+ returns the Rio which called it. This might seem counter-intuitive at first. 
     # One might reasonably assume that
@@ -298,7 +298,7 @@ module RIO
     #  ario.closeoneof(&block) => ario
     #
     # +closeoneof+ causes a Rio to be closed automatically whenever the end of
-    # file is reached. This is handled at the IO level, and thus affects
+    # file is reached. This affects
     # all methods that read from a rio (Rio#readlines, Rio#to_a, Rio#each Rio#gets etc.)
     # Because +closeoneof+ must be on for many of Rio's most useful idioms,
     # it is on by default. +closeoneof+ can be turned off using Rio#nocloseoneof.
@@ -421,8 +421,8 @@ module RIO
     #
     #  rio('afile') < a_string # put a string into a file
     #  rio('afile') < an_array # put an array into a file
-    #  rio('afile') < rio('anotherfile').lines(1..10) # copy the first 10 lines of anotherfile into afile
-    #  rio('afile.gz').gzip < rio('anotherfile').lines(1..10) # same thing into a gzipped file
+    #  rio('afile') < rio('anotherfile').lines(0..9) # copy the first 10 lines of anotherfile into afile
+    #  rio('afile.gz').gzip < rio('anotherfile').lines(0..9) # same thing into a gzipped file
     #
     # In each of these cases, 'afile' would remain open after the copy and furthermore
     # since the destination Rio was not saved in a variable, There is no way to close file.
@@ -450,9 +450,7 @@ module RIO
     #
     # In perl the rio's destructor would be called, because there are no remaining references to the Rio
     # However, it my understanding and experience that in Ruby the finalizer will not necessarily be 
-    # called at this point. Calling all gurus: If I am missing something, 
-    # and there is a way to make this work without closeoncopy,
-    # please contact the author.
+    # called at this point. 
     #
     def closeoncopy(arg=true,&block) target.closeoncopy(arg,&block); self end
 
@@ -473,25 +471,6 @@ module RIO
     # See Rio#closeoncopy
     #
     def closeoncopy?() target.closeoncopy?() end
-
-
-    # Rio#autorewind?
-    #
-    #
-    #def autorewind?() target.autorewind?() end
-
-
-    # Sets a Rio to 'autorewind'.
-    # autorewind is not a well thought out concept and probably will be
-    # removed. Do not use it.
-    #
-    def autorewind(*args,&block) target.autorewind(*args,&block); self end
-
-
-    # Rio#noautorewind
-    #
-    #
-    #def noautorewind(arg=false,&block) target.noautorewind(arg,&block); self end
 
 
     # Queries the Rio's chomp-mode.

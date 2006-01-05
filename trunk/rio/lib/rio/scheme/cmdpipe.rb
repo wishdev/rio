@@ -112,39 +112,6 @@ module RIO
 #          become 'CmdPipe::Stream::Open'
 #        end
       end
-      class Open < RIO::Stream::Open
-        def input() stream_state('CmdPipe::Stream::Input') end
-        def output() stream_state('CmdPipe::Stream::Output') end
-        def inout() stream_state('CmdPipe::Stream::InOut') end
-        def open_(*args)
-          unless open?
-            ios = self.rl.open(mode?,*args)
-            self.ioh = ios #IOH::Stream.new(ios)
-          end
-          self
-        end
-      end
-
-      module Ops
-      end
-
-      class Input < RIO::Stream::Input
-        include Ops
-        def ior
-          ioh.rd
-        end
-      end
-
-      class Output < RIO::Stream::Output
-        include Ops
-        def iow
-          ioh.wr
-        end
-      end
-
-      class InOut < RIO::Stream::InOut
-        include Ops
-      end
     end
   end
 end

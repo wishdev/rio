@@ -35,18 +35,20 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
+# module RIO
+#   module Impl
+#     module U
+#       def self.readlink(s,*args) ::File.readlink(s,*args) end
+#       def self.lstat(s,*args) ::File.lstat(s,*args) end
+#     end
+#   end
+# end
 module RIO
-  module Impl
-    module U
-      def self.readlink(s,*args) ::File.readlink(s,*args) end
-      def self.lstat(s,*args) ::File.lstat(s,*args) end
-    end
-  end
   module Ops
     module Symlink
       module ExistOrNot
-        def readlink(*args) new_rio(Impl::U.readlink(self.to_s,*args)) end
-        def lstat(*args) Impl::U.lstat(self.to_s,*args) end
+        def readlink(*args) new_rio(fs.readlink(self.to_s,*args)) end
+        def lstat(*args) fs.lstat(self.to_s,*args) end
 
       end
       module Existing

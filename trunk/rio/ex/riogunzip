@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'rio'
-# riogzip: reads from stdin, gzips and writes it to stdout
+# riogunzip: reads from stdin, gzips and writes it to stdout
 # example use:
 #   riogunzip < afile.txt.gz
 # 

@@ -47,8 +47,8 @@ uses Zlib, and CSV to extend that functionality using a simple
 consistent interface.  Most of the instance methods of IO, File and
 Dir are simply forwarded to the appropriate handle to provide
 identical functionality. Rio also provides a "grande" interface that
-allows many application level IO tasks to be accomplished in line or
-two of code.
+allows many application level IO tasks to be expressed succinctly.
+
 
 Rio functionality can be broadly broken into three categories
 * path manipulation
@@ -70,7 +70,7 @@ the presence of a block as an implied +each+.
 == Using a Rio
 
 Using a Rio can be described as having 3 steps:
-* Creating a Rio (using the constructor or as the result of one of the path manipulation methods)
+* Creating a Rio
 * Configuring a Rio 
 * Rio I/O
 
@@ -93,64 +93,97 @@ that have a path and those that don't.
 
 To create a Rio that has a path the arguments to +rio+ may be:
 
-* a string representing the entire path. The separator used for Rios is as specified in RFC1738 ('/').
+* a string representing the entire path. The separator used for Rios
+  is as specified in RFC1738 ('/').
+
    rio('adir/afile')
+
 * a string representing a fully qualified +file+ URI as per RFC1738
+
    rio('file:///atopleveldir/adir/afile')
+
 * a +URI+ object representing a +file+ or generic +URI+
+
    rio(URI('adir/afile'))
+
 * the components of a path as separate arguments
+
    rio('adir','afile')
+
 * the components of a path as an array
+
    rio(%w/adir afile/)
+
 * another Rio
+
    another_rio = rio('adir/afile')
    rio(another_rio)
+
 * any object whose +to_s+ method returns one of the above
+
    rio(Pathname.new('apath'))
-* any combination of the above either as separate arguments or as elements of an array,
+
+* any combination of the above either as separate arguments or as
+  elements of an array,
+
    another_rio = rio('dir1/dir2')
    auri = URI('dir4/dir5)
    rio(another_rio,'dir3',auri,'dir6/dir7')
 
 ===== Creating a Rio that refers to a web page
 
-To create a Rio that refers to a web page the arguments to +rio+ may be:
+To create a Rio that refers to a web page the arguments to +rio+ may
+be:
 
 * a string representing a fully qualified +http+ URI
+
    rio('http://ruby-doc.org/index.html')
+
 * a +URI+ object representing a +http+ +URI+
+
    rio(URI('http://ruby-doc.org/index.html'))
+
 * either of the above with additional path elements
+
    rio('http://www.ruby-doc.org/','core','classes/Object.html')
    
+
 ===== Creating a Rio that refers to a file or directory on a FTP server
 
-To create a Rio that refers to a file on a FTP server the arguments to +rio+ may be:
+To create a Rio that refers to a file on a FTP server the arguments to
++rio+ may be:
 
 * a string representing a fully qualified +ftp+ URI
+
    rio('ftp://user:password@ftp.example.com/afile.tar.gz')
+
 * a +URI+ object representing a +ftp+ +URI+
+
    rio(URI('ftp://ftp.example.com/afile.tar.gz'))
+
 * either of the above with additional path elements
+
    rio('ftp://ftp.gnu.org/pub/gnu','emacs','windows','README')
    
 ==== Creating Rios that do not have a path
 
-To create a Rio without a path, the first argument to +rio+ is usually a single
-character.
+To create a Rio without a path, the first argument to +rio+ is usually
+a single character.
 
 ===== Creating a Rio that refers to a clone of your programs stdin or stdout.
 
-<tt>rio(?-)</tt> (mnemonic: '-' is used by some Unix programs to specify stdin or stdout in place of a file)
+<tt>rio(?-)</tt> (mnemonic: '-' is used by some Unix programs to
+specify stdin or stdout in place of a file)
 
-Just as a Rio that refers to a file, does not know whether that file will be opened for reading or
-writing until an io operation is specified, a <tt>stdio:</tt> Rio does not know whether it will connect
-to stdin or stdout until an I/O operation is specified. 
+Just as a Rio that refers to a file, does not know whether that file
+will be opened for reading or writing until an io operation is
+specified, a <tt>stdio:</tt> Rio does not know whether it will connect
+to stdin or stdout until an I/O operation is specified.
 
 ===== Creating a Rio that refers to a clone of your programs stderr.
 
-<tt>rio(?=)</tt> (mnemonic: '-' refers to fileno 1, so '=' refers to fileno 2)
+<tt>rio(?=)</tt> (mnemonic: '-' refers to fileno 1, so '=' refers to
+fileno 2)
 
 ===== Creating a Rio that refers to an arbitrary IO object.
 
@@ -196,13 +229,15 @@ or
  rio('tcp://hostname:port')
 
 ===== Creating a Rio that runs an external program and connects to its
-      stdin and stdout
+stdin and stdout
 
-<tt>rio(?-,cmd)</tt> (mnemonic: '-' is used by some Unix programs to specify stdin or stdout in place of a file)
+<tt>rio(?-,cmd)</tt> (mnemonic: '-' is used by some Unix programs to
+specify stdin or stdout in place of a file)
 
 or
 
-<tt>rio(?`,cmd)</tt> (mnemonic: '`' (backtick) runs an external program in ruby)
+<tt>rio(?`,cmd)</tt> (mnemonic: '`' (backtick) runs an external
+program in ruby)
 
 This is Rio's interface to IO#popen
 

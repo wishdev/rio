@@ -42,10 +42,10 @@ module RIO
         def get_arg_() $/ end
         def get_(sep_string=get_arg_)
           #p callstr('get_',sep_string.inspect)
-          self.ioh.gets(sep_string)
+          self.ior.gets(sep_string)
         end
         def each_rec_(&block) 
-          each_line { |line|
+          self.ior.each_line { |line|
             yield line
           }
           self
@@ -55,8 +55,7 @@ module RIO
         def put_(rec,*args)
           #p callstr('put_',rec,*args)
           self.ioh.print(rec.to_s)
-        end
-      end
+        end      end
     end
     module Bytes
       module Input
@@ -64,12 +63,12 @@ module RIO
           cx['bytes_n']  
         end
         def get_(nb=get_arg_())
-          self.ioh.read(nb)
+          self.ior.read(nb)
         end
         def each_rec_(&block) 
           #p callstr('each_rec_ (EachIter::Bytes)')
           #        p 'each_rec_ => each_line'
-          each_bytes(cx['bytes_n']) { |b|
+          self.ior.each_bytes(cx['bytes_n']) { |b|
             yield b
           }
           self

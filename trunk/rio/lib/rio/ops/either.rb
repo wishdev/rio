@@ -57,13 +57,14 @@ module RIO
       end
       module NonExisting
         include ExistOrNot
+        def empty?() false end
       end
 
       module Existing
         include ExistOrNot
 
-        def chmod(mod) rtn_self { Impl::U.chmod(mod,fspath) } end
-        def chown(owner,group) rtn_self { Impl::U.chown(owner,group,fspath) } end
+        def chmod(mod) rtn_self { fs.chmod(mod,fspath) } end
+        def chown(owner,group) rtn_self { fs.chown(owner,group,fspath) } end
         def must_exist() self end
 
         def rename(*args,&block)
@@ -72,7 +73,7 @@ module RIO
           else
             rtn_reset { 
               dst = ensure_rio(args.shift)
-              Impl::U.mv(self,dst,*args) 
+              fs.mv(self,dst,*args) 
               dst.reset
             } 
           end
@@ -83,7 +84,7 @@ module RIO
           else
             rtn_reset { 
               dst = ensure_rio(args.shift)
-              Impl::U.mv(self,dst,*args) 
+              fs.mv(self,dst,*args) 
               dst.reset
               self.rl = dst.rl.clone
             } 
@@ -117,12 +118,13 @@ module RIO
 
         require 'pathname'
         def realpath
-          new_rio(Impl::U.realpath(fspath))
+          new_rio(fs.realpath(fspath))
         end
         def mountpoint?
-          Impl::U.mountpoint?(fspath)
+          fs.mountpoint?(fspath)
         end
-
+        def empty?() self.to_a.empty? end
+        
       end
 
     end

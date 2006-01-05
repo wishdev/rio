@@ -46,10 +46,20 @@ module RIO
       include Ops::Path::Str
 
       def fstream() 
-        self.rl = RIO::File::RL.new(self.to_uri)
-        become 'Path::Stream::Open'
-#        become 'Stream::Open'
+        if zipent?
+          self.rl = RIO::ZFile::RL.new(self.rl.zipfile,self.to_uri)
+          become 'Path::Stream::Open'          
+        else
+          self.rl = RIO::File::RL.new(self.to_uri)
+          if zipfile?
+            become 'ZipFile::CentralDir::Open'
+          else
+            become 'Path::Stream::Open'
+          end
+        end
+        #        become 'Stream::Open'
       end
+
       def when_missing(sym,*args) fstream() end
     end
     
@@ -75,4 +85,4 @@ module RIO
     
   end
   
-end # module RIO
+end

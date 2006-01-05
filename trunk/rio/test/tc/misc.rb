@@ -5,6 +5,7 @@ if $0 == __FILE__
 end
 require 'rio'
 require 'tc/testcase'
+require 'dev-utils/debug'
 
 #require 'tc_myfirsttests'
 #require 'tc_moretestsbyme'
@@ -23,28 +24,6 @@ class TC_RIO_misc < Test::Unit::TestCase
       f.puts("Line #{n}")
     end
     got =  f.a.puts("Line 5").readlines
-    assert_equal(exp,got)
-
-    f = rio('qp/rwlines.txt').nocloseoneof.autorewind.chomp.mode('w+')
-    0.upto(4) do |n|
-      f.puts("Line #{n}")
-    end
-    got = f.puts("Line 5").readlines
-    assert_equal(exp,got)
-
-    f = rio('qp/rwlines.txt').nocloseoneof.autorewind.chomp.mode('w+')
-    0.upto(4) do |n|
-      f.puts("Line #{n}")
-    end
-    got = f.puts!("line 5").readlines
-    assert_equal([],got)
-
-    f = rio('qp/rwlines.txt').nocloseoneof.autorewind.chomp.mode('w+')
-    0.upto(4) do |n|
-      f.puts("Line #{n}")
-    end
-    f.close
-    got = rio('qp/rwlines.txt').a.nocloseoneof.autorewind.chomp.puts!("Line 5").readlines
     assert_equal(exp,got)
 
     f = rio('qp/rwlines.txt').mode('w')
@@ -121,21 +100,6 @@ class TC_RIO_misc < Test::Unit::TestCase
       got =  f.a.puts("Line 5").readlines
       assert_equal(exp,got)
       
-      f = rio('rwlines.txt').nocloseoneof.autorewind.chomp.mode('w+')
-      0.upto(4) { |n| f.puts("Line #{n}") }
-      got = f.puts("Line 5").readlines
-      assert_equal(exp,got)
-      
-      f = rio('rwlines.txt').nocloseoneof.autorewind.chomp.mode('w+')
-      0.upto(4) { |n| f.puts("Line #{n}") }
-      got = f.puts!("line 5").readlines
-      assert_equal([],got)
-      
-      f = rio('rwlines.txt').nocloseoneof.autorewind.chomp.mode('w+')
-      0.upto(4) { |n| f.puts("Line #{n}") }
-      f.close
-      got = rio('rwlines.txt').a.nocloseoneof.autorewind.chomp.puts!("Line 5").readlines
-      assert_equal(exp,got)
       
       f = rio('rwlines.txt').a
       assert_equal_s('a',f.outputmode?)

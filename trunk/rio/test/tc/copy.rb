@@ -27,7 +27,7 @@ class TC_RIO_copy < Test::Unit::TestCase
     sline = rio(datadir,'src').readline
     l1 = rio(datadir,'dst1').readline
     l2 = rio(datadir,'dst2/src').readline
-    assert_equal(inline,sline,'a message in a assertion')
+    assert_equal(inline,sline,'a message in an assertion')
     assert_equal(inline,l1)
     assert_equal(inline,l2)
 
@@ -37,25 +37,27 @@ class TC_RIO_copy < Test::Unit::TestCase
     sd1.join('f1.txt').puts(txt).close
     oline = rio(datadir,'dir1/sd1/f1.txt').readline
 
-    dir2 = rio(datadir,'dir2').rmtree.mkpath
-    sd1.copy_to(dir2)
-    nline = rio(datadir,'dir2/sd1/f1.txt').readline
-    assert_equal(oline,nline)
+#     dir2 = rio(datadir,'dir2').rmtree.mkpath
+#     sd1.copy_to(dir2)
+#     $trace_states = true
+#     nline = rio(datadir,'dir2/sd1/f1.txt').readline
+#     assert_equal(oline,nline)
     
-    dir2 = rio(datadir,'dir2').rmtree.mkpath
-    sd1 > dir2
-    nline = rio(datadir,'dir2/sd1/f1.txt').readline
-    assert_equal(oline,nline)
+#     dir2 = rio(datadir,'dir2').rmtree.mkpath
+#     sd1 > dir2
+#     $trace_states = false
+#     nline = rio(datadir,'dir2/sd1/f1.txt').readline
+#     assert_equal(oline,nline)
     
-    dir2 = rio(datadir,'dir2').rmtree.mkpath
-    dir2 < rio(datadir,'dir1/sd1')
-    nline = rio(datadir,'dir2/sd1/f1.txt').readline
-    assert_equal(oline,nline)
+#     dir2 = rio(datadir,'dir2').rmtree.mkpath
+#     dir2 < rio(datadir,'dir1/sd1')
+#     nline = rio(datadir,'dir2/sd1/f1.txt').readline
+#     assert_equal(oline,nline)
     
-    dir2 = rio(datadir,'dir2').rmtree.mkpath
-    sd1 > dir2.to_s
-    nline = rio(datadir,'dir2/sd1/f1.txt').readline
-    assert_equal(oline,nline)
+#     dir2 = rio(datadir,'dir2').rmtree.mkpath
+#     sd1 > dir2.to_s
+#     nline = rio(datadir,'dir2/sd1/f1.txt').readline
+#     assert_equal(oline,nline)
     
     dir2 = rio(datadir,'dir2').rmtree.mkpath
     dir2 < rio(datadir,'dir1/sd1').to_s

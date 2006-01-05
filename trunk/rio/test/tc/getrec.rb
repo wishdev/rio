@@ -86,9 +86,6 @@ class TC_RIO_getrec < Test::Unit::TestCase
       assert_equal(expa,ans)
 
       rec = f.getrec
-      assert_nil(rec)
-
-      rec = f.getrec
       assert_equal(expa[0],rec)
     end
 
@@ -103,7 +100,7 @@ class TC_RIO_getrec < Test::Unit::TestCase
         ans << rec
       end
       rec = f.getrec
-      assert_nil(rec)
+      assert_equal(expa[0],rec)
     end
 
     begin
@@ -134,7 +131,7 @@ class TC_RIO_getrec < Test::Unit::TestCase
       f.each do |rec|
         ans << rec
       end
-      assert_equal(expa,ans)
+      assert_equal([],ans)
     end
   end
 end

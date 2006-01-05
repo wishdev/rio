@@ -1,4 +1,4 @@
-Piping Hot -- Rio 0.3.7
+Rio 0.3.7
 
 == Overview
 
@@ -21,11 +21,11 @@ Support for Pipe operator
  rio('infile1') | cmdpipe | rio('outfile1')
  rio('infile2') | cmdpipe | rio('outfile2')
 
- cmdpipe2 = rio(?|,'cmd1','cmd2','outfile')   # create a cmdpipe Rio
+ cmdpipe2 = rio(?|,'cmd1','cmd2',rio('outfile')) # a cmdpipe Rio
  rio('infile1') | cmdpipe2       # run with input coming from a file
  rio(?-) | cmdpipe2              # same commands with input from stdin
 
-Improved support for MS Windows path specifications
+Improved support for MS Windows paths containing drives and UNC paths.
  rio('D:/adir/afile')
  rio('//ahost/adir/afile')
 
@@ -135,68 +135,8 @@ Create a tab separated file of accounts in a UNIX passwd file,
 listing only the username, uid, and realname fields
  rio('/etc/passwd').csv(':').columns(0,2,4) > rio('rpt').csv("\t")
 
-== New for version 0.3.4
+== Contact
 
-* New Grande Selection parameter.
-
-  A major weakness of Rio's selection methods (lines, files, etc.)
-  has always been that it only implemented a logical OR.
-
-   rio('afile').lines(0..10,/Rio/) {...}
-  iterates through lines that are in the range 0..10 OR 
-  contain 'Rio'.
-
-   rio('adir').files(:executable?,'*.rb') {...}
-  iterates through files that are executable OR match '*.rb'
-
-  Selecting files that matched both required using a proc.
-   rio('adir').files(proc{ |f| f.executable? and f.fnmatch?('*.rb')}) {...}
-
-  Rio's grande selection methods will now accept an array of conditions
-  which must all be matched, in order to be selected. A logical AND.
-
-   rio('adir').files([:executable?,'*.rb']) {...}
-  
-  The array, of course, need not be the only paramter. 
-
-   rio('adir').files('*.exe',[:executable?,'*.rb']) {...}
-
-  selects .exe files and .rb files that are executable.
-
-* Renamed some of grande rejection methods. 
-  (based on a suggestion by Gavin Sinclair)
-   nolines => skiplines
-   nofiles => skipfiles
-  etc.
-
-* New skip() grande method
-   rio('afile').skip.lines(/Rio/)       # same as skiplines(/Rio/)
-   rio('afile').lines(/Rio/).skip(0..9) # lines with 'Rio', exclude 
-                                        # the first ten lines
-
-* Alternative syntaxes for creating Rios that have no path.
-   rio(?-)          # create a Rio refering to stdio
-   rio(:stdio)      # same thing.
-   rio.stdio        # same thing
-   RIO.stdio        # ditto
-   RIO::Rio.stdio   # once again
-
-* From Pathname added
-  * root?
-  * mountpoint?
-  * realpath
-  * cleanpath
-
-* Removed Rio#slurp in favor of Rio#contents.
-
-* Added aliases for the copy operators. (suggested by Dave Burt)
-   * copy_to >
-   * append_to >>
-   * copy_from <
-   * append_from <<
-
-* Bug fixes and corrections    
-  
 Project:: http://rubyforge.org/projects/rio/
 Documentation:: http://rio.rubyforge.org/
 Bugs:: http://rubyforge.org/tracker/?group_id=821

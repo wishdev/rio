@@ -1,3 +1,4 @@
+
 #--
 # =============================================================================== 
 # Copyright (c) 2005, Christopher Kleckner
@@ -41,6 +42,7 @@ require 'rio/context/methods'
 require 'rio/ext'
 require 'rio/symantics'
 require 'rio/filter'
+require 'rio/fs/native'
 
 module RIO
 
@@ -54,7 +56,7 @@ module RIO
     # * the state changing mechanism
     # * and some basic error handling stubs
     class Base
-      KIOSYMS = [:gets,:open,:readline,:readlines,:chop,:to_a,:putc,:puts,:print,:printf,:split,
+      KIOSYMS = [:gets,:getc,:open,:readline,:readlines,:chop,:to_a,:putc,:puts,:print,:printf,:split,
                  :=~,:===,:==,:eql?,:sub,:sub!,:gsub,:gsub!,:load]
       @@kernel_cleaned ||= KIOSYMS.each { |sym| undef_method(sym) } 
     end 
@@ -64,6 +66,7 @@ module RIO
       attr_accessor :ioh
       attr_accessor :try_state
       attr_accessor :cx
+      attr_accessor :fs
 
       attr_accessor :handled_by
 
@@ -75,6 +78,7 @@ module RIO
       
       def initialize()
         @rl = @cx = @ioh = nil
+        @fs = RIO::FS::Native.create()
 #        @handled_by = self.class.to_s
       end
 
@@ -84,8 +88,8 @@ module RIO
         @rl = @rl.clone unless @rl.nil?
         @cx = @cx.clone unless @cx.nil?
         @ioh = @ioh.clone unless @ioh.nil?
+        # @fs = @fs
       end
-
       def self.new_r(riorl)
         new.init(riorl,Cx::Vars.new( { 'closeoneof' => true, 'closeoncopy' => true } ))
       end
@@ -95,10 +99,11 @@ module RIO
         cp.ioh = self.ioh.clone unless self.ioh.nil?
         cp
       end
-      def init(riorl,cntx,iohandle=nil)
+      def init(riorl,cntx,iohandle=nil,fs=RIO::FS::Native.create())
         @rl = riorl
         @cx = cntx
         @ioh = iohandle
+        @fs = fs
 #        raise Exception::FailedCheck.new(self) unless check?
         self
       end
@@ -108,7 +113,7 @@ module RIO
       end
 
       def copy_state(other)
-        init(other.rl,other.cx,other.ioh)
+        init(other.rl,other.cx,other.ioh,other.fs)
       end
 
       alias :ior :ioh
@@ -205,6 +210,13 @@ module RIO
         n = new_rio(*args)
         n.cx = self.cx.bequeath
         n
+      end
+      def rio(*args)
+        if zipfile?
+          open_.dstream.rio(*args)
+        else
+          new_rio_cx(*args)
+        end
       end
       def ensure_rio(arg0)
         return arg0 if arg0.kind_of?(::RIO::Rio)

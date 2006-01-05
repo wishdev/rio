@@ -37,6 +37,8 @@
 
 require 'rio/ext/csv'
 require 'rio/ext/yaml'
+require 'rio/ext/zipfile'
+
 require 'rio/util'
 module RIO
   module Ext #:nodoc: all
@@ -45,6 +47,7 @@ module RIO
     module Cx
       include CSV::Cx
       include YAML::Cx
+      include ZipFile::Cx
     end
   end
   module Ext

@@ -39,24 +39,24 @@ require 'rio/cp'
 require 'rio/piper/cp'
 require 'rio/ops/either'
 
-module RIO
-  module Impl
-    module U
-      def self.copy(s,d)
-        require 'fileutils'
-        ::FileUtils.cp(s.to_s,d.to_s)
-      end
-      def self.rm(s)
-        require 'fileutils'
-        ::FileUtils.rm(s.to_s)
-      end
-      def self.touch(s)
-        require 'fileutils'
-        ::FileUtils.touch(s.to_s)
-      end
-    end
-  end
-end
+# module RIO
+#   module Impl
+#     module U
+#       def self.copy(s,d)
+#         require 'fileutils'
+#         ::FileUtils.cp(s.to_s,d.to_s)
+#       end
+#       def self.rm(s)
+#         require 'fileutils'
+#         ::FileUtils.rm(s.to_s)
+#       end
+#       def self.touch(s)
+#         require 'fileutils'
+#         ::FileUtils.touch(s.to_s)
+#       end
+#     end
+#   end
+# end
 module RIO
   module Ops
     module File
@@ -73,15 +73,17 @@ module RIO
         def selective?
           %w[stream_sel stream_nosel].any? { |k| cx.has_key?(k) }
         end
+        def empty?() 
+          self.selective? ? self.to_a.empty? : self.size == 0 
+        end
         def rm(*args) 
           rtn_reset { 
-            Impl::U.rm(self,*args) 
+            fs.rm(self,*args) 
           } 
         end
         alias :delete :rm
         alias :delete! :rm
-
-        def touch(*args) rtn_self { Impl::U.touch(self,*args) } end
+        def touch(*args) rtn_self { fs.touch(self,*args) } end
       end
       module NonExisting
         include ExistOrNot
@@ -90,7 +92,7 @@ module RIO
         def rm(*args) rtn_self { ; } end
         alias delete rm
         alias delete! rm
-        def touch(*args) rtn_reset { Impl::U.touch(self,*args) } end
+        def touch(*args) rtn_reset { fs.touch(self,*args) } end
       end
     end
   end

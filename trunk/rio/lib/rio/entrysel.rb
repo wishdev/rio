@@ -63,7 +63,8 @@ module RIO
         def =~(entry) false end
       end
       class Glob < Base
-        def =~(entry) Impl::U.fnmatch?(entry.filename.to_s,@match_to) end
+        def =~(entry) ::File.fnmatch?(@match_to,entry.filename.to_s) end
+        #def =~(entry) Impl::U.fnmatch?(entry.filename.to_s,@match_to) end
       end
       class Regexp < Base
         def =~(entry) @match_to =~ entry.filename.to_s end

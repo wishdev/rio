@@ -269,7 +269,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    array = ario['*.txt']
    # method 2
-   array = ario[/\.txt/]
+   array = ario[/\.txt$/]
    # method 3
    array = ario.entries['*.txt']
   
@@ -277,7 +277,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    array = ario.files['*.txt']
    # method 2
-   array = ario.files[/\.txt/]
+   array = ario.files[/\.txt$/]
    # method 3
    array = ario.files['*.txt']
   
@@ -285,7 +285,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    array = ario.all['*.txt']
    # method 2
-   array = ario.all[/\.txt/]
+   array = ario.all[/\.txt$/]
    # method 3
    array = ario.all.entries['*.txt']
   
@@ -294,7 +294,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    array = ario.norecurse('.svn').all['*.txt']
    # method 2
-   array = ario.norecurse(/^\.svn$/).all[/\.txt/]
+   array = ario.norecurse(/^\.svn$/).all[/\.txt$/]
    # method 3
    array = ario.norecurse('.svn').entries['*.txt']
    # method 4
@@ -337,7 +337,7 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    array = ario.skipdirs['.svn']
    # method 2
-   array = ario.skipdirs[/^\.svn/]
+   array = ario.skipdirs[/^\.svn$/]
    # method 3
    array = ario.skipdirs('.svn').to_a
    # method 4
@@ -648,6 +648,11 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    rio('adir').all.files('*.htm') do |htmfile|
      htmfile.rename.extname = '.html'
    end
+
+* Move a file in an arbitrary directory into the current working directory.
+   # method 1
+   rio('arb/i/trary/di/rec/tory/afile').rename.dirname = '.'
+
 
 ---
 

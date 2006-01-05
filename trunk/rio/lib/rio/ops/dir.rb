@@ -74,7 +74,7 @@ module RIO
   module Ops
     module Dir
       module ExistOrNot
-        include ::RIO::Ops::FileOrDir::ExistOrNot
+        include RIO::Ops::FileOrDir::ExistOrNot
       end
     end
   end
@@ -84,13 +84,13 @@ module RIO
         include ExistOrNot
         include ::RIO::Ops::FileOrDir::NonExisting
         def mkdir(*args)
-          #          p callstr('mkdir',*args)
-          Impl::U.mkdir(self,*args); 
+          fs.mkdir(self.to_s,*args); 
           softreset() 
         end
         def mkpath(*args) 
           #          p callstr('mkpath',*args)
-          Impl::U.mkpath(self,*args); 
+          fs.mkpath(self.to_s,*args); 
+          #fs.mkpath(self,*args); 
           softreset()
         end
         def rmdir(*args) self end
@@ -124,13 +124,14 @@ module RIO
         def selective?
           %w[entry_sel stream_sel stream_nosel].any? { |k| cx.has_key?(k) }
         end
+        def empty?() self.to_a.empty? end
         def mkdir(*args) self end
         def mkpath(*args) self end
         def rmdir(*args) 
-          Impl::U.rmdir(self,*args); 
+          fs.rmdir(self.to_s,*args); 
           softreset()
         end
-        def rmtree(*args) Impl::U.rmtree(self,*args); softreset() end
+        def rmtree(*args) fs.rmtree(self.to_s,*args); softreset() end
 
         alias :delete :rmdir
         alias :delete! :rmtree
@@ -138,16 +139,16 @@ module RIO
 
         def chdir(*args,&block) 
           if block_given?
-            Impl::U.chdir(self,*args) { |dir|
+            fs.chdir(self.to_s,*args) { |dir|
               yield new_rio('.')
             }
           else
-            Impl::U.chdir(self,*args)
+            fs.chdir(self.to_s,*args)
             return new_rio('.')
           end
           self
         end
-
+        
         def ensure_rio_cx(arg0)
           return arg0 if arg0.kind_of?(::RIO::Rio)
           new_rio_cx(arg0)
@@ -156,11 +157,11 @@ module RIO
         def glob(*args,&block) 
           chdir do
             if block_given?
-              Impl::U.glob(*args) do |ent|
+              fs.glob(*args) do |ent|
                 yield new_rio_cx(self,ent)
               end
             else
-              return Impl::U.glob(*args).map { |ent| new_rio_cx(self,ent) }
+              return fs.glob(*args).map { |ent| new_rio_cx(self,ent) }
             end
           end
         end
@@ -230,9 +231,12 @@ module RIO
           args = cx['skip_args'] || []
           self.skipentries(*args)
         end
+        def ent_to_rio_(estr,selfstr)
+          new_rio_cx(selfstr ? fs.join(selfstr,estr) : estr )
+        end
         def handle_ent_(estr,selfstr,sel,&block)
           begin
-            erio = new_rio_cx(selfstr ? Impl::U.join(selfstr,estr) : estr )
+            erio = ent_to_rio_(estr,selfstr)
             
             if stream_iter?
               _add_stream_iter_cx(erio).each(&block) if erio.file? and sel.match?(erio)
@@ -254,9 +258,9 @@ module RIO
           handle_skipped()
           sel = Match::Entry::Selector.new(cx['entry_sel'])
           selfstr = (self.to_s == '.' ? nil : self.to_s)
-          self.ioh.each do |estr|
-            next if 
-            handle_ent_(estr,selfstr,sel,&block) unless estr =~ /^\.(\.)?$/
+          self.ioh.each do |ent|
+            #next if 
+            handle_ent_(ent,selfstr,sel,&block) unless ent =~ /^\.(\.)?$/
           end
           closeoneof? ? self.close : self
         end
@@ -265,8 +269,8 @@ module RIO
           handle_skipped()
           sel = Match::Entry::Selector.new(cx['entry_sel'])
           selfstr = (self.to_s == '.' ? nil : self.to_s)
-          while estr = self.ioh.read
-            handle_ent_(estr,selfstr,sel,&block) unless estr =~ /^\.(\.)?$/
+          while ent = self.ioh.read
+            handle_ent_(ent,selfstr,sel,&block) unless ent =~ /^\.(\.)?$/
           end
           closeoneof? ? self.close : self
         end

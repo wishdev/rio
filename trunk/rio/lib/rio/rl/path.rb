@@ -47,8 +47,10 @@ module RIO
       HOST = URI::REGEXP::PATTERN::HOST
       SCHEME = URI::REGEXP::PATTERN::SCHEME
 
+      attr :fs
       def initialize(pth,*args)
 
+        @fs = RIO::FS::Native.create()
         @host = nil  # host or nil
         @fspath = nil
         case pth
@@ -71,7 +73,7 @@ module RIO
         else
           self.fspath = pth
         end
-        args = _get_base_from_args(args)
+        args = _get_opts_from_args(args)
         self.join(*args) unless args.empty?
         unless self.absolute? or @base
           @base = RL.fs2url(::Dir.getwd)+'/'
@@ -89,15 +91,21 @@ module RIO
       end
       include PathMethods
 
-      def _get_base_from_args(args)
+      def _get_opts_from_args(args)
         @base = nil
-        if !args.empty? and args[-1].kind_of?(::Hash) and (b = args.pop[:base])
-          @base = case b
-                when %r%^file://(#{HOST})?(/.*)?$% then b
-                when %r%^/% then b
-                else RL.fs2url(::Dir.getwd)+'/'+b
-                end
-          @base.squeeze('/')
+        if !args.empty? and args[-1].kind_of?(::Hash) 
+          opts = args.pop
+          if b = opts[:base]
+            @base = case b
+                    when %r%^file://(#{HOST})?(/.*)?$% then b
+                    when %r%^/% then b
+                    else RL.fs2url(::Dir.getwd)+'/'+b
+                    end
+            @base.squeeze('/')
+          end
+          if fs = opts[:fs]
+            @fs = fs
+          end
         end
         args
       end
@@ -171,7 +179,7 @@ module RIO
 
 
       def dirname()
-        Impl::U.dirname(self.path_no_slash)
+        ::File.dirname(self.path_no_slash)
       end
 
     end

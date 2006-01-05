@@ -289,7 +289,7 @@ module RIO
         alias :copy_to :>
         alias :append_to :>>
 
-        private
+        protected
 
         def cpto_rio_(ario)
           ario = ario.join(self.filename) if ario.exist?

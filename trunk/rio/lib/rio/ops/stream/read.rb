@@ -40,42 +40,45 @@ module RIO
   module Ops
     module Stream
       module Read
-        def contents() 
-          auto { ior.gets(nil) }
+
+        private
+
+        def _post_eof_close(&block)
+          rtn = yield
+          self.close if closeoneof?
+          rtn
         end
-        def readlines(*args)
-          auto { ior.readlines(*args) }
+        def _pre_eof_close(&block)
+          begin
+            closit = ior.eof? && closeoneof?
+            rtn = yield
+          ensure
+            self.close if closit
+          end
+          rtn
         end
-        def read(*args)
-          auto { ior.read(*args) }
-        end
+
+        public
+
+        def contents()                  _post_eof_close { ior.gets(nil) || "" }         end
+        def readlines(*args)            _post_eof_close { ior.readlines(*args) }        end
+        def each_line(*args,&block)     _post_eof_close { ior.each_line(*args,&block) } end
+        def each_byte(*args,&block)     _post_eof_close { ior.each_byte(*args,&block) } end
+        def each_bytes(nb,*args,&block) _post_eof_close { ior.each_bytes(nb,&block) }   end
+
+        def read(*args)                 _pre_eof_close { ior.read(*args) }               end
+        def gets(*args)                 _pre_eof_close { ior.gets(*args) }               end
+        def readline(*args)             _pre_eof_close { ior.readline(*args) }           end
+        def readpartial(*args)          _pre_eof_close { ior.readpartial(*args) }        end
+        def readchar(*args)             _pre_eof_close { ior.readchar(*args) }           end
+        def getc(*args)                 _pre_eof_close { ior.getc(*args) }               end
+
         def ungetc(*args)
           ior.ungetc(*args)
           self
         end
-        def each_line(*args,&block)
-          auto { 
-#            self.ior.each_line(*args,&block) 
-            self.ior.each_line { |line|
-              yield line
-            } #(*args,&block) 
-          }
-        end
-        def each_byte(*args,&block)
-          auto { ior.each_byte(*args,&block) }
-        end
-        def each_bytes(nb,*args,&block)
-          #p callstr('each_bytes',nb,*args)
-          auto {
-            until ior.eof?
-              break unless s = ior.read(nb)
-              yield s
-            end
-          }
-        end
-
-        extend Forwardable
-        def_instance_delegators(:ior,:readline,:readchar,:gets,:lineno)
+        def lineno()     ior.lineno       end
+        def lineno=(arg) ior.lineno = arg end
       end 
     end 
   end

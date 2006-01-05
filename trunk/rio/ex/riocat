@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
+
 require 'rio'
-# riogzip: reads from stdin, gzips and writes it to stdout
+
+# riocat: reads from stdin and writes it to stdout
 # example use:
 #   riocat < afile.txt >bfile.txt
 # 

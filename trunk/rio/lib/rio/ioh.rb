@@ -87,13 +87,22 @@ module RIO
         end
         self
       end
-
+      def puts(*args)
+        handle.puts(*args)
+      end
+      def each_bytes(nb,&block)
+        until handle.eof?
+          break unless s = handle.read(nb)
+          yield s
+        end
+        self
+      end
       extend Forwardable
       def_instance_delegators(:handle,:binmode,:stat,:rewind,
                               :each,:each_byte,:each_line,:gets,:getc,
                               :read,:readlines,:readline,:sysread,
-                              :<<,:print,:printf,:puts,:putc,:write,:syswrite,
-                              :pos,:pos=,:lineno,
+                              :<<,:print,:printf,:putc,:write,:syswrite,
+                              :pos,:pos=,:lineno,:lineno=,
                               :fileno,
                               :close_read,:close_write,
                               :fsync,:sync,:sync=,:fcntl,:ioctl)

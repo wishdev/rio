@@ -39,7 +39,9 @@ module RIO
   module Ops
     module Stream
       module Write
-        def puts(*argv)    rtn_self { iow.puts(*argv) } end
+        def puts(*argv)    
+          rtn_self { iow.puts(*argv) } 
+        end
         def puts!(*argv)   rtn_close { iow.puts(*argv); } end
         def putc(*argv)    rtn_self { iow.putc(*argv) } end
         def putc!(*argv)   rtn_close { iow.putc(*argv) } end
@@ -50,8 +52,6 @@ module RIO
         def write(*argv)   iow.write(*argv) end
         def write!(*argv)  then_close { iow.write(*argv) } end
         def _!(*argv) self.close.softreset end
-        #       extend Forwardable
-        #       def_instance_de
       end
     end    
   end    

@@ -98,15 +98,6 @@ module RIO
     end
   end
 
-  module Cx
-    module Methods
-      def autorewind(arg=true,&block) cxx('autorewind',arg,&block) end
-      def noautorewind(arg=false,&block) nocxx('autorewind',arg,&block) end
-      def autorewind?() cxx?('autorewind') end 
-      def autorewind_(arg=true)  cxx_('autorewind',arg) end
-      protected :autorewind_
-    end
-  end
 
   module Cx
     module Methods

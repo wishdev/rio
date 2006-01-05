@@ -64,12 +64,18 @@ module RIO
                           when 'file','path'
                             require 'rio/scheme/path'
                             Path
+                          when 'zfile','zpath'
+                            require 'rio/zipfile/scheme/zpath'
+                            ZPath
                           when 'stdio','stdin','stdout'
                             require 'rio/scheme/stdio'
                             StdIO
                           when 'stderr'
                             require 'rio/scheme/stderr'
                             StdErr
+                          when 'null'
+                            require 'rio/scheme/null'
+                            Null
                           when 'tempfile'
                             require 'rio/scheme/temp'
                             Temp::File
@@ -158,6 +164,16 @@ module RIO
       'StrIO::Stream::Output' => 'rio/scheme/strio',
       'StrIO::Stream::InOut' => 'rio/scheme/strio',
       'StrIO::Stream::Open' => 'rio/scheme/strio',
+
+      'Null::Stream::Input' => 'rio/scheme/null',
+      'Null::Stream::Output' => 'rio/scheme/null',
+      'Null::Stream::InOut' => 'rio/scheme/null',
+      'Null::Stream::Open' => 'rio/scheme/null',
+
+      'ZipFile::CentralDir::Open' => 'rio/zipfile/centraldir',
+      'ZipFile::CentralDir::Stream' => 'rio/zipfile/centraldir',
+      'ZipFile::CentralDir::Close' => 'rio/zipfile/centraldir',
+      'ZipFile::Path::Str' => 'rio/zipfile/path',
 
       'CmdPipe::Stream::Reset' => 'rio/scheme/cmdpipe',
 #      'CmdPipe::Stream::Open' => 'rio/scheme/cmdpipe',

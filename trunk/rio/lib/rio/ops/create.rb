@@ -69,11 +69,11 @@ module RIO
         end
         alias :cwd :getwd
         def rootpath(*args,&block) 
-          new_rio(Impl::U.rootdir(),*args,&block) 
+          new_rio(fs.rootdir(),*args,&block) 
         end
         alias :root :rootpath
         def cleanpath(*args)
-          new_rio(Impl::U.cleanpath(fspath,*args))
+          new_rio(fs.cleanpath(fspath,*args))
         end
       end
     end

@@ -40,7 +40,6 @@ module RIO
   module RL
     class URIBase < Base
       attr_reader :uri
-      attr_writer :base
       SCHEME = URI::REGEXP::PATTERN::SCHEME
       def initialize(u,*args)
         #p callstr('initialize',u,*args)

@@ -67,11 +67,11 @@ module RIO
 
     # Returns the path for the Rio on the underlying file system
     # Returns nil if the Rio is not on the filesystem (i.e. stdin: or http: Rios)
-    def fspath(*args) target.fspath(*args) end
+    def fspath() target.fspath() end
 
     # Returns the path portion of the URL representation of the rio 
     # Returns nil if the Rio URL has no path (i.e. stdin: or http: Rios)
-    def urlpath(*args) target.urlpath(*args) end
+    def urlpath() target.urlpath() end
 
     # Proxy for File#expand_path
     #
@@ -417,8 +417,9 @@ module RIO
 
     # Calls URI#merge
     # 
-    # Merges two Rios. URI#merge does not document exactly what merging to URIs means. This appears to
-    # join the the paths with like <tt>other + path</tt>. See URI#merge for less information.
+    # Merges two Rios. URI#merge does not document exactly what merging two URIs means. 
+    # This appears to join the paths like <tt>other + path</tt>. 
+    # See URI#merge for less information.
     #
     def merge(other) target.merge(other)  end
 

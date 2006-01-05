@@ -55,15 +55,15 @@ module RIO
 
       def when_missing(sym,*args)
 #        p callstr('when_missing',sym,*args)
-        if empty?
+        if to_s.empty?
           pathempty()
         else
           pathstring()
         end
       end
 
-      extend Forwardable
-      def_instance_delegators(:path,:empty?)
+#      extend Forwardable
+#      def_instance_delegators(:path,:empty?)
     end 
   end 
     

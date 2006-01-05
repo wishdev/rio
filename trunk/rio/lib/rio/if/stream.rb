@@ -49,7 +49,7 @@ module RIO
     #
     def gets(sep_string=$/) target.gets(sep_string) end
 
-    # Slurps the contents of the rio into a string. See also Rio#contents
+    # Slurps the contents of the rio into a string.
     #
     #  astring = rio('afile.txt').contents # slurp the entire contents of afile.txt into astring
     # 
@@ -193,6 +193,68 @@ module RIO
     # file.
     #
     def readline(*args) target.readline(*args) end
+
+
+    # Calls IO#readpartial
+    #
+    # Reads at most maxlen bytes from the I/O stream but it blocks
+    # only if ios has no data immediately available. If the optional
+    # outbuf argument is present, it must reference a String, which
+    # will receive the data. It raises EOFError on end of file.
+    #
+    # readpartial is designed for streams such as pipe, socket, tty, etc. It
+    # blocks only when no data immediately available. This means that it
+    # blocks only when following all conditions hold.
+    #
+    #     * the buffer in the IO object is empty.
+    #     * the content of the stream is empty.
+    #     * the stream is not reached to EOF.
+    #
+    # When readpartial blocks, it waits data or EOF on the stream. If some
+    # data is reached, readpartial returns with the data. If EOF is reached,
+    # readpartial raises EOFError.
+    #
+    # When readpartial doesn’t blocks, it returns or raises immediately. If
+    # the buffer is not empty, it returns the data in the buffer. Otherwise
+    # if the stream has some content, it returns the data in the
+    # stream. Otherwise if the stream is reached to EOF, it raises EOFError.
+    #
+    #    r, w = IO.pipe           #               buffer          pipe content
+    #    w << "abc"               #               ""              "abc".
+    #    r.readpartial(4096)      #=> "abc"       ""              ""
+    #    r.readpartial(4096)      # blocks because buffer and pipe is empty.
+    #
+    #    r, w = IO.pipe           #               buffer          pipe content
+    #    w << "abc"               #               ""              "abc"
+    #    w.close                  #               ""              "abc" EOF
+    #    r.readpartial(4096)      #=> "abc"       ""              EOF
+    #    r.readpartial(4096)      # raises EOFError
+    #
+    #    r, w = IO.pipe           #               buffer          pipe content
+    #    w << "abc\ndef\n"        #               ""              "abc\ndef\n"
+    #    r.gets                   #=> "abc\n"     "def\n"         ""
+    #    w << "ghi\n"             #               "def\n"         "ghi\n"
+    #    r.readpartial(4096)      #=> "def\n"     ""              "ghi\n"
+    #    r.readpartial(4096)      #=> "ghi\n"     ""              ""
+    #
+    # Note that readpartial is nonblocking-flag insensitive. It blocks even
+    # if the nonblocking-flag is set.
+    #
+    # Also note that readpartial behaves similar to sysread in blocking
+    # mode. The behavior is identical when the buffer is empty.
+    # ios.reopen(other_IO) => ios ios.reopen(path, mode_str) => ios
+    #
+    # Reassociates ios with the I/O stream given in other_IO or to a new
+    # stream opened on path. This may dynamically change the actual class of
+    # this stream.
+    #
+    #    f1 = File.new("testfile")
+    #    f2 = File.new("testfile")
+    #    f2.readlines[0]   #=> "This is line one\n"
+    #    f2.reopen(f1)     #=> #<File:testfile>
+    #    f2.readlines[0]   #=> "This is line one\n"
+    #
+    def readpartial(*args) target.readpartial(*args) end
 
 
     # Calls IO::print
@@ -404,8 +466,8 @@ module RIO
     # query file-oriented I/O streams. Arguments and results are platform
     # dependent. If _arg_ is a number, its value is passed directly. If
     # it is a string, it is interpreted as a binary sequence of bytes
-    # (+Array#pack+ might be a useful way to build this string). On Unix
-    # platforms, see +fcntl(2)+ for details. Not implemented on all
+    # (<tt>Array#pack</tt> might be a useful way to build this string). On Unix
+    # platforms, see <tt>fcntl(2)</tt> for details. Not implemented on all
     # platforms.
     #
     #
@@ -446,21 +508,22 @@ module RIO
     # Calls IO#pid
     #  ario.pid    => fixnum
     # Returns the process ID of a child process associated with _ario_.
-    # This will be set by +IO::popen+.
+    # This will be set by <tt>IO::popen</tt>.
     #
-    # pipe = IO.popen("-")
-    # if pipe
-    # $stderr.puts "In parent, child pid is #{pipe.pid}"
-    # else
-    # $stderr.puts "In child, pid is #{$$}"
-    # end
+    #  pipe = IO.popen("-")
+    #  if pipe
+    #    $stderr.puts "In parent, child pid is #{pipe.pid}"
+    #  else
+    #    $stderr.puts "In child, pid is #{$$}"
+    #  end
     #
-    # _produces:_
+    # produces:
     #
-    # In child, pid is 26209
-    # In parent, child pid is 26209
+    #  In child, pid is 26209
+    #  In parent, child pid is 26209
     #
     #
+    def pid() target.pid end
 
 
     # Calls IO#putc
@@ -489,6 +552,7 @@ module RIO
     # f.getc   #=> 104
     #
     #
+    def getc() target.getc() end
 
     # Calls IO#readchar
     #      ario.readchar   => fixnum
@@ -511,6 +575,8 @@ module RIO
     # f2.readlines[0]   #=> "This is line one\n"
     #
     #
+    #def reopen(m) target.reopen(m) end
+
 
     # Calls IO#stat
     #      ario.stat    => stat
@@ -525,29 +591,19 @@ module RIO
     #
     #
 
-    # Calls IO#tell
-    #      ario.pos     => integer
-    #      ario.tell    => integer
-    # Returns the current offset (in bytes) of _ario_.
-    #
-    # f = rio("testfile")
-    # f.pos    #=> 0
-    # f.gets   #=> "This is line one\n"
-    # f.pos    #=> 17
-    #
-    #
-
     # Calls IO#to_i
     #   to_i()
     # Alias for #fileno
     #
     #
+    def to_i() target.to_i() end
 
     # Calls IO#to_io
     #  ario.to_io -> ios
     # Returns _ario_.
     #
     #
+    def to_io() target.to_io() end
 
     # Calls IO#tty?
     #  ario.tty?     => true or false

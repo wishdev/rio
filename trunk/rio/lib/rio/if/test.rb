@@ -75,7 +75,7 @@ module RIO
     # Returns +true+ if the named file is a symbolic link.
     def symlink?() target.symlink? end
 
-    # Returns +true+ if a Rio is not closed?
+    # Returns +true+ if a Rio is not #closed?
     def open?() target.open?() end 
 
     # Calls IO#closed?
@@ -84,9 +84,42 @@ module RIO
     # both reader and writer), +false+ otherwise.
     def closed?() target.closed?()  end
 
+    # call-seq:
+    #  fnmatch?( pattern, [flags] ) => (true or false)
+    #
     # Calls File#fnmatch?
     #
-    # Returns true if path matches against pattern
+    # Returns true if Rio#path matches <i>pattern</i>. The
+    # pattern is not a regular expression; instead it follows rules
+    # similar to shell filename globbing. It may contain the following
+    # metacharacters:
+    #
+    # <i>flags</i> is a bitwise OR of the <code>FNM_xxx</code> parameters.
+    # The same glob pattern and flags are used by <code>Dir::glob</code>.
+    #
+    #  rio('cat').fnmatch?('cat')              #=> true
+    #  rio('category').fnmatch?('cat')         #=> false
+    #  rio('cats').fnmatch?('c{at,ub}s')       #=> false
+    #  rio('cubs').fnmatch?('c{at,ub}s')       #=> false
+    #  rio('cat').fnmatch?('c{at,ub}s')        #=> false
+    #
+    #  rio('cat').fnmatch?('c?t')              #=> true
+    #  rio('cat').fnmatch?('c\?t')             #=> false
+    #  rio('cat').fnmatch?('c??t')             #=> false
+    #  rio('cats').fnmatch?('c*')              #=> true
+    #
+    #  rio('cat').fnmatch?('c*t')                       #=> true
+    #  rio('cat').fnmatch?('c\at')                      #=> true
+    #  rio('cat').fnmatch?('c\at',File::FNM_NOESCAPE)   #=> false
+    #  rio('a/b').fnmatch?('a?b')                       #=> true
+    #  rio('a/b').fnmatch?('a?b',File::FNM_PATHNAME)    #=> false
+    #
+    #  rio('.profile').fnmatch?('*')                           #=> false
+    #  rio('.profile').fnmatch?('*',File::FNM_DOTMATCH)        #=> true
+    #  rio('dave/.profile').fnmatch?('*')                      #=> true
+    #  rio('dave/.profile').fnmatch?('*',File::FNM_DOTMATCH)   #=> true
+    #  rio('dave/.profile').fnmatch?('*',File::FNM_PATHNAME)   #=> false
+    #
     def fnmatch?(*args) target.fnmatch?(*args) end
 
     # Calls File#ftype

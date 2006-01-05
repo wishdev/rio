@@ -92,6 +92,7 @@ module Test
     class TestCase < Unit::TestCase
       def setup()
         return if self.class == Test::RIO::TestCase
+        #p self.class
         @cwd = ::Dir.getwd
         tdir.mkpath.chdir
       end

@@ -35,47 +35,49 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-require 'rio/impl/path'
+#require 'rio/impl/path'
 module RIO
   module Ops #:nodoc: all
     module Path
       module Test
-        def blockdev?(*args) Impl::U.blockdev?(self.to_s,*args) end
-        def chardev?(*args) Impl::U.chardev?(self.to_s,*args) end
-        def directory?(*args) Impl::U.directory?(self.to_s,*args) end
-        def exist?(*args) Impl::U.exist?(self.to_s,*args) end
-        def file?(*args) Impl::U.file?(self.to_s,*args) end
-        def pipe?(*args) Impl::U.pipe?(self.to_s,*args) end
-        def socket?(*args) Impl::U.socket?(self.to_s,*args) end
-        def symlink?(*args) Impl::U.symlink?(self.to_s,*args) end
+        def blockdev?(*args) fs.blockdev?(self.to_s,*args) end
+        def chardev?(*args) fs.chardev?(self.to_s,*args) end
+        def directory?(*args) fs.directory?(self.to_s,*args) end
+        def exist?(*args) fs.exist?(self.to_s,*args) end
+        def file?(*args) 
+          fs.file?(self.to_s,*args) 
+        end
+        def pipe?(*args) fs.pipe?(self.to_s,*args) end
+        def socket?(*args) fs.socket?(self.to_s,*args) end
+        def symlink?(*args) fs.symlink?(self.to_s,*args) end
         alias :dir? :directory?
         def open?() not self.closed? end
         def closed?() self.ioh.nil? end
       end
       module Status
         include Test
-        def fnmatch(*args) Impl::U.fnmatch(self.to_s,*args) end
-        def fnmatch?(*args) Impl::U.fnmatch?(self.to_s,*args) end
-        def ftype(*args) Impl::U.ftype(self.to_s,*args) end
-        def stat(*args) Impl::U.stat(self.to_s,*args) end
-        def atime(*args) Impl::U.atime(self.to_s,*args) end
-        def ctime(*args) Impl::U.ctime(self.to_s,*args) end
-        def mtime(*args) Impl::U.mtime(self.to_s,*args) end
-        def executable?(*args) Impl::U.executable?(self.to_s,*args) end 
-        def executable_real?(*args) Impl::U.executable_real?(self.to_s,*args) end 
-        def readable?(*args) Impl::U.readable?(self.to_s,*args) end 
-        def readable_real?(*args) Impl::U.readable_real?(self.to_s,*args) end 
-        def writable?(*args) Impl::U.writable?(self.to_s,*args) end 
-        def writable_real?(*args) Impl::U.writable_real?(self.to_s,*args) end
-        def sticky?(*args) Impl::U.sticky?(self.to_s,*args) end 
-        def owned?(*args) Impl::U.owned?(self.to_s,*args) end 
-        def grpowned?(*args) Impl::U.grpowned?(self.to_s,*args) end 
-        def setgid?(*args) Impl::U.setgid?(self.to_s,*args) end 
-        def setuid?(*args) Impl::U.setuid?(self.to_s,*args) end
-        def size(*args) Impl::U.size(self.to_s,*args) end 
-        def size?(*args) Impl::U.size?(self.to_s,*args) end 
-        def zero?(*args) Impl::U.zero?(self.to_s,*args) end
-        def root?(*args) Impl::U.root?(self.to_s) end
+        def fnmatch(*args) fs.fnmatch(self.to_s,*args) end
+        def fnmatch?(*args) fs.fnmatch?(self.to_s,*args) end
+        def ftype(*args) fs.ftype(self.to_s,*args) end
+        def stat(*args) fs.stat(self.to_s,*args) end
+        def atime(*args) fs.atime(self.to_s,*args) end
+        def ctime(*args) fs.ctime(self.to_s,*args) end
+        def mtime(*args) fs.mtime(self.to_s,*args) end
+        def executable?(*args) fs.executable?(self.to_s,*args) end 
+        def executable_real?(*args) fs.executable_real?(self.to_s,*args) end 
+        def readable?(*args) fs.readable?(self.to_s,*args) end 
+        def readable_real?(*args) fs.readable_real?(self.to_s,*args) end 
+        def writable?(*args) fs.writable?(self.to_s,*args) end 
+        def writable_real?(*args) fs.writable_real?(self.to_s,*args) end
+        def sticky?(*args) fs.sticky?(self.to_s,*args) end 
+        def owned?(*args) fs.owned?(self.to_s,*args) end 
+        def grpowned?(*args) fs.grpowned?(self.to_s,*args) end 
+        def setgid?(*args) fs.setgid?(self.to_s,*args) end 
+        def setuid?(*args) fs.setuid?(self.to_s,*args) end
+        def size(*args) fs.size(self.to_s,*args) end 
+        def size?(*args) fs.size?(self.to_s,*args) end 
+        def zero?(*args) fs.zero?(self.to_s,*args) end
+        def root?(*args) fs.root?(self.to_s) end
 
       end
       module URI
@@ -131,10 +133,10 @@ module RIO
       module Query
         def expand_path(*args)
           args[0] = args[0].to_s unless args.empty?
-          new_rio(RL.fs2url(Impl::U.expand_path(self.to_s,*args)))
+          new_rio(RL.fs2url(fs.expand_path(self.to_s,*args)))
         end
         def extname(*args) 
-          en = Impl::U.extname(rl.path_no_slash,*args) 
+          en = fs.extname(rl.path_no_slash,*args) 
           (en.empty? ? nil : en)
         end
         def split()
@@ -149,15 +151,15 @@ module RIO
             self.ext(ex)
           end
           #p self.ext?.inspect
-          fn = Impl::U.basename(rl.path_no_slash,self.ext?)
+          fn = fs.basename(rl.path_no_slash,self.ext?)
           new_rio(fn,{:base => _calc_base()})
         end
         def filename()
-          fn = Impl::U.basename(rl.path_no_slash)
+          fn = fs.basename(rl.path_no_slash)
           new_rio(fn,{:base => _calc_base()})
         end
         def _calc_base()
-          dn = Impl::U.dirname(rl.path_no_slash)
+          dn = fs.dirname(rl.path_no_slash)
           dn[0] == ?/ ? dn : self.base.to_url + dn + '/' #'
 #          if dn[0] == ?/
 #            dn 
@@ -168,7 +170,7 @@ module RIO
         private :_calc_base
 
         def dirname(*args)
-          #new_rio(Impl::U.dirname(rl.path_no_slash,*args))
+          #new_rio(fs.dirname(rl.path_no_slash,*args))
           new_rio(rl.dirname)
         end
 
@@ -278,10 +280,10 @@ module RIO
             dst = self.ensure_rio(d)
             dst /= self.filename if dst.directory?
             if self.abs?
-              Impl::U.symlink(self,dst) 
+              fs.symlink(self,dst) 
             else
               #p "symlink(#{dst.route_to(self)},#{dst})"
-              Impl::U.symlink(dst.route_to(self),dst.to_s) 
+              fs.symlink(dst.route_to(self),dst.to_s) 
             end
             dst.reset
           } 
@@ -312,4 +314,4 @@ module RIO
     end
     
   end
-end # FS
+end

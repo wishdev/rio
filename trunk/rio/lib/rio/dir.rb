@@ -44,7 +44,7 @@ module RIO
     class Base < State::Base
       include Ops::Path::Str
       def self.copy_(src,dst)
-        Impl::U.cp_r(src,dst) 
+        impl.cp_r(src,dst) 
       end
       def open?() !ioh.nil? end
     end
@@ -61,7 +61,11 @@ module RIO
       def check?() self.directory? end
       def when_missing(sym,*args) dopen() end
       def dopen() 
-        self.rl = RIO::Dir::RL.new(self.to_uri)
+        if zipent?
+          self.rl = RIO::ZDir::RL.new(self.rl.zipfile,self.to_uri)
+        else
+          self.rl = RIO::Dir::RL.new(self.to_uri)
+        end
         become 'Dir::Open'
       end
     end 
@@ -108,6 +112,8 @@ module RIO
       alias :copyclose :reset
     end
     class Close < Base
+      def reopen(*args) self.close_.softreset.open(*args) end
+
       def close() 
         #p callstr('close')+" mode='#{mode?}' ioh=#{self.ioh} open?=#{open?}"
         return self unless self.open? 

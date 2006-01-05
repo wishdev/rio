@@ -252,9 +252,13 @@ module RIO
     # is a shortcut for
     #  rio('adir').files('*.rb').to_a
     #
+    # and
+    #
     #  rio('adir')['*.rb']
     # is a shortcut for
     #  rio('adir').entries('*.rb').to_a
+    #
+    # and
     #
     #  rio('afile').lines[0..10]
     # is a shortcut for

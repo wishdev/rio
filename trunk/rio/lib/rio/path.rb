@@ -72,11 +72,23 @@ module RIO
 
       def edir()
         #rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
+        if zipent?
+          require 'rio/zipfile/scheme/zpath'
+          zipfile = self.rl.zipfile
+          self.rl = RIO::ZDir::RL.new(zipfile,self.to_uri)
+          self.fs = zipfile.dir
+        end
         next_state = become('Dir::Existing')
         next_state.extend(Ops::Symlink::Existing) if symlink?
         next_state
       end
       def efile() 
+        if zipent?
+          require 'rio/zipfile/scheme/zpath'
+          zipfile = self.rl.zipfile
+          self.rl = RIO::ZFile::RL.new(zipfile,self.to_uri)
+          self.fs = zipfile.file
+        end
         next_state = become('File::Existing')
         next_state.extend(Ops::Symlink::Existing) if symlink?
         next_state
@@ -87,7 +99,7 @@ module RIO
         next_state
       end
 
-    end # class PathString
+    end
 
     # A transition state. Anything but simple path tests must cause a transition out of this state.
     class NonExisting < State::Base
@@ -98,9 +110,24 @@ module RIO
 
       def ndir() 
         #rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
-        become('Dir::NonExisting')
+        if zipent?
+          require 'rio/zipfile/scheme/zpath'
+          zipfile = self.rl.zipfile
+          self.rl = RIO::ZDir::RL.new(zipfile,self.to_uri)
+          self.fs = zipfile.dir
+        end
+        become 'Dir::NonExisting'
       end
-      def nfile() become('File::NonExisting') end
+
+      def nfile() 
+        if zipent?
+          require 'rio/zipfile/scheme/zpath'
+          zipfile = self.rl.zipfile
+          self.rl = RIO::ZFile::RL.new(zipfile,self.to_uri)
+          self.fs = zipfile.file
+        end
+        become('File::NonExisting') 
+      end
 
       def when_missing(sym,*args)
         case sym
@@ -110,8 +137,8 @@ module RIO
           nfile()
         end
       end
-    end # class NPath
+    end
 
-  end # module Rsc
+  end
 
 end

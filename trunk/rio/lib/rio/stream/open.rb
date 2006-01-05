@@ -41,14 +41,14 @@ require 'rio/ops/stream'
 require 'rio/ops/path'
 require 'rio/cp'
 require 'rio/piper/cp'
+require 'rio/util'
+
 
 module RIO
   module Stream
     class Open < Base
       include Ops::Stream::Status
-      #include Ops::Path::Status
       include Ops::Path::URI
-      #include Ops::Path::Query
       include Cp::Open::Output
       include Cp::Open::Input
       include Piper::Cp::Input
@@ -58,44 +58,84 @@ module RIO
       def open(m=nil,*args)
         #p callstr('open',m,*args)
         case
-
         when open? then open_(*args)
         when m.nil? then open_(*args)
         else mode(m).open_(*args)
         end
       end
+
+      protected
+
       def open_(*args)
         #p callstr('open_',args.inspect)+" mode='#{mode?}' (#{mode?.class}) ioh=#{self.ioh} open?=#{open?}"
         unless open?
           ios = self.rl.open(mode?,*args)
-          noautoclose_(false) if ios.tty?
+          #noautoclose_(false) if ios.tty?
           self.ioh = IOH::Stream.new(ios)
         end
         self
       end
 
-      protected :open_
 
     end
   end
 end
 
 
-require 'rio/util'
 module RIO
   module Stream
     class Open < Base
-      def size() 
-        self.contents.size
+
+      public
+
+      def size() self.contents.size end
+      def empty?() self.size == 0 end
+
+      # Temporary work-around. Should this be necessary?
+      def dir?() false end
+
+      def iostate(sym)
+        if mode? && mode?.allows_both?
+          open_.inout()
+        else
+          implicit_state(sym)
+        end
       end
+
+      protected
+
       OUTPUT_SYMS = Util::build_sym_hash([:print,:printf,:puts,:putc,:write,
                                           :print!,:printf!,:puts!,:putc!,:write!,
                                           :put_,:putrec,:putrec!,:<,:<< ])
 
+      def when_missing(sym,*args) 
+        #p callstr('when_missing',sym,*args)+" mode?(#{mode?.class})=#{mode?}"
+        nobj = iostate(sym)
+        return nobj unless nobj.nil?
+        gofigure(sym,*args)
+      end
+
+      def stream_state(cl)
+        #p callstr('stream_state',cl)
+        #p "LOOP: retry:#{cx['retrystate']} => #{cl}" 
+        return nil if cx['retrystate'] == cl
+        cx['retrystate'] = cl
+
+        become(cl).add_rec_methods.add_extensions.add_filters.setup
+        #become(cl).add_rec_methods.add_filters.add_extensions.setup
+        #become(cl).add_extensions.add_rec_methods.add_filters.setup
+        #next_state.extend(Ops::Symlink::Existing) if symlink?
+        #next_state
+      end
+      def output() stream_state('Stream::Output') end
+      def input()  stream_state('Stream::Input')  end
+      def inout()  stream_state('Stream::InOut')  end
+
+      private
+
       def sym_state(sym,im,om)
        if OUTPUT_SYMS[sym.to_s] or RIO::Ext::OUTPUT_SYMS[sym.to_s]
          om ||= (sym.to_s == '<<' ? 'a' : 'w')
-         #p "HEREHEREHERE om=#{om.inspect}"
          mode_(om).open_.output()
         else
          im ||= 'r'
@@ -126,55 +166,54 @@ module RIO
           sym_state(sym,inputmode?,outputmode?)
         end
       end
-      def iostate(sym)
-        #p callstr('iostate',sym)
-        if mode? && mode?.allows_both?
-          open_.inout()
-        else
-          implicit_state(sym)
-        end
-      end
-      def when_missing(sym,*args) 
-        #p callstr('when_missing',sym,*args)+" mode?(#{mode?.class})=#{mode?}"
-        nobj = iostate(sym)
-        return nobj unless nobj.nil?
-        gofigure(sym,*args)
-      end
-      # TEMP
-      def dir?() false end
-      def stream_state(cl)
-        #p callstr('stream_state',cl)
-        #p "LOOP: retry:#{cx['retrystate']} => #{cl}" 
-        return nil if cx['retrystate'] == cl
-        cx['retrystate'] = cl
 
-        become(cl).add_rec_methods.add_extensions.add_filters.setup
-        #become(cl).add_rec_methods.add_filters.add_extensions.setup
-        #become(cl).add_extensions.add_rec_methods.add_filters.setup
-        #next_state.extend(Ops::Symlink::Existing) if symlink?
-        #next_state
-      end
-      def output() 
-        stream_state('Stream::Output')
-      end
-      def input() 
-        stream_state('Stream::Input')
-      end
-      def inout() 
-        stream_state('Stream::InOut')
-      end
-      
-      def gofigure(sym,*args)
-        super
-      end
+
     end
+
     class Close < State::Base
       include Ops::Stream::Status
-      def clear_selection()
-        cx.delete('stream_sel')
-        cx.delete('stream_nosel')
+
+      def check?() true end
+#       def on_eof_close(&block)
+#         begin
+#           rtn = yield
+#         ensure
+#           self.close_.softreset
+#         end
+#         rtn
+#       end
+      def close() 
+        #p callstr('close')+" mode='#{mode?}' ioh=#{self.ioh} open?=#{open?}"
+        return self unless self.open? 
+        self.close_
+        cx['retrystate'] = nil
         self
       end
+
+#      def get()
+#       self.close_.softreset
+#       nil
+#      end
+#      alias :getline :get
+#      alias :getrow :get
+#      alias :getrec :get
+
+#      def readline(sep_string=$/)
+#        self.close_.softreset
+#        raise EOFError,"#{EOFError} #{self.fspath}"
+#      end
+
+
+
+      def reopen(*args) self.close.softreset.open(*args) end
+
+      protected
+
+      def base_state() 'Stream::Reset'  end
+      def when_missing(sym,*args) 
+        self.close_.retryreset()
+      end
+
       def close_() 
         #p callstr('close_')+" mode='#{mode?}' ioh=#{self.ioh} open?=#{open?}"
         return self unless self.open? 
@@ -184,29 +223,15 @@ module RIO
         self.rl.close
         self
       end
-      protected :close_
-      def close() 
-        #p callstr('close')+" mode='#{mode?}' ioh=#{self.ioh} open?=#{open?}"
-        return self unless self.open? 
-        self.close_
-        cx['retrystate'] = nil
+
+      private
+
+      def clear_selection()
+        cx.delete('stream_sel')
+        cx.delete('stream_nosel')
         self
       end
-      def get()
-        self.close_.softreset
-        nil
-      end
-      alias :getline :get
-      alias :getrow :get
-      alias :getrec :get
 
-      def check?() true end
-      def base_state() 'Stream::Reset'  end
-      def when_missing(sym,*args) 
-#        p callstr('when_missing',sym,*args)
-        self.close_.retryreset()
-      end
     end
-
   end
-end # module RIO
+end

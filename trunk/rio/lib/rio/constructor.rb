@@ -198,6 +198,16 @@ module RIO
   #
   # This is Rio's interface to IO#popen
   #
+  # ===== Creating a Rio that acts like /dev/null
+  #
+  # <tt>rio(nil)</tt>
+  #
+  # <tt>rio(:null)</tt>
+  #
+  # This rio behaves like the Unix file /dev/null, but does depend on it -
+  # and thus will work on non-Unix systems. Reading behaves as if reading from
+  # an empty file, and writing to it discards anything written.
+  #
   # ===== Creating a Rio Pipe
   #
   # A Rio Pipe is a sequence of Rios that are run with the output of each being

@@ -48,36 +48,56 @@ module RIO
       def autoclosed?
         @autoclosed
       end
-      def close_on_eof(rtn)
+#       def close_on_eof_raise(&block)
+#         begin
+#           rtn = yield
+#         rescue EOFError
+#           close_on_eof_(rtn)
+#           raise
+#         end
+#         rtn
+#       end
+      def close_on_eof(&block)
         #p callstr('close_on_eof',rtn)
-#        p @ios
+        rtn = yield
         if handle.eof?
           close_on_eof_(rtn)
         end
         rtn
       end
+      def close_on_eof1(&block)
+        #p callstr('close_on_eof',rtn)
+        if handle.eof?
+          close_on_eof_(nil)
+          yield
+        else
+          yield
+        end
+      end
       def close_on_eof_(rtn)
         #p callstr('close_on_eof_',rtn)
-#        p @ios
         unless @autoclosed or closed?
-          handle.close()
+          #handle.close()
           @oncloseproc.call() unless @oncloseproc.nil?
           @autoclosed = true
         end
         rtn
       end
         
-      def readlines(*args)            close_on_eof(super) end
-      def each_line(*args,&block)     close_on_eof(super) end
-      def each_byte(*args,&block)     close_on_eof(super) end
-      def each_bytes(nb,*args,&block) close_on_eof(super) end
-      def readline(*args)             close_on_eof(super) end
-      def read(*args)                 close_on_eof(super) end
-      def readchar(*args)             close_on_eof(super) end
-      def gets(*args)                 close_on_eof(super) end
+      def each_line(*args,&block)     close_on_eof{super} end
+      def each_byte(*args,&block)     close_on_eof{super} end
+      def each_bytes(nb,*args,&block) close_on_eof{super} end
 
-      def copy_stream(dst)            close_on_eof(super) end
-      def contents()                  close_on_eof(super) end
+      def readline(*args)             close_on_eof{super} end
+
+      def readchar(*args)             close_on_eof{super} end
+      def gets(*args)                 close_on_eof{super} end
+      def readlines(*args)            close_on_eof{super} end
+
+      def read(*args)                 close_on_eof{super} end
+
+      def copy_stream(dst)            close_on_eof{super} end
+      def contents()                  close_on_eof{super} end
     end
   end
 end

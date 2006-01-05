@@ -87,9 +87,11 @@ module RIO
     # range::   specifies a range of records to be selected (zero based)
     # regexp::  matching records will be selected.
     # integer:: treated like a one element range
-    # symbol::  the symbol is sent to the string. record is selected unless false is returned
-    # proc::    the proc is called with the string as an argument. record is selected unless false is returned
-    # array::   the array may contain any of the other selector types. record is selected
+    # symbol::  the symbol is sent to each record. Record is selected 
+    #           unless false is returned
+    # proc::    the proc is called with the record as an argument. 
+    #           Record is selected unless false is returned
+    # array::   the array may contain any of the other selector types. Record is selected
     #           unless any of the selectors returns false. (a logical and)
     # 
     # A record matching *any* of the selectors will be included in the array. (acts like an _or_)
@@ -468,8 +470,7 @@ module RIO
     #  rio('afile') >> rio('anotherfile') # append the contents of 'afile' to 'anotherfile'
     #  rio('afile') >> rio('adir') # copies 'afile' to the directory 'adir'
     #  rio('adir') >> rio('anotherdir') # copy directory 'adir' recursively to 'anotherdir' 
-    #  rio('adir') >> array # appendscopy directory 'adir' recursively to 'anotherdir' 
-    #  rio('adir') >> ary # a Rio for each entry in the directory will be appended to ary
+    #  rio('adir') >> array # a Rio for each entry in the directory will be appended to ary
     def >>(destination) target >> destination; self end
 
     
@@ -658,5 +659,16 @@ module RIO
     # Rio#skipdirs, and Rio#skipentries.
     #
     def skip(*args,&block) target.skip(*args,&block); self end 
+
+
+    # Returns true if the referenced file or directory is empty after honoring the grande 
+    # selection methods. 
+    #
+    #  rio('f0').delete!.touch.empty?        #=> true
+    #  rio('f1').puts!("Not Empty\n").empty? #=> false
+    #  rio('d0').delete!.mkdir.empty?        #=> true
+    #
+    def empty?() target.empty? end
+
   end
 end

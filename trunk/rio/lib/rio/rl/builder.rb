@@ -75,7 +75,17 @@ module RIO
           o = cl.new(a0,*a) unless cl.nil?
           return o
         when ::Symbol
-          a[0] = 'rio:' + a[0].to_s + ':'
+          case a[0]
+          when :zpath
+            a0 = a.shift
+            cl = Factory.instance.riorl_class(a0.to_s)
+            o = cl.new(*a) unless cl.nil?
+            return o
+          else
+            a[0] = 'rio:' + a[0].to_s + ':'
+          end
+        when ::NilClass
+          a[0] = 'rio:null:'
         when ?? , ?= , ?_ , ?", ?[, ?#, ?`, ?|
           a[0] = 'rio:'+CHMAP[a[0]]+':'
         when ?-

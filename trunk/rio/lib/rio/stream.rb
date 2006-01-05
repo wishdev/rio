@@ -66,9 +66,6 @@ module RIO
       include Ops::Stream::Status
       include Ops::Stream::Manip
       
-#      def open(*args) 
-#        softreset.open(*args)
-#      end
       def check?() open? end
       def when_missing(sym,*args) 
         #p callstr('when_missing',sym,*args)
@@ -110,11 +107,6 @@ module RIO
       include Ops::Stream::Input
       include Ini
       include Filters
-      def initialize_copy(*args)
-        #p callstr('enter Input:initialize_copy',*args)
-        super
-        self.ioh.oncloseproc = proc { self.on_closeoneof }  if closeoneof?
-      end
 
       def add_extensions()
         #p callstr('add_extensions')
@@ -124,10 +116,10 @@ module RIO
         add_filter(Filter::GZipRead) if gzip?
         #add_filter(Filter::YAML) if yaml?
         add_line_filters()
-        if closeoneof?
-          add_filter(Filter::CloseOnEOF)
-          ioh.oncloseproc = proc { self.on_closeoneof }
-        end
+#        if closeoneof?
+#          add_filter(Filter::CloseOnEOF)
+#          ioh.oncloseproc = proc { self.on_closeoneof }
+#        end
         self
       end
       def add_rec_methods()
@@ -158,11 +150,6 @@ module RIO
       include Ini
       include Filters
       
-      def initialize_copy(*args)
-        super
-        self.ioh.oncloseproc = proc { self.on_closeoneof }  if closeoneof?
-      end
-
       def add_rec_methods()
         self.extend(rectype_mod.module_eval('Input'))
         self.extend(rectype_mod.module_eval('Output'))
@@ -175,10 +162,10 @@ module RIO
       def add_filters
         add_line_filters()
 
-        if closeoneof?
-          add_filter(Filter::CloseOnEOF)
-          ioh.oncloseproc = proc { self.on_closeoneof }
-        end
+ #       if closeoneof?
+ #         add_filter(Filter::CloseOnEOF)
+ #         ioh.oncloseproc = proc { self.on_closeoneof }
+ #       end
         self
       end
 

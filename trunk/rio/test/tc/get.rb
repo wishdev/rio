@@ -86,7 +86,7 @@ class TC_get < Test::RIO::TestCase
       assert_equal(expa+expa,ans)
     end
     
-    # assure get returns nil once after iteration using #get (with auto close)
+    # assure get does not return nil once after iteration using #each (with auto close)
     begin
       f = rio('f.txt')
       ans = []
@@ -96,8 +96,8 @@ class TC_get < Test::RIO::TestCase
       end
       assert_equal(expa,ans)
 
-      rec = f.get
-      assert_nil(rec)
+      #rec = f.get
+      #assert_nil(rec)
 
       rec = f.get
       assert_equal(expa[0],rec)
@@ -114,7 +114,7 @@ class TC_get < Test::RIO::TestCase
         ans << rec
       end
       rec = f.get
-      assert_nil(rec)
+      assert_equal(expa[0],rec)
     end
 
     begin
@@ -137,15 +137,16 @@ class TC_get < Test::RIO::TestCase
     begin
       f = rio('f.txt')
       ans = []
-
+      # read all the lines
       (0...n_lines).each do |n|
         rec = f.get
         assert_equal(expa[n],rec)
       end
+      assert(f.eof?)
       f.each do |rec|
         ans << rec
       end
-      assert_equal(expa,ans)
+      assert_equal([],ans)
     end
   end
 end

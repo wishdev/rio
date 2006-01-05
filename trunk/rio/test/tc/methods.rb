@@ -21,12 +21,12 @@ class TC_RIO_methods < Test::Unit::TestCase
 
     cexp << ioc.gets
     oexp << ios.gets
-    until ioc.eof?
-      cexp << ioc.gets
+    while ans = ioc.gets
+      cexp << ans
     end
 
-    until ios.eof?
-      oexp << ios.gets
+    while ans = ios.gets
+      oexp << ans
     end
     return ioc,oexp,cexp
   end
@@ -40,12 +40,12 @@ class TC_RIO_methods < Test::Unit::TestCase
     assert_not_nil(ioc,"dup returns nil")
     cexp << ioc.gets
     oexp << ios.gets
-    until ioc.eof?
-      cexp << ioc.gets
+    while ans = ioc.gets
+      cexp << ans
     end
 
-    until ios.eof?
-      oexp << ios.gets
+    while ans = ios.gets
+      oexp << ans
     end
     return ioc,oexp,cexp
   end
@@ -67,6 +67,7 @@ class TC_RIO_methods < Test::Unit::TestCase
     assert(ios.closed?,"now original closed")
   end
   def setup
+    #$trace_states = true
     @cwd = rio(::Dir.getwd)
     @dir = rio('qp/methods')
 #    $trace_states = true
@@ -82,10 +83,10 @@ class TC_RIO_methods < Test::Unit::TestCase
   end
   def teardown
     @cwd.chdir
+    $trace_states = false
   end
 
   def test_clone_like_IO
-
     ios = ::File.open('lines')
     ioc,oexp,cexp = check_clone(ios)
     check_clone_close(ios,ioc)
