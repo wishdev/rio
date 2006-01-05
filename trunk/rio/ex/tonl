@@ -3,7 +3,7 @@
 require 'rio'
 
 ARGV.each do |path|
-  tmp = rio(?$)
+  tmp = rio(?")
   tmp < rio(path).chomp.map { |l| "#{l}\n" }
   tmp > rio(path)
 end
