@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -43,7 +43,6 @@ require 'rio/rectype'
 require 'rio/ops/stream/read'
 require 'rio/context/stream'
 require 'stringio'
-require 'rio/record'
 require 'rio/cp'
 require 'rio/piper/cp'
 
@@ -73,7 +72,9 @@ module RIO
           each_(*args,&block)
           self
         end
-
+        def empty?()
+          self.eof?
+        end
         def each_record(*args,&block)
           #p callstr('each_record',*args)
           each_record_(*args,&block)

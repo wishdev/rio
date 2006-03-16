@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -34,33 +34,58 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
-
-require 'rio/record'
-
 module RIO
-  module Ext
-    module ZipFile
-      module Cx
-        def zipfile(&block) 
-          require 'rio/zipfile/centraldir'
-          cxx('zipfile',true,&block)
-        end
-        def zipfile?() cxx?('zipfile') end 
-        def zipfile_() 
-          cxx_('zipfile',true) 
-        end
-        protected :zipfile_
-
-        def zipent(&block) 
-          cxx('zipent',true,&block)
-        end
-        def zipent?() cxx?('zipent') end 
-        def zipent_() 
-          cxx_('zipent',true) 
-        end
-        protected :zipent_
+  module_function
+  def load_lib(lib)
+    begin 
+      require lib
+    rescue LoadError => ex
+      begin
+        p "using Gem for #{lib}" if $DEBUG
+        require 'rubygems'
+        require_gem lib
+      rescue
+        raise ex
       end
     end
   end
 end
+
+begin
+  RIO.load_lib('zip/zip')
+  require 'zip/zipfilesystem'
+  require 'rio/ext/zipfile/opt'
+  RIO::Ext::ZipFile.load_extension
+rescue LoadError
+  p "No zipfile support"  if $DEBUG
+end
+
+
+# module RIO
+#   module Ext
+#     module ZipFile
+#       module Cx
+#         def zipfile(&block) 
+#           #require 'rio/ext/zipfile/state'
+#           cxx('zipfile',true,&block)
+#           #self.extend(ZipFile::State).fstream
+#         end
+#         def zipfile?() cxx?('zipfile') end 
+#         def zipfile_() 
+#           cxx_('zipfile',true) 
+#         end
+#         protected :zipfile_
+
+#         def zipent(&block) 
+#           cxx('zipent',true,&block)
+#         end
+#         def zipent?() cxx?('zipent') end 
+#         def zipent_() 
+#           cxx_('zipent',true) 
+#         end
+#         protected :zipent_
+#       end
+#     end
+#   end
+# end
 __END__

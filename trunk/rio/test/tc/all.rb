@@ -4,6 +4,8 @@ require 'tc/testcase'
 #require 'tc/yaml'
 
 require 'tc/abs'
+require 'tc/emptyriodir'
+require 'tc/entsel'
 require 'tc/base'
 require 'tc/clearsel'
 require 'tc/closeoncopy'

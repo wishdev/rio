@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -34,21 +34,28 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
+module RIO
+  CONSTRUCTOR_SYMS = [
+      :strio,
+      :stdio,
+      :stderr,
+      :temp,
+      :tempfile,
+      :tempdir,
+      :tcp,
+      :cmdio,
+      :cmdpipe,
+      :sysio,
+      :fd,
+    ]
+end
 
 module RIO
   module Ops
     module Construct
-      def strio(*args,&block) Rio.rio(:strio,*args,&block) end
-      def stdio(*args,&block) Rio.rio(:stdio,*args,&block) end
-      def stderr(*args,&block) Rio.rio(:stderr,*args,&block) end
-      def temp(*args,&block)  Rio.rio(:temp,*args,&block)  end
-      def tempfile(*args,&block)  Rio.rio(:tempfile,*args,&block)  end
-      def tempdir(*args,&block)  Rio.rio(:tempdir,*args,&block)  end
-      def tcp(*args,&block)  Rio.rio(:tcp,*args,&block)  end
-      def cmdio(*args,&block)  Rio.rio(:cmdio,*args,&block)  end
-      def cmdpipe(*args,&block)  Rio.rio(:cmdpipe,*args,&block)  end
-      def sysio(*args,&block)  Rio.rio(:sysio,*args,&block)  end
-      def fd(*args,&block)  Rio.rio(:fd,*args,&block)  end
+      RIO::CONSTRUCTOR_SYMS.each { |sym|
+        module_eval "def #{sym}(*args,&block) Rio.rio(:#{sym},*args,&block) end"
+      }
     end
   end
 end

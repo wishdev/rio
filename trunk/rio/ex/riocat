@@ -17,21 +17,26 @@ require 'rio'
 # <
 #   <: copy operator indicating rio on left is written to and the rio on the right is read from
 #
-rio(?-) < rio(?-)
+rio(?-) < ?-
 
 #
 # this could also be written
-# rio(?-) > rio(?-)
+#    rio(?-) < rio(?-)
+# or
+#    rio(?-) > ?-
+# or
+#    rio(?-) > rio(?-)
+#
 #
 # this is similar but reads the entire file before writing
-#rio(?-).print!( rio(?-).slurp )
+#    rio(?-).print!( rio(?-).slurp )
 
 
 
 #rio(?-).print!( rio(?-).slurp)
 
 
-# DONT TO THIS:
+# DONT DO THIS:
 #io = rio(?-)
 #io.print!( io.slurp )
 

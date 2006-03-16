@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -65,8 +65,8 @@ module RIO
                             require 'rio/scheme/path'
                             Path
                           when 'zfile','zpath'
-                            require 'rio/zipfile/scheme/zpath'
-                            ZPath
+                            require 'rio/ext/zipfile/zpath'
+                            Ext::ZipFile::ZPath
                           when 'stdio','stdin','stdout'
                             require 'rio/scheme/stdio'
                             StdIO
@@ -144,30 +144,17 @@ module RIO
 
       'Stream::Close' => 'rio/stream/open',
       'Stream::Reset' => 'rio/stream',
-
       'Stream::Open' => 'rio/stream/open',
       'Stream::Input' => 'rio/stream',
       'Stream::Output' => 'rio/stream',
       'Stream::InOut' => 'rio/stream',
 
       'Stream::Duplex::Open' => 'rio/stream/duplex',
-      'Stream::Duplex::Input' => 'rio/stream/duplex',
-      'Stream::Duplex::Output' => 'rio/stream/duplex',
-      'Stream::Duplex::InOut' => 'rio/stream/duplex',
 
-      'Path::Stream::Input' => 'rio/scheme/path',
-      'Path::Stream::Output' => 'rio/scheme/path',
-      'Path::Stream::InOut' => 'rio/scheme/path',
       'Path::Stream::Open' => 'rio/scheme/path',
 
-      'StrIO::Stream::Input' => 'rio/scheme/strio',
-      'StrIO::Stream::Output' => 'rio/scheme/strio',
-      'StrIO::Stream::InOut' => 'rio/scheme/strio',
       'StrIO::Stream::Open' => 'rio/scheme/strio',
 
-      'Null::Stream::Input' => 'rio/scheme/null',
-      'Null::Stream::Output' => 'rio/scheme/null',
-      'Null::Stream::InOut' => 'rio/scheme/null',
       'Null::Stream::Open' => 'rio/scheme/null',
 
       'ZipFile::CentralDir::Open' => 'rio/zipfile/centraldir',
@@ -176,18 +163,12 @@ module RIO
       'ZipFile::Path::Str' => 'rio/zipfile/path',
 
       'CmdPipe::Stream::Reset' => 'rio/scheme/cmdpipe',
-#      'CmdPipe::Stream::Open' => 'rio/scheme/cmdpipe',
-#      'CmdPipe::Stream::Input' => 'rio/scheme/cmdpipe',
-#      'CmdPipe::Stream::Output' => 'rio/scheme/cmdpipe',
-#      'CmdPipe::Stream::InOut' => 'rio/scheme/cmdpipe',
 
       'HTTP::Stream::Input' => 'rio/scheme/http',
       'HTTP::Stream::Open' => 'rio/scheme/http',
 
       'Temp::Reset' => 'rio/scheme/temp',
       'Temp::Stream::Open' => 'rio/scheme/temp',
-      #'Temp::Stream::Close' => 'rio/scheme/temp',
-      #'Temp::Stream::InOut' => 'rio/scheme/temp',
 
       'FTP::State::Dir' => 'rio/ftp',
       'FTP::State::File' => 'rio/ftp',
@@ -198,10 +179,6 @@ module RIO
       'FTP::Stream::Close' => 'rio/ftp',
       'FTP::Stream::Reset' => 'rio/ftp',
 
-      'AryIO::Stream::Input' => 'rio/scheme/aryio',
-      'AryIO::Stream::Output' => 'rio/scheme/aryio',
-      'AryIO::Stream::InOut' => 'rio/scheme/aryio',
-      'AryIO::Stream::Open' => 'rio/scheme/aryio',
     }
     def state2class(state_name)
       #p "state_name=#{state_name}"
@@ -235,7 +212,7 @@ module RIO
     def create_state(*args)
       riorl = RIO::RL::Builder.build(*args)
 #      state_class = state2class(reset_state(riorl))
-      create_handle(state2class(reset_state(riorl)).new_r(riorl))
+      create_handle(state2class(reset_state(riorl)).new(riorl))
     end
     def clone_state(state)
       create_handle(state.target.clone)

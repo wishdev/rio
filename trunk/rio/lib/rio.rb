@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -34,37 +34,27 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
-#
-
 
 require 'rio/version'
 require 'rio/base'
+require 'rio/def'
 require 'rio/exception'
 
 require 'forwardable'
+
 $trace_states = false
-module RIO 
-  # See also: RIO::Doc::SYNOPSIS; RIO::Doc::INTRO; RIO::Doc::HOWTO.
-  class Rio < Base #:doc:
-  end
-end
 
 require 'rio/kernel'
 require 'rio/constructor'
 require 'rio/construct'
 
-module RIO
-  SEEK_SET = IO::SEEK_SET
-  SEEK_END = IO::SEEK_END
-  SEEK_CUR = IO::SEEK_CUR
-end
+require 'rio/const'
 
 module RIO
   class Rio #:doc:
     require 'rio/local'
     include Local
     require 'rio/factory'
-    
     protected
 
     attr_reader :state
@@ -116,16 +106,16 @@ module RIO
       #p callstr('dup',self)
       self.class.new(self.to_rl)
     end
-
-  def method_missing(sym,*args,&block) #:nodoc:
-    #p callstr('method_missing',sym,*args)
-
-    result = target.__send__(sym,*args,&block)
-    return result unless result.kind_of? State::Base and result.equal? target
-
-    self
-  end
-
+    
+    def method_missing(sym,*args,&block) #:nodoc:
+      #p callstr('method_missing',sym,*args)
+      
+      result = target.__send__(sym,*args,&block)
+      return result unless result.kind_of? State::Base and result.equal? target
+      
+      self
+    end
+    
     def inspect()
       cl = self.class.to_s[5..-1]
       st = state.target.class.to_s[5..-1]
@@ -152,6 +142,7 @@ module RIO
   end # class Rio
 end # module RIO
 
+require 'rio/ext/zipfile.rb'
 
 if $0 == __FILE__
   eval DATA.read, nil, $0, __LINE__+4

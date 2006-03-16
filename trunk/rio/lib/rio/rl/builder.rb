@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -47,6 +47,7 @@ module RIO
       def self.build(*a)
         #puts "build: #{a.inspect}" 
         a.flatten!
+        a.push('') if a.empty?
         case a[0]
         when ::String
           case a[0]
@@ -65,9 +66,10 @@ module RIO
         when RIO::Rio
           a[0] = a[0].to_rl
         when RL::Base
-          a0 = a.shift
+          a0 = a.shift.clone
+          return (a.empty? ? a0 : a0.join(*a))
           #p 'THERE',a0,a0.clone
-          return a0.clone
+          #return a0.clone.join(*a)
           #return a0.class.new(a0.clone,*a)
         when ::URI
           a0 = a.shift

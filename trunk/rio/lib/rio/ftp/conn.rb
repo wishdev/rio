@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -67,7 +67,9 @@ module RIO
           @ca[kuri] = 0
         end
         c = @co[kuri]
+        #p "HERE #{kuri}: #{c.inspect} #{c.closed?}"
         if c.closed?
+          #p "HERE2 #{c}"
           c.connect(curi.host,curi.port)
           if curi.user
             c.login(curi.user,curi.password)
@@ -112,6 +114,10 @@ module RIO
           @uri.password = password
         end
       end
+      def conn()
+        FTP::ConnCache.instance.connect(@uri)
+      end
+
       def chdir(dirname)
         @uri.path = dirname
         co = FTP::ConnCache.instance.connect(@uri)

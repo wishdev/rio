@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -43,12 +43,14 @@ module RIO
     #  ario.files(*args) do |f|
     #    f.directory?      #=> true
     #  end
+    #
     # No aguments selects all directories.
     # if _args_ are:
     # Regexp:: selects matching directories
     # glob::   selects matching directories
     # Proc::   called for each directory. the directory is processed unless the proc returns false
     # Symbol:: sent to each directory. Each directory is processed unless the symbol returns false
+    # Fixnum:: matched against the "depth" of the directory
     #
     # If a block is given, behaves like <tt>ario.dirs(*args).each(&block)</tt>
     #
@@ -332,6 +334,8 @@ module RIO
     # glob::    recurse into matching subdirectories
     # Proc::    called for each directory. The directory is recursed into unless the proc returns false
     # Symbol::  sent to each directory. Each directory is recursed into unless the symbol returns false
+    # Fixnum::  recurse into directories only at the given depth
+    # Range::   recurse into directories at a range of depths
     #
     # If a block is given, behaves like <tt>ario.recurse(*args).each(&block)</tt>
     #
@@ -350,6 +354,8 @@ module RIO
     # that matching directories will *not* be recursed into
     #
     #  rio('adir').norecurse('.svn') { |drio| ... } # recurse, skipping subversion directories
+    #
+    #  rio('adir').norecurse(3) {|drio| ... } # only recurse 2 levels deep into a directory structure
     #
     def norecurse(*args,&block) target.norecurse(*args,&block); self end
 

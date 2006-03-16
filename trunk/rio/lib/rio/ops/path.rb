@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -143,7 +143,7 @@ module RIO
           require 'rio/to_rio'
           parts = self.rl.split
           # map to rios and extend the array with to_array
-          parts.map { |arl| rio(arl) }.extend(ToRio::Array)
+          parts.map { |arl| new_rio(arl) }.extend(ToRio::Array)
         end
         def basename(*args)
           unless args.empty?

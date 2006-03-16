@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -83,7 +83,9 @@ module RIO
         end
         alias :delete :rm
         alias :delete! :rm
-        def touch(*args) rtn_self { fs.touch(self,*args) } end
+        def touch(*args) rtn_self { fs.touch(self.to_s,*args) } end
+        def truncate(sz=0) rtn_reset { fs.truncate(self.to_s,sz) } end
+        def clear() truncate(0) end
       end
       module NonExisting
         include ExistOrNot

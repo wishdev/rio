@@ -1,4 +1,4 @@
-Copyright (c) 2005, Christopher Kleckner
+Copyright (c) 2005, 2006 Christopher Kleckner
 All rights reserved
 
 This file is part of the Rio library for ruby.
@@ -27,7 +27,7 @@ Rio is a convenience class wrapping much of the functionality of
 IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 To create the documentation for Rio run the command
-  ruby RUNME.1st.rb
+  ruby build_doc.rb
 from  the distribution directory.
 
 Then point your browser at the 'doc/rdoc' directory.

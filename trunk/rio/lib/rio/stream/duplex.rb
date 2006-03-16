@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -41,12 +41,6 @@ require 'rio/stream/open'
 module RIO
   module Stream
     module Duplex
-      class Open < RIO::Stream::Open
-        def input() stream_state('Stream::Duplex::Input') end
-        def output() stream_state('Stream::Duplex::Output') end
-        def inout() stream_state('Stream::Duplex::InOut') end
-      end
-
       module Ops
         module Output
           def wclose()
@@ -56,9 +50,18 @@ module RIO
             self
           end
         end
-        module Input
-        end
       end
+      class Open < RIO::Stream::Open
+        def output() super.extend(Ops::Output) end
+        def inout() super.extend(Ops::Output) end
+      end
+    end
+  end
+end
+__END__
+module RIO
+  module Stream
+    module Duplex
 
       class Input < RIO::Stream::Input
         include Ops::Input

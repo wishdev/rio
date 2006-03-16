@@ -1,4 +1,3 @@
-
 #--
 # =============================================================================== 
 # Copyright (c) 2005, Christopher Kleckner
@@ -59,28 +58,52 @@ module RIO
       KIOSYMS = [:gets,:getc,:open,:readline,:readlines,:chop,:to_a,:putc,:puts,:print,:printf,:split,
                  :=~,:===,:==,:eql?,:sub,:sub!,:gsub,:gsub!,:load]
       @@kernel_cleaned ||= KIOSYMS.each { |sym| undef_method(sym) } 
+      undef_method(:rio)
     end 
     
     class Base
+      attr_accessor :try_state
+      #attr_accessor :handled_by
+
       attr_accessor :rl
       attr_accessor :ioh
-      attr_accessor :try_state
-      attr_accessor :cx
-      attr_accessor :fs
+      #attr_accessor :fs
 
-      attr_accessor :handled_by
+      attr_accessor :cx
 
       # Context handling
       include Cx::Methods
-
       include RIO::Ext::Cx
 
       
-      def initialize()
-        @rl = @cx = @ioh = nil
-        @fs = RIO::FS::Native.create()
-#        @handled_by = self.class.to_s
+      def initialize(rl=nil,cx=nil,ioh=nil)
+        cx ||= self.class.default_cx
+        _init(rl,cx,ioh)
+        #        @handled_by = self.class.to_s
       end
+#      def initialize(rl=nil,cx=nil,ioh=nil,fs=nil)
+#        fs ||= RIO::FS::Native.create()
+#        cx ||= self.class.default_cx
+#        _init(rl,cx,ioh,fs)
+#        #        @handled_by = self.class.to_s
+#      end
+      
+      def _init(riorl,cntx,iohandle=nil)
+        @rl = riorl
+        @cx = cntx
+        @ioh = iohandle
+#        raise Exception::FailedCheck.new(self) unless check?
+        self
+      end
+#       def _init(riorl,cntx,iohandle=nil,fs=nil)
+#         @rl = riorl
+#         @cx = cntx
+#         @ioh = iohandle
+#         @fs = fs
+# #        raise Exception::FailedCheck.new(self) unless check?
+#         self
+#       end
+      private :_init
 
       def initialize_copy(*args)
         #p callstr('initialize_copy',args[0].inspect)
@@ -90,35 +113,30 @@ module RIO
         @ioh = @ioh.clone unless @ioh.nil?
         # @fs = @fs
       end
-      def self.new_r(riorl)
-        new.init(riorl,Cx::Vars.new( { 'closeoneof' => true, 'closeoncopy' => true } ))
-      end
-      def clone_rio()
-        cp = Rio.new(self.rl)
-        cp.cx = self.cx
-        cp.ioh = self.ioh.clone unless self.ioh.nil?
-        cp
-      end
-      def init(riorl,cntx,iohandle=nil,fs=RIO::FS::Native.create())
-        @rl = riorl
-        @cx = cntx
-        @ioh = iohandle
-        @fs = fs
-#        raise Exception::FailedCheck.new(self) unless check?
-        self
-      end
-      
-      def self.new_other(other)
-        new.copy_state(other)
-      end
 
-      def copy_state(other)
-        init(other.rl,other.cx,other.ioh,other.fs)
+      def self.default_cx
+         Cx::Vars.new( { 'closeoneof' => true, 'closeoncopy' => true } )
       end
+      def self.new_other(other)
+        new(other.rl,other.cx,other.ioh)
+        #new.copy_state(other)
+      end
+#       def self.new_other(other)
+#         new(other.rl,other.cx,other.ioh,other.fs)
+#         #new.copy_state(other)
+#       end
 
       alias :ior :ioh
       alias :iow :ioh
 
+#      def copy_state(other)
+#        _init(other.rl,other.cx,other.ioh,other.fs)
+#      end
+
+#      def self.new_r(riorl)
+#        #new(riorl,default_cx)
+#        new(riorl)
+#      end
 
 
       # Section: State Switching
@@ -132,15 +150,19 @@ module RIO
         return self if new_class == self.class
 
         begin
-          try_state[new_class,*args]
+          new_state = try_state[new_class,*args]
         rescue Exception::FailedCheck => ex
           p "not a valid "+new_class.to_s+": "+ex.to_s+" '"+self.to_s+"'"
           raise
         end
+        became(new_state)
+        new_state
       end
-
+      def became(obj)
+        RIO::Ext.became(obj)
+      end
       def method_missing_trace_str(sym,*args)
-        "missing: "+self.class.to_s+'['+self.to_url+']'+'.'+sym.to_s+'('+args.join(',')+')'
+        "missing: "+self.class.to_s+'['+self.to_url+" {#{self.rl.fs}}"+']'+'.'+sym.to_s+'('+args.join(',')+')'
       end
 
       def method_missing(sym,*args,&block)
@@ -182,7 +204,7 @@ module RIO
       end
 
       def to_rl() self.rl.rl end
-
+      def fs() self.rl.fs end
 
       extend Forwardable
       def_instance_delegators(:rl,:path,:to_s,:fspath,:urlpath,:length)
@@ -204,20 +226,31 @@ module RIO
       # (should this be here???)
       def new_rio(arg0,*args,&block)
         #return arg0 if arg0.nil? # watch out for dir.read! if you remove this line
-        Rio.rio(arg0,*args,&block)
+        nrio = Rio.rio(arg0,*args,&block)
+        #nrio.fs = self.fs
+        nrio
       end
       def new_rio_cx(*args)
         n = new_rio(*args)
         n.cx = self.cx.bequeath
+        #n.fs = self.fs
         n
       end
-      def rio(*args)
-        if zipfile?
-          open_.dstream.rio(*args)
-        else
-          new_rio_cx(*args)
-        end
+      def clone_rio()
+        cp = Rio.new(self.rl)
+        cp.cx = self.cx
+        cp.ioh = self.ioh.clone unless self.ioh.nil?
+        #cp.fs = self.fs
+        cp
       end
+      
+#      def rio(*args)
+#        if zipfile?
+#          open_.dstream.rio(*args)
+#        else
+#          new_rio_cx(*args)
+#        end
+#      end
       def ensure_rio(arg0)
         return arg0 if arg0.kind_of?(::RIO::Rio)
         new_rio(arg0)

@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -35,18 +35,22 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
+require 'rio/def'
 
 module Kernel
-  require 'rio'
   # Shortcut for RIO.rio
   def rio(*args,&block) # :yields: self
     RIO::Rio.rio(*args,&block)
   end
   module_function :rio
   alias :io :rio
-#  alias :old :print
-#  def print(*args)
-#    old(*args)
-#    raise RuntimeError,"Called P"
-#  end
 end
+
+module RIO 
+  # See also: RIO::Doc::SYNOPSIS; RIO::Doc::INTRO; RIO::Doc::HOWTO.
+  class Rio < Base #:doc:
+    undef_method(:rio)
+  end
+end
+
+require 'rio'

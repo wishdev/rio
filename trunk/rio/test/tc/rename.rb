@@ -142,6 +142,18 @@ class TC_rename < Test::RIO::TestCase
     assert_array_equal([],rio('tdir').files[])
 
   end
+  def test_rename_dirname_deep
+    indir = rio('dir1/dir2/dir3/tdir').delete!.mkpath < rio(@d[1]).to_a
+    oldf = indir.files[].map { |f| f.to_s }
+    expf = oldf.map { |f| f.sub(indir.to_s,'shallow') }
+    rio('shallow').delete!.mkpath
+    indir.rename.files do |ent|
+      ent.dirname = 'shallow'
+    end
+    assert_array_equal(expf,rio('shallow').files[])
+    assert_array_equal([],rio(indir.to_s).files[])
+
+  end
   def test_rename_basename_wext
     indir = rio('tdir').delete!.mkpath < rio(@d[1]).to_a
 

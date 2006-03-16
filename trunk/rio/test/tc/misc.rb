@@ -5,7 +5,7 @@ if $0 == __FILE__
 end
 require 'rio'
 require 'tc/testcase'
-require 'dev-utils/debug'
+#require 'dev-utils/debug'
 
 #require 'tc_myfirsttests'
 #require 'tc_moretestsbyme'

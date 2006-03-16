@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -52,6 +52,16 @@ module RIO
         include Ops::Path::Create
         def closed?() ioh.nil? || ioh.closed? end
         def open?() not closed? end
+        def pwd() 
+          open? ? ioh.pwd : open_.ioh.pwd 
+        end
+        
+        def cwd()
+          nr = self.dup
+          wd = pwd
+          nr.rl.path = wd
+          new_rio(nr) 
+        end
       end
       class Reset < Base
         def check?() true end
@@ -72,7 +82,7 @@ module RIO
         def open(*args)
           open_(*args)
         end
-        def es()
+        def _change_ftp_dir()
           begin
             ioh.chdir(rl.path)
             become('FTP::State::Dir')
@@ -82,17 +92,12 @@ module RIO
           end
         end
         def when_missing(sym,*args)
-          open_.es()
+          #p callstr('when_missing',sym,*args)
+          open_._change_ftp_dir()
         end
 
       end
       class Common < Base
-        def pwd() ioh.pwd end
-        def cwd()
-          nr = self.dup
-          nr.rl.path = ioh.pwd
-          new_rio(nr) 
-        end
         def help(*args) ioh.help(*args) end
         def status() ioh.status(self.path.to_s) end
         def system(*args) ioh.system(*args) end
@@ -102,18 +107,20 @@ module RIO
         end
 
         def softreset()
-          close unless closed?
+          #close unless closed?
           super
         end
         def close() 
           ioh.close unless closed?
           softreset
         end 
+        def symlink?() false end
       end
       class File < Common
         #include Cp::File::Input
         def check?() true end
         def when_missing(sym,*args)  
+          #p callstr('when_missing',sym,*args)
           fstream()
         end
         def fstream()
@@ -164,14 +171,17 @@ module RIO
           true
         end
         def file?() exist? end
-        def dir?() false end
+        def directory?() false end
+        alias :dir? :directory?
       end
       class Dir < Common
-        include Enumerable
-        include Grande
-        include Grande::Dir
-        include Cp::Dir::Input
-        include Cp::Dir::Output
+        require 'rio/ops/dir'
+        include Ops::Dir::Stream
+#        include Enumerable
+#        include Grande
+#        include Grande::Dir
+#        include Cp::Dir::Input
+#        include Cp::Dir::Output
         def check?() true end
         def when_missing(sym,*args)  
           gofigure(sym,*args)
@@ -206,7 +216,7 @@ module RIO
           if block_given?
             wd = ioh.pwd
             ioh.chdir(rl.path)
-            rtn = yield
+            rtn = yield self.dup
             ioh.chdir(wd)
             rtn
           else
@@ -218,7 +228,8 @@ module RIO
           ioh.list
         end
         def exist?() true end
-        def dir?() true end
+        def directory?() true end
+        alias :dir? :directory?
         def file?() false end
         def put(srio)
           ioh.chdir(rl.path)

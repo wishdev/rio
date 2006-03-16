@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -59,21 +59,21 @@ Please read the following first:
 = Rio Optional Componants
 
 This document describes various optional Rio components, that must be
-explicitly 'required' to be available. These are not included in the
-main rio.rb either because they change classes that should not be
-changed with the developers explicit permission, or because they are
-not of general enough interest.
+explicitly 'required' to be available. These are not included in
+rio.rb either because they change classes that should not be changed
+without the developers explicit permission, or because they are not of
+general enough interest.
 
 == to_rio
 
-This option composes 4 options
+This option comprises 4 options
 * Object#to_rio
 
     require 'rio/to_rio/object' 
     ario = any_object.to_rio
 
   This option adds a to_rio method to the Object class which calls the
-  objects #to_s method and passes it to the Rio constructor. Like:
+  object's #to_s method and passes it to the Rio constructor. Like:
 
     ario = rio(any_object.to_s)
 
@@ -107,7 +107,7 @@ This option composes 4 options
  arguments_as_rios = RIO.ARGV
 
 This option provides a function which converts each element of ruby's
-ARGV into a Rio.  Usefull when writing programs that take a list of
+ARGV into a Rio.  Useful when writing programs that take a list of
 files as its arguments
 
 == RIO.popen3

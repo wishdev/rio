@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -35,9 +35,28 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-require 'csv'
-require 'rio/record'
+# begin
+#   require 'faster_csv'  # first choice--for speed
 
+#   # A CSV compatible interface for FasterCSV.
+#   module CSV  # :nodoc:
+#     def self.parse_line( line, field_sep=nil, row_sep=nil )
+#       FasterCSV.parse_line( line, :col_sep => field_sep || ",",
+#                                   :row_sep => row_sep   || :auto )
+#     end
+    
+#     def self.generate_line( array, field_sep=nil, row_sep=nil )
+#       FasterCSV.generate_line( array, :col_sep => field_sep || ",",
+#                                       :row_sep => row_sep   || "" )
+#     end
+#   end
+# rescue LoadError
+#   require 'csv'         # second choice--slower but standard
+# end
+
+require 'csv'
+
+$EXTEND_CSV_RESULTS = true
 module RIO
   module Ext
     module CSV
@@ -92,21 +111,42 @@ module RIO
         end
       end
     end
+  end
+end
 
 
+module RIO
+  module Ext
     module CSV
       module Input
 
         protected
+#        def ior()
+#          p cx['stream_itertype']
+#          case cx['stream_itertype']
+#          when 'lines',nil
+#            self.ioh.iostack[-2]
+#          else
+#            self.ioh
+#          end
+#        end
+#         def each_rec_(&block)
+#           self.ior.each { |line|
+#             yield line
+#           }
+#           self
+#         end
 
         def to_rec_(raw_rec)
           #_init_cols_from_line(raw_rec) if @recno == 0
           #p "#{callstr('to_rec_',raw_rec,@recno)} ; itertype=#{cx['stream_itertype']}"
           case cx['stream_itertype']
           when 'lines' 
-            unless copying_from?
-              raw_rec.extend(RIO::Ext::CSV::Str)
-              raw_rec.csv_s_to_rec = _s_to_rec_proc(cx['csv_fs'],cx['csv_rs'])
+            if $EXTEND_CSV_RESULTS
+              unless copying_from?
+                raw_rec.extend(RIO::Ext::CSV::Str)
+                raw_rec.csv_s_to_rec = _s_to_rec_proc(cx['csv_fs'],cx['csv_rs'])
+              end
             end
             raw_rec
           when 'records'
@@ -154,15 +194,20 @@ module RIO
           end
           tfields
         end
-        def _l2a(line,fs,rs)
+        def parse_line_(line,fs,rs)
           ::CSV.parse_line(line,fs,rs)
+        end
+        def _l2a(line,fs,rs)
+          parse_line_(line,fs,rs)
         end
         def _l2record(line,fs,rs)
           #p callstr('_l2record',line,fs,rs,cols)
-          fields = trim(::CSV.parse_line(line,fs,rs))
-          unless copying_from?
-            fields.extend(RIO::Ext::CSV::Ary)
-            fields.csv_rec_to_s = _rec_to_s_proc(fs,rs)
+          fields = trim(parse_line_(line,fs,rs))
+          if $EXTEND_CSV_RESULTS
+            unless copying_from?
+              fields.extend(RIO::Ext::CSV::Ary)
+              fields.csv_rec_to_s = _rec_to_s_proc(fs,rs)
+            end
           end
           fields
         end

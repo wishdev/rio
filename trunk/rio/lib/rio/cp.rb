@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -145,6 +145,7 @@ module RIO
           ario.cpclose {
             ario = ario.iostate(sym)
             self.copying(ario).each { |el|
+#              p el
               ario.putrec(el)
 #              ario << el
             }.copying_done(ario)
@@ -166,15 +167,16 @@ module RIO
             case arg
             when ::Array then cpfrom_array_(arg)
             when ::IO then cpfrom_obj_(arg)
-            when ::String then self.put_(arg)
+            when ::String then 
+              self.put_(arg)
             else cpfrom_rio_(arg)
             end
             self
         end
         def cpfrom_rio_(arg)
           ensure_rio(arg).copying(self).each { |el|
-            self.putrec(el)
-#            self << el
+            #self.putrec(el)
+            self << el
           }.copying_done(self)
         end
       end
@@ -255,7 +257,6 @@ module RIO
           end
         end
         def cpfrom_rio_(ario)
-          #p callstr('cpfrom_rio_',ario)
           dest = self.join(ario.filename)
           case
           when ario.symlink?

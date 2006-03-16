@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -302,6 +302,17 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 5
    array = ario.norecurse('.svn')['*.txt']
   
+* Put all directories (recursively) into an array
+   # method 1
+   array = ario.dirs[]
+   # method 2
+   array = ario.dirs.to_a
+
+* Put all entries (recursively) into an array, but limit the depth of recursion to 2
+   # method 1
+   array = ario.norecurse(3).to_a
+
+
 * Iterate through ruby files in a directory and subdirectories skipping 
   those in the '.svn', and 'pkg' directories
    # method 1

@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -37,6 +37,11 @@
 
 module RIO
   module ToRio #:nodoc: all
+    module IO
+      def to_rio()
+        rio(self)
+      end
+    end
     module Object
       def to_rio()
         rio(self.to_s)
@@ -49,8 +54,14 @@ module RIO
       end
     end
     module Array
+      def /(arg)
+        rio(self) / arg
+      end
       def to_rio()
         rio(self)
+      end
+      def to_rios()
+        self.map { |path| rio(path) }
       end
     end
   end

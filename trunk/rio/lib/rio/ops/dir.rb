@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -40,36 +40,36 @@ require 'rio/cp'
 require 'rio/ops/either'
 
 module RIO
-  module Impl
-    module U
-      def self.rmdir(s) ::Dir.rmdir(s.to_s) end
-      def self.mkdir(s,*args) ::Dir.mkdir(s.to_s,*args) end
-      def self.chdir(s,&block) ::Dir.chdir(s.to_s,&block) end
-      def self.foreach(s,&block) ::Dir.foreach(s.to_s,&block) end
-      def self.entries(s) ::Dir.entries(s.to_s) end
-      def self.cp_r(s,d)
-        require 'fileutils'
-        ::FileUtils.cp_r(s.to_s,d.to_s)
-      end
-      def self.find(s,&block) 
-        require 'find'
-        Find.find(s.to_s) do |f|
-          yield f
-        end
-      end
-      def self.glob(gstr,*args,&block) 
-        ::Dir.glob(gstr,*args,&block) 
-      end
-      def self.rmtree(s)
-        require 'fileutils'
-        ::FileUtils.rmtree(s.to_s)
-      end
-      def self.mkpath(s) 
-        require 'fileutils'
-        ::FileUtils.mkpath(s.to_s) 
-      end
-    end
-  end
+#   module Impl
+#     module U
+#       def self.rmdir(s) ::Dir.rmdir(s.to_s) end
+#       def self.mkdir(s,*args) ::Dir.mkdir(s.to_s,*args) end
+#       def self.chdir(s,&block) ::Dir.chdir(s.to_s,&block) end
+#       def self.foreach(s,&block) ::Dir.foreach(s.to_s,&block) end
+#       def self.entries(s) ::Dir.entries(s.to_s) end
+#       def self.cp_r(s,d)
+#         require 'fileutils'
+#         ::FileUtils.cp_r(s.to_s,d.to_s)
+#       end
+#       def self.find(s,&block) 
+#         require 'find'
+#         Find.find(s.to_s) do |f|
+#           yield f
+#         end
+#       end
+#       def self.glob(gstr,*args,&block) 
+#         ::Dir.glob(gstr,*args,&block) 
+#       end
+#       def self.rmtree(s)
+#         require 'fileutils'
+#         ::FileUtils.rmtree(s.to_s)
+#       end
+#       def self.mkpath(s) 
+#         require 'fileutils'
+#         ::FileUtils.mkpath(s.to_s) 
+#       end
+#     end
+#   end
 
   module Ops
     module Dir
@@ -231,13 +231,25 @@ module RIO
           args = cx['skip_args'] || []
           self.skipentries(*args)
         end
-        def ent_to_rio_(estr,selfstr)
-          new_rio_cx(selfstr ? fs.join(selfstr,estr) : estr )
+        def ent_to_rio_(ent,indir)
+#          new_rio_cx(indir ? fs.join(indir.to_s,ent) : ent )
+#           arg = if indir
+#                   indir.rl.join(ent)
+#                   indir.rl
+#                 else
+#                   ent
+#                 end
+#          p new_rio_cx(indir.to_rl).join(ent)
+#          p indir.to_rl
+          if indir
+            new_rio_cx(indir.rl,ent)
+          else
+            new_rio_cx(ent)
+          end
         end
-        def handle_ent_(estr,selfstr,sel,&block)
+        def handle_ent_(ent,indir,sel,&block)
           begin
-            erio = ent_to_rio_(estr,selfstr)
-            
+            erio = ent_to_rio_(ent,indir)
             if stream_iter?
               _add_stream_iter_cx(erio).each(&block) if erio.file? and sel.match?(erio)
             else
@@ -257,10 +269,10 @@ module RIO
           #p "#{callstr('each_',*args)} sel=#{cx['sel'].inspect} nosel=#{cx['nosel'].inspect}"
           handle_skipped()
           sel = Match::Entry::Selector.new(cx['entry_sel'])
-          selfstr = (self.to_s == '.' ? nil : self.to_s)
+          indir = (self.to_s == '.' ? nil : self)
           self.ioh.each do |ent|
             #next if 
-            handle_ent_(ent,selfstr,sel,&block) unless ent =~ /^\.(\.)?$/
+            handle_ent_(ent,indir,sel,&block) unless ent =~ /^\.(\.)?$/
           end
           closeoneof? ? self.close : self
         end
@@ -268,9 +280,9 @@ module RIO
           #p "#{callstr('each_',*args)} sel=#{cx['sel'].inspect} nosel=#{cx['nosel'].inspect}"
           handle_skipped()
           sel = Match::Entry::Selector.new(cx['entry_sel'])
-          selfstr = (self.to_s == '.' ? nil : self.to_s)
+          indir = (self.to_s == '.' ? nil : self)
           while ent = self.ioh.read
-            handle_ent_(ent,selfstr,sel,&block) unless ent =~ /^\.(\.)?$/
+            handle_ent_(ent,indir,sel,&block) unless ent =~ /^\.(\.)?$/
           end
           closeoneof? ? self.close : self
         end

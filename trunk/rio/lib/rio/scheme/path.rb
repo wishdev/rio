@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -48,10 +48,7 @@ module RIO
 
     class RL < RL::PathBase 
       def open(m)
-        require 'rio/iowrap'
-        ::File.open(self.fspath,m.to_s)
-        #fs.file.open(self.fspath,m.to_s)
-        #RIO::IOWrap::Stream.new(fs.file.open(self.fspath,m.to_s))
+        fs.file.open(self.fspath,m.to_s)
       end
     end
   end
@@ -69,36 +66,21 @@ module RIO
   require 'rio/ops/symlink'
   module Path
     module Stream
-      class Open < RIO::Stream::Open
-        include Ops::Path::Status
-        include Ops::Path::URI
-        include Ops::Path::Query
-        def stream_state(cl)
-          next_state = super
-          next_state.extend(RIO::Ops::Symlink::Existing) if symlink?
-          next_state
-        end
-        def input() stream_state('Path::Stream::Input') end
-        def output() stream_state('Path::Stream::Output') end
-
-        def inout() stream_state('Path::Stream::InOut') end
-      end
-
       module Ops
         include RIO::Ops::Path::Str
       end
 
-      class Input < RIO::Stream::Input
-        include Ops
-      end
-
-      class Output < RIO::Stream::Output
-        include Ops
-      end
-
-      class InOut < RIO::Stream::InOut
-        include Ops
+      class Open < RIO::Stream::Open
+        include RIO::Ops::Path::Status
+        include RIO::Ops::Path::URI
+        include RIO::Ops::Path::Query
+        def stream_state(cl)
+          next_state = super
+          next_state.extend(RIO::Ops::Symlink::Existing) if symlink?
+          next_state.extend(Ops)
+        end
       end
     end
   end
 end
+__END__

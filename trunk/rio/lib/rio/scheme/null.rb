@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -36,13 +36,12 @@
 
 
 require 'rio/rl/ioi'
-require 'stringio'
 require 'rio/stream'
 require 'rio/stream/open'
 
 module RIO
   module Null #:nodoc: all
-    RESET_STATE = 'Null::Stream::Open'
+    RESET_STATE = RL::IOIBase::RESET_STATE
 
     class RL < RL::IOIBase 
       RIOSCHEME = 'null'
@@ -52,35 +51,6 @@ module RIO
         RIO::IOS::Null.new(nil,m)
       end
     end
-    module Stream
-      class Open < RIO::Stream::Open
-        def input() stream_state('Null::Stream::Input') end
-        def output() stream_state('Null::Stream::Output') end
-        def inout() stream_state('Null::Stream::InOut') end
-      end
-
-      module Ops
-        module Input
-        end
-        module Output
-        end
-        module InOut
-          include Input
-          include Output
-        end
-      end
-
-      class Input < RIO::Stream::Input
-        include Ops::Input
-      end
-
-      class Output < RIO::Stream::Output
-        include Ops::Output
-      end
-
-      class InOut < RIO::Stream::InOut
-        include Ops::InOut
-      end
-    end
   end
 end
+__END__

@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -49,6 +49,22 @@ module RIO
     class Empty < State::Base
       include Ops::Path::Empty
       def check?() fspath.nil? or fspath.empty? end
+      def [](*args)
+        self.rl = Path::RL.new('.')
+        softreset[*args]
+      end
+      def each(&block)
+        self.rl = Path::RL.new('.')
+        softreset.each(&block)
+      end
+      def read(*args)
+        self.rl = Path::RL.new('.')
+        softreset.read(*args)
+      end
+      def get(*args)
+        self.rl = Path::RL.new('.')
+        softreset.get(*args)
+      end
       def when_missing(sym,*args) gofigure(sym,*args) end
     end 
 
@@ -68,35 +84,25 @@ module RIO
         end
       end
 
+      private
+
+      def _fs_state(become_state,symlink_mod)
+        next_state = become(become_state)
+        next_state.extend(symlink_mod) if symlink?
+        next_state
+      end
+
       protected
 
       def edir()
         #rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
-        if zipent?
-          require 'rio/zipfile/scheme/zpath'
-          zipfile = self.rl.zipfile
-          self.rl = RIO::ZDir::RL.new(zipfile,self.to_uri)
-          self.fs = zipfile.dir
-        end
-        next_state = become('Dir::Existing')
-        next_state.extend(Ops::Symlink::Existing) if symlink?
-        next_state
+        _fs_state('Dir::Existing',Ops::Symlink::Existing)
       end
       def efile() 
-        if zipent?
-          require 'rio/zipfile/scheme/zpath'
-          zipfile = self.rl.zipfile
-          self.rl = RIO::ZFile::RL.new(zipfile,self.to_uri)
-          self.fs = zipfile.file
-        end
-        next_state = become('File::Existing')
-        next_state.extend(Ops::Symlink::Existing) if symlink?
-        next_state
+        _fs_state('File::Existing',Ops::Symlink::Existing)
       end
       def npath() 
-        next_state = become('Path::NonExisting')
-        next_state.extend(Ops::Symlink::NonExisting) if symlink?
-        next_state
+        _fs_state('Path::NonExisting',Ops::Symlink::NonExisting)
       end
 
     end
@@ -110,22 +116,10 @@ module RIO
 
       def ndir() 
         #rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
-        if zipent?
-          require 'rio/zipfile/scheme/zpath'
-          zipfile = self.rl.zipfile
-          self.rl = RIO::ZDir::RL.new(zipfile,self.to_uri)
-          self.fs = zipfile.dir
-        end
         become 'Dir::NonExisting'
       end
 
       def nfile() 
-        if zipent?
-          require 'rio/zipfile/scheme/zpath'
-          zipfile = self.rl.zipfile
-          self.rl = RIO::ZFile::RL.new(zipfile,self.to_uri)
-          self.fs = zipfile.file
-        end
         become('File::NonExisting') 
       end
 

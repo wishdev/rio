@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -35,6 +35,7 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
+require 'rio/state'
 require 'rio/ops/path'
 require 'rio/ops/file'
 
@@ -45,22 +46,23 @@ module RIO
     class Base < State::Base
       include Ops::Path::Str
 
-      def fstream() 
-        if zipent?
-          self.rl = RIO::ZFile::RL.new(self.rl.zipfile,self.to_uri)
-          become 'Path::Stream::Open'          
-        else
-          self.rl = RIO::File::RL.new(self.to_uri)
-          if zipfile?
-            become 'ZipFile::CentralDir::Open'
-          else
-            become 'Path::Stream::Open'
-          end
-        end
-        #        become 'Stream::Open'
+      protected
+
+      def stream_rl_
+        RIO::File::RL.new(self.to_uri,{:fs => self.fs})
       end
 
-      def when_missing(sym,*args) fstream() end
+      public
+
+      def fstream() 
+        #p self.rl.class
+        self.rl = self.stream_rl_
+        become 'Path::Stream::Open'
+      end
+
+      def when_missing(sym,*args) 
+        fstream() 
+      end
     end
     
     class NonExisting < Base

@@ -3,7 +3,6 @@
 require 'rio'
 require 'rio/argv'
 
-#is_ruby_exe = proc{ |f| f.executable? and f[0][0] =~ /^#!.+ruby/ }
 is_ruby_exe = proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }
 
 RIO.ARGV.each do |rpath|

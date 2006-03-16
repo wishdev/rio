@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -58,9 +58,11 @@ module RIO
     end
     class Stream < Base
       attr_reader :iostack
+      attr_accessor :hindex
       def initialize(iosp,*args)
         super
         @iostack = [@ios]
+        @hindex = -1
       end
       def initialize_copy(*args)
         #p callstr('ioh_stream:initialize_copy',*args)
@@ -75,7 +77,7 @@ module RIO
         sz || 512 
       end
 
-      def handle() @iostack[-1] end
+      def handle() @iostack[@hindex] end
       def close()  handle.close unless self.closed? end
       def closed?() handle.nil? or handle.closed? end
       def eof?() closed? or handle.eof? end

@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -37,9 +37,33 @@
 
 require 'rio/ext/csv'
 require 'rio/ext/yaml'
-require 'rio/ext/zipfile'
+#require 'rio/ext/zipfile'
 
 require 'rio/util'
+module RIO
+  module Ext #:nodoc: all
+    @@extensions = {}
+
+    module_function
+    def add(cl,meth)
+      @@extensions[cl] ||= []
+      @@extensions[cl].push(meth)
+    end
+    def extend_state(state_class,ext_module)
+      ext_proc = proc{ |obj| obj.extend(ext_module) }
+      RIO::Ext.add(state_class,ext_proc)
+    end
+
+    def became(obj)
+      if @@extensions[obj.class]
+        @@extensions[obj.class].each { |meth|
+          meth[obj]
+        }
+      end
+    end
+  end
+end
+
 module RIO
   module Ext #:nodoc: all
     OUTPUT_SYMS = Util::build_sym_hash(CSV::Output.instance_methods + YAML::Output.instance_methods)
@@ -47,15 +71,22 @@ module RIO
     module Cx
       include CSV::Cx
       include YAML::Cx
-      include ZipFile::Cx
+      #include ZipFile::Cx
     end
   end
   module Ext
     module Input
       def add_extensions(obj)
         #p "add_extensions(#{obj.inspect})"
-        obj.extend(CSV::Input) if obj.csv?
+        #p obj.ioh
+        if obj.csv?
+          obj.extend(CSV::Input)
+        end
         obj.extend(YAML::Input) if obj.yaml?
+#        if obj.zipfile?
+#          require 'rio/ext/zipfile/state'
+#          obj.extend(ZipFile::Input) 
+#        end
         obj
       end
       module_function :add_extensions
@@ -70,3 +101,4 @@ module RIO
     end
   end
 end
+

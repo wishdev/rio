@@ -90,6 +90,7 @@ end
 module Test
   module RIO
     class TestCase < Unit::TestCase
+      include RIO_TestCase::Util
       def setup()
         return if self.class == Test::RIO::TestCase
         #p self.class
@@ -100,9 +101,13 @@ module Test
         return if self.class == Test::RIO::TestCase
         ::Dir.chdir @cwd
       end
+      def rios2str(a) a.map { |el| el.to_s } end
+
       def assert!(a,msg="negative assertion")
         assert((!(a)),msg)
       end
+
+      def smap(a) a.map { |el| el.to_s } end
       def assert_array_equal(a,b,msg="array same regardless of order")
         if a.nil?
           assert_nil(b)

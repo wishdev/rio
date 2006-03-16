@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -345,7 +345,7 @@ module RIO
     #  ario.write(*args)
     #  ario.close
     #
-    def write!(*argv) target.write!(*argv); self end
+    def write!(*argv) target.write!(*argv) end
 
 
     # Calls IO#write
@@ -354,7 +354,7 @@ module RIO
     # it will be converted to a
     # string using +to_s+. Returns the number of bytes written.
     #
-    def write(*argv) target.write(*argv); self end
+    def write(*argv) target.write(*argv) end
 
 
     # Calls IO#eof?

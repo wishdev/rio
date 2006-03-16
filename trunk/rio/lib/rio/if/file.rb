@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -52,6 +52,30 @@ module RIO
     #
     def touch() target.touch(); self end
     
+    # Calls File#truncate
+    #
+    # Truncates a file referenced by a Rio to be at most +sz+ bytes long. 
+    # Not available on all platforms.
+    #
+    #  f = rio("out")
+    #  f.print!("1234567890")
+    #  f.size                     #=> 10
+    #  f.truncate(5)
+    #  f.size()                   #=> 5
+    #
+    # If called with no arguments, truncates the Rio at the
+    # value returned by Rio#pos().
+    #  f.read(2)
+    #  f.truncate.size            #=> 2
+    #  f.contents                 #=> "12"
+    #
+    # Returns the Rio
+    #
+    def truncate(sz=pos()) target.truncate(sz); self end
     
+    # Calls Rio#truncate(0)
+    #
+    def clear() target.clear(); self end
+
   end
 end

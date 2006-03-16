@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -56,6 +56,11 @@ module RIO
         abstract_method :=~
                 
       end
+      class Depth < Base
+        def =~(entry)
+          @match_to === entry.rl.pathdepth
+        end
+      end
       class Any < Base
         def =~(entry) true end
       end
@@ -63,11 +68,24 @@ module RIO
         def =~(entry) false end
       end
       class Glob < Base
-        def =~(entry) ::File.fnmatch?(@match_to,entry.filename.to_s) end
-        #def =~(entry) Impl::U.fnmatch?(entry.filename.to_s,@match_to) end
+        def =~(entry) 
+          ::File.fnmatch?(@match_to,entry.filename.to_s) 
+        end
       end
       class Regexp < Base
-        def =~(entry) @match_to =~ entry.filename.to_s end
+        def =~(entry) 
+          @match_to =~ entry.filename.to_s 
+        end
+      end
+      class PathGlob < Base
+        def =~(entry) 
+          ::File.fnmatch?(@match_to,entry.to_s) 
+        end
+      end
+      class PathRegexp < Base
+        def =~(entry) 
+          @match_to =~ entry.to_s 
+        end
       end
       class Proc < Base
         def =~(entry) @match_to[entry] end
@@ -85,6 +103,8 @@ module RIO
       end
       def create(arg)
         case arg
+        when ::Fixnum     then Depth.new(arg)
+        when ::Range     then Depth.new(arg)
         when ::String     then Glob.new(arg)
         when ::Regexp     then Regexp.new(arg)
         when ::Proc       then Proc.new(arg)
@@ -129,8 +149,6 @@ module RIO
       end
       class Sels < Array
         def <<(entry_list)
-          #p callstr('<<',entry_list)
-          
           same_sym = self.grep(entry_list)
           if same_sym.empty?
             super

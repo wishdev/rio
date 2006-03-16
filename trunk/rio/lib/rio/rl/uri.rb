@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -36,15 +36,19 @@
 
 
 require 'rio/rl/base'
+require 'rio/fs/url'
+
 module RIO
   module RL
     class URIBase < Base
-      attr_reader :uri
       SCHEME = URI::REGEXP::PATTERN::SCHEME
+      attr_reader :uri
+      attr :fs
       def initialize(u,*args)
         #p callstr('initialize',u,*args)
         # u should be a ::URI or something that can be parsed to one
-        args = _get_base_from_args(args)
+        @fs = RIO::FS::URL.create()
+        args = _get_opts_from_args(args)
         @uri =  _mkuri(u)
         self.join(*args)
         @uri.path = '/' if @uri.absolute? and @uri.path == ''
@@ -54,7 +58,7 @@ module RIO
         @uri = @uri.clone unless @uri.nil?
         @base = @base.clone unless @base.nil?
       end
-      def _get_base_from_args(args)
+      def _get_opts_from_args(args)
         #      args.each { |a| p "get_base len=#{args.length} #{a.class}##{a.to_s}" }
         @base = nil
         if !args.empty? and args[-1].kind_of?(::Hash) and (b = args.pop[:base])

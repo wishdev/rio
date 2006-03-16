@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -43,6 +43,7 @@ require 'rio/ops/stream/output'
 require 'rio/ext'
 
 require 'rio/filter/gzip'
+require 'rio/filter/faster_csv'
 #require 'rio/filter/yaml'
 #require 'rio/filter/chomp'
 #require 'rio/filter/strip'
@@ -84,6 +85,9 @@ module RIO
           ioh.extend(mod)
         end
       end
+#      def open_(*args)
+#        self
+#      end
       def rectype_mod
         case cx['stream_rectype']
         when 'lines' then RIO::RecType::Lines
@@ -116,6 +120,7 @@ module RIO
         add_filter(Filter::GZipRead) if gzip?
         #add_filter(Filter::YAML) if yaml?
         add_line_filters()
+#        add_filter(Filter::FasterCSV) if csv?
 #        if closeoneof?
 #          add_filter(Filter::CloseOnEOF)
 #          ioh.oncloseproc = proc { self.on_closeoneof }
@@ -138,6 +143,7 @@ module RIO
       end
       def add_filters
         add_filter(Filter::GZipWrite) if gzip?
+        #add_filter(Filter::FasterCSV) if csv?
         #add_filter(Filter::YAML) if yaml?
         self
       end

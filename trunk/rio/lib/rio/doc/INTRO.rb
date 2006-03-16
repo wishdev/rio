@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -228,8 +228,7 @@ or
 or
  rio('tcp://hostname:port')
 
-===== Creating a Rio that runs an external program and connects to its
-stdin and stdout
+===== Creating a Rio that runs an external program and connects to its stdin and stdout
 
 <tt>rio(?-,cmd)</tt> (mnemonic: '-' is used by some Unix programs to
 specify stdin or stdout in place of a file)
@@ -293,7 +292,7 @@ that this behavior differs from File#split.)
 
    rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
 
-The array returned is extended wwith a +to_rio+ method, which will put
+The array returned is extended with a +to_rio+ method, which will put
 the parts back together again.
 
    ary = rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
@@ -482,7 +481,7 @@ accessed, no socket has been opened, not so much as a test for a files
 existance has been done. When an I/O method is called on a Rio, the
 sequence of events required to complete that operation on the
 underlying object takes place. Rio takes care of creating the
-apropriate object (eg IO,Dir), opening the object with the apropriate
+appropriate object (eg IO,Dir), opening the object with the appropriate
 mode, performing the operation, closing the object if required, and
 returning the results of the operation.
 
@@ -493,7 +492,7 @@ Rio's I/O operations can be divide into two catagories:
 ==== Proxy operations
   
 These are calls which are forwarded to the underlying object (eg
-IO,Dir,Net::FTP), after apropriately creating and configuring that
+IO,Dir,Net::FTP), after appropriately creating and configuring that
 object. The result produced by the method is returned, and the object
 is closed.
 

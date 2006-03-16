@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -88,8 +88,8 @@ module RIO
 
       public
 
-      def size() self.contents.size end
-      def empty?() self.size == 0 end
+      #def size() self.contents.size end
+      #def empty?() self.eof? end
 
       # Temporary work-around. Should this be necessary?
       def dir?() false end
@@ -182,14 +182,6 @@ module RIO
 #         end
 #         rtn
 #       end
-      def close() 
-        #p callstr('close')+" mode='#{mode?}' ioh=#{self.ioh} open?=#{open?}"
-        return self unless self.open? 
-        self.close_
-        cx['retrystate'] = nil
-        self
-      end
-
 #      def get()
 #       self.close_.softreset
 #       nil
@@ -204,6 +196,14 @@ module RIO
 #      end
 
 
+
+      def close() 
+        #p callstr('close')+" mode='#{mode?}' ioh=#{self.ioh} open?=#{open?}"
+        return self unless self.open? 
+        self.close_
+        cx['retrystate'] = nil
+        self
+      end
 
       def reopen(*args) self.close.softreset.open(*args) end
 
