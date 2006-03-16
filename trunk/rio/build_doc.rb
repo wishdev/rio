@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,17 +22,9 @@
 # =============================================================================== 
 #
 # To create the documentation for Rio run the command
-#   rake rdoc
+#   ruby build_doc.rb
 # from the distribution directory.
 #++
-
-# It is not really necessary to run this first. 
-# It simply builds the Rio RDoc documentation, and is provided 
-# to support those who have not installed +rake+ and to demonstrate Rio. 
-# The preferred method of building the documentation is
-#   rake rdoc
-# 
-
 
 $:.unshift 'lib'
 require 'rio'
@@ -60,6 +52,8 @@ rdoc_files = [
 ]
 
 cmd = sprintf("rdoc %s %s",RDOC_OPTIONS.join(' '),rdoc_files.join(' '))
+
+rio(?-,cmd) > ?-
 
 docindex = (rdoc_dir/'index.html').abs.to_url
 msg = "Please point your browser at '#{docindex}'" 

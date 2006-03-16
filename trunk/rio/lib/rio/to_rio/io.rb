@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -22,7 +22,7 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
+#  ruby build_doc.rb
 # from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
 #
 # Suggested Reading
@@ -34,26 +34,8 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
+require 'rio/to_rio'
 
-# T-Mobile HotSpot 1.877.822.SPOT
-module RIO
-  module Record #:nodoc: all
-    class Base < ::String
-      attr_accessor :recno
-      def initialize(recno,*args)
-        @recno = recno
-        super(*args)
-      end
-      def =~(obj)
-        case obj
-        when ::Integer then @recno == obj
-        when ::Range then obj.include?(@recno)
-        else super
-        end
-      end
-      def to_s() self end
-      def to_rec(mode=nil) to_s end
-      def to_row() to_s end
-    end
-  end
+class IO
+  include RIO::ToRio::IO
 end
