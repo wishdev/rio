@@ -9,7 +9,7 @@ require 'tc/testcase'
 require 'open-uri'
 require 'ftp/test'
 
-class TC_ftpmiscanon < Test::RIO::TestCase
+class TC_ftp_anon_misc < Test::RIO::TestCase
   @@once = false
   include Test::RIO::FTP::Const
 

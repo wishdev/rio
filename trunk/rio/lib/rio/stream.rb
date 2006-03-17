@@ -43,7 +43,6 @@ require 'rio/ops/stream/output'
 require 'rio/ext'
 
 require 'rio/filter/gzip'
-require 'rio/filter/faster_csv'
 #require 'rio/filter/yaml'
 #require 'rio/filter/chomp'
 #require 'rio/filter/strip'

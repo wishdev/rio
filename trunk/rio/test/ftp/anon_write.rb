@@ -9,7 +9,7 @@ require 'tc/testcase'
 require 'open-uri'
 require 'ftp/test'
 
-class TC_ftpwriteanon < Test::RIO::TestCase
+class TC_ftp_anon_write < Test::RIO::TestCase
   @@once = false
   include Test::RIO::FTP::Const
   #FTPROOT = rio('ftp://localhost/')
