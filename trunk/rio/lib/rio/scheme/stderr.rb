@@ -48,8 +48,8 @@ module RIO
       end
       def opaque() '' end
       def open(*args)
-        self.ios = $stderr
-        super()
+        #self.ios = $stderr
+        super($stderr)
       end
     end
   end

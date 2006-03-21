@@ -44,6 +44,9 @@ module RIO
       RIOSCHEME = 'sysio'
       RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
       def opaque() sprintf('0x%08x',self.ios.object_id) end
+      def open(*args)
+        super(*args)
+      end
       # must be able to process both
       # parse('rio:sysio',ios)
       # parse('rio:sysio:0xHEXIOS')

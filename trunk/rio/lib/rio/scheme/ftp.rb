@@ -38,10 +38,13 @@
 require 'net/ftp'
 require 'open-uri'
 require 'rio/ftp/conn'
+require 'rio/ftp/fs'
+require 'rio/rl/path'
 
 module RIO
   module FTP #:nodoc: all
     RESET_STATE = 'FTP::State::Reset'
+    #RESET_STATE = RIO::RL::PathBase::RESET_STATE
     
     require 'rio/rl/uri'
 
@@ -49,6 +52,9 @@ module RIO
       def self.splitrl(s) 
         sub,opq,whole = split_riorl(s)
         [whole] 
+      end
+      def openfs_
+        RIO::FTP::FS.new(@uri)
       end
       def open(*args)
         RIO::FTP::Conn.new(@uri)

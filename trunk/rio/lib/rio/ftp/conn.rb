@@ -51,8 +51,8 @@ module RIO
     class ConnCache
       include Singleton
       def initialize()
-        @co = {}
-        @ca = {}
+        @conns = {}
+        @count = {}
       end
       def kuris(uri)
         curi = uri.clone
@@ -62,11 +62,11 @@ module RIO
       end
       def connect(uri)
         kuri,curi = kuris(uri)
-        unless @co.has_key?(kuri)
-          @co[kuri] = ::Net::FTP.new()
-          @ca[kuri] = 0
+        unless @conns.has_key?(kuri)
+          @conns[kuri] = ::Net::FTP.new()
+          @count[kuri] = 0
         end
-        c = @co[kuri]
+        c = @conns[kuri]
         #p "HERE #{kuri}: #{c.inspect} #{c.closed?}"
         if c.closed?
           #p "HERE2 #{c}"
@@ -82,17 +82,17 @@ module RIO
           }
           c.extend(RootDir)
         end
-        @ca[kuri] += 1
-        #@ca.each { |k,v| puts " FTPCC.connect: #{k}: #{v}" }
+        @count[kuri] += 1
+        #@count.each { |k,v| puts " FTPCC.connect: #{k}: #{v}" }
         c
       end
       def close(uri)
         kuri,curi = kuris(uri)
 
-        if @ca.has_key?(kuri)
-          @ca[kuri] -= 1
+        if @count.has_key?(kuri)
+          @count[kuri] -= 1
         end
-        #@ca.each { |k,v| puts " FTPCC.close: #{k}: #{v}" }
+        #@count.each { |k,v| puts " FTPCC.close: #{k}: #{v}" }
       end
     end
   end
@@ -118,27 +118,46 @@ module RIO
         FTP::ConnCache.instance.connect(@uri)
       end
 
+      def get_ftype(fname)
+        co = conn()
+        ftyp = nil
+        begin
+          co.mdtm(fname)
+          ftyp = 'file'
+        rescue Net::FTPPermError
+          wd = co.pwd
+          begin
+            co.chdir(fname)
+            ftyp = 'dir'
+          rescue Net::FTPPermError
+            ftyp = 'nada'
+          ensure
+            co.chdir(wd)
+          end
+        end
+        ftyp
+      end
       def chdir(dirname)
         @uri.path = dirname
-        co = FTP::ConnCache.instance.connect(@uri)
+        co = conn()
         rd = co.root_dir
         rd = '' if rd == '/'
         co.chdir(rd + @uri.path)
       end
       def pwd()
-        co = FTP::ConnCache.instance.connect(@uri)
+        co = conn()
         co.pwd
       end
       def root_dir()
-        co = FTP::ConnCache.instance.connect(@uri)
+        co = conn()
         co.root_dir
       end
       def mdtm(filename)
-        co = FTP::ConnCache.instance.connect(@uri)
+        co = conn()
         co.mdtm(filename)
       end
       def conndir()
-        co = FTP::ConnCache.instance.connect(@uri)
+        co = conn()
         rd = co.root_dir
         rd = '' if rd == '/'
         co.chdir(rd + @uri.path)

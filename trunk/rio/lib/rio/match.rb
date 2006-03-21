@@ -44,7 +44,7 @@ module RIO
         case cx['ss_type']
         when nil
           keys[0]
-       else
+        else
           cx['ss_type']
         end
       end

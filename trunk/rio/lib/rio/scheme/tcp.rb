@@ -53,7 +53,7 @@ module RIO
       require 'socket'
       def open(*args)
         #          @host = 'localhost' if @host.nil? or @host.empty?
-        ::TCPSocket.new(@host || 'localhost',@port)
+        super(::TCPSocket.new(@host || 'localhost',@port))
       end
       def to_s() self.url end
       

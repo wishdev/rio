@@ -47,7 +47,7 @@ module RIO
         @fd = fd
       end
       def open(m,*args)
-        ::IO.new(@fd,m.to_s)
+        super(::IO.new(@fd,m.to_s))
       end
       def opaque() "#{@fd}" end
       # must be able to process

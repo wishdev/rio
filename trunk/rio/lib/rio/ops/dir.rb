@@ -143,7 +143,7 @@ module RIO
               yield new_rio('.')
             }
           else
-            fs.chdir(self.to_s,*args)
+            fs.chdir(self.path,*args)
             return new_rio('.')
           end
           self
@@ -232,15 +232,6 @@ module RIO
           self.skipentries(*args)
         end
         def ent_to_rio_(ent,indir)
-#          new_rio_cx(indir ? fs.join(indir.to_s,ent) : ent )
-#           arg = if indir
-#                   indir.rl.join(ent)
-#                   indir.rl
-#                 else
-#                   ent
-#                 end
-#          p new_rio_cx(indir.to_rl).join(ent)
-#          p indir.to_rl
           if indir
             new_rio_cx(indir.rl,ent)
           else

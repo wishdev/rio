@@ -50,7 +50,6 @@ module RIO
       attr :fs
       def initialize(pth,*args)
 
-        @fs = RIO::FS::Native.create()
         @host = nil  # host or nil
         @fspath = nil
         case pth
@@ -79,6 +78,10 @@ module RIO
           @base = RL.fs2url(::Dir.getwd)+'/'
         end
         @fspath.sub!(%r|/\.$|,'/')
+        @fs = openfs_ 
+      end
+      def openfs_
+        RIO::FS::Native.create()
       end
       def pathroot()
         return nil unless absolute?

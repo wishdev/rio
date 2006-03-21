@@ -94,16 +94,9 @@ module RIO
 
       protected
 
-      def edir()
-        #rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
-        _fs_state('Dir::Existing',Ops::Symlink::Existing)
-      end
-      def efile() 
-        _fs_state('File::Existing',Ops::Symlink::Existing)
-      end
-      def npath() 
-        _fs_state('Path::NonExisting',Ops::Symlink::NonExisting)
-      end
+      def edir() _fs_state('Dir::Existing',Ops::Symlink::Existing) end
+      def efile() _fs_state('File::Existing',Ops::Symlink::Existing) end
+      def npath() _fs_state('Path::NonExisting',Ops::Symlink::NonExisting) end
 
     end
 
@@ -114,14 +107,8 @@ module RIO
 
       def check?() not exist? end
 
-      def ndir() 
-        #rl.path += '/' unless rl.path.empty? or rl.path[-1] == ?/
-        become 'Dir::NonExisting'
-      end
-
-      def nfile() 
-        become('File::NonExisting') 
-      end
+      def ndir() become 'Dir::NonExisting' end
+      def nfile() become('File::NonExisting') end
 
       def when_missing(sym,*args)
         case sym

@@ -65,9 +65,7 @@ module RIO
       end
       class Reset < Base
         def check?() true end
-        def when_missing(sym,*args)  
-          become('FTP::State::Open')
-        end
+        def when_missing(sym,*args) become('FTP::State::Open')end
       end
       class Open < Base
         def check?() true end
@@ -79,9 +77,7 @@ module RIO
           end
           self
         end
-        def open(*args)
-          open_(*args)
-        end
+        def open(*args) open_(*args) end
         def _change_ftp_dir()
           begin
             ioh.chdir(rl.path)
@@ -92,7 +88,6 @@ module RIO
           end
         end
         def when_missing(sym,*args)
-          #p callstr('when_missing',sym,*args)
           open_._change_ftp_dir()
         end
 

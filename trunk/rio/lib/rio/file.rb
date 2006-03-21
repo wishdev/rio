@@ -72,16 +72,43 @@ module RIO
 
     class Existing < Base
       include Ops::File::Existing
+      include Enumerable
+
       def check?() self.file? end
+      def handle_skipped
+        return self unless cx.has_key?('skip_args')
+        args = cx['skip_args'] || []
+        self.skipentries(*args)
+      end
+      def [](*args)
+        #p "#{callstr('[]',*args)} ss_type=#{ss_type?}"
+        if _using_files_with_a_file
+          unless args.empty?
+            ss_args = cx['ss_args'] = args
+            return self.files(*ss_args).to_a
+          else
+            return to_a()
+          end
+        else
+          fstream[*args]
+        end
+        
+      end
       def each(*args,&block)
         #p "#{callstr('each',*args)} ss_type=#{ss_type?}"
-        if ss_type? == 'files' and !stream_iter?
-          #sel = Match::Entry::Selector.new(cx['sel'],cx['nosel'])
+        if _using_files_with_a_file
+          handle_skipped()
           sel = Match::Entry::Selector.new(cx['entry_sel'])
           yield new_rio_cx(self) if sel.match?(self)
         else
           fstream.each(*args,&block)
         end
+      end
+      
+      private
+
+      def _using_files_with_a_file
+        ss_type? == 'files' and !stream_iter?
       end
     end
     

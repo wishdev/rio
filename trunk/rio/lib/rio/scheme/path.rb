@@ -36,6 +36,7 @@
 
 
 require 'rio/rl/path'
+require 'rio/ioh'
 module RIO
   module Path #:nodoc: all
     RESET_STATE = RL::PathBase::RESET_STATE
@@ -48,7 +49,7 @@ module RIO
 
     class RL < RL::PathBase 
       def open(m)
-        fs.file.open(self.fspath,m.to_s)
+        IOH::Stream.new(fs.file.open(self.fspath,m.to_s))
       end
     end
   end
@@ -57,7 +58,7 @@ module RIO
 
     class RL < RL::PathBase 
       def open()
-        fs.dir.open(self.fspath)
+        IOH::Dir.new(fs.dir.open(self.fspath))
       end
     end
   end

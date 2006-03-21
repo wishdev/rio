@@ -48,7 +48,7 @@ module RIO
 
       def open(m,*args)
         require 'rio/ios/null'
-        RIO::IOS::Null.new(nil,m)
+        super(RIO::IOS::Null.new(nil,m))
       end
     end
   end

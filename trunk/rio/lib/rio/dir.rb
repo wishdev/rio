@@ -43,9 +43,6 @@ module RIO
   module Dir #:nodoc: all
     class Base < State::Base
       include Ops::Path::Str
-      def self.copy_(src,dst)
-        impl.cp_r(src,dst) 
-      end
       def open?() !ioh.nil? end
     end
 
@@ -76,15 +73,10 @@ module RIO
     end 
     class Open < Base
       def check?() true  end
-      def open(m=nil,*args)
-        open_(*args)
-      end
+      def open(m=nil,*args) open_(*args) end
       def open_(*args) 
         unless open?
-          ios = self.rl.open(*args)
-          ios.class
-          self.ioh = IOH::Dir.new(ios)
-#          self.ioh = self.rl.open()
+          self.ioh = self.rl.open()
         end
         self 
       end
@@ -106,15 +98,9 @@ module RIO
     class Stream < Base
       include Ops::Dir::Stream
       def check?() open? end
-      def when_missing(sym,*args) 
-        #p callstr('when_missing',sym,*args)
-        retryreset() 
-      end
+      def when_missing(sym,*args) retryreset() end
       def base_state() 'Dir::Close' end
-
-      def reset()
-        self.close.softreset()
-      end
+      def reset() self.close.softreset() end
       alias :copyclose :reset
     end
     class Close < Base

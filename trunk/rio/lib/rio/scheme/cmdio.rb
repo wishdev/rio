@@ -59,7 +59,7 @@ module RIO
       def open(m)
         #p "opening #{@cmd}"
         #raise RuntimeError, "Should Not Open"
-        ::IO.popen(@cmd,m.to_s)
+        super(::IO.popen(@cmd,m.to_s))
       end
 
       # must be able to process

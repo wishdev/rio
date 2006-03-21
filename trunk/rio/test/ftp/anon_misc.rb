@@ -31,5 +31,11 @@ class TC_ftp_anon_misc < Test::RIO::TestCase
     rwdir = rio(FTP_RWROOT).chdir
     assert_equal(FTP_RWROOT,rwdir.cwd)
   end
+  def test_mkdir
+    rwdir = rio(FTP_RWROOT).chdir
+    assert_equal(FTP_RWROOT.to_s,rwdir.cwd.to_s)
+    rio(rwdir,'dir0').mkdir
+    assert_equal([FS_RWROOT/'dir0'],FS_RWROOT.entries[])
+  end
 
 end

@@ -47,11 +47,14 @@ module RIO
       def initialize(u,*args)
         #p callstr('initialize',u,*args)
         # u should be a ::URI or something that can be parsed to one
-        @fs = RIO::FS::URL.create()
         args = _get_opts_from_args(args)
         @uri =  _mkuri(u)
         self.join(*args)
         @uri.path = '/' if @uri.absolute? and @uri.path == ''
+        @fs = self.openfs_
+      end
+      def openfs_()
+        RIO::FS::URL.create()
       end
       def initialize_copy(*args)
         super

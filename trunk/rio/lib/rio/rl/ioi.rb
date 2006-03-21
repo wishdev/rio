@@ -36,7 +36,7 @@
 
 
 require 'rio/rl/base'
-
+require 'rio/ioh'
 module RIO
   module RL
     class IOIBase < Base
@@ -46,6 +46,9 @@ module RIO
       def self.splitrl(s) nil end
       #def path() self.class.const_get(:RIOPATH) end
       def to_s() url() end
+      def open(ios)
+        IOH::Stream.new(ios)
+      end
     end
   end
   module RL
@@ -59,8 +62,9 @@ module RIO
       def initialize_copy(cp)
         @ios = cp.ios.clone unless cp.ios.nil?
       end
-      def open(*args)
-        @ios
+      def open(ios=nil)
+        @ios = ios unless ios.nil?
+        super(@ios)
       end
         
     end

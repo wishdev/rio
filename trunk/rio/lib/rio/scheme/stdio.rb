@@ -53,14 +53,14 @@ module RIO
         case 
         when m.primarily_read? 
           @scheme = 'stdin'
-          self.ios = $stdin.clone
+          return super($stdin.clone)
         when m.primarily_write? 
           @scheme = 'stdout'
-          self.ios = $stdout.clone
+          return super($stdout.clone)
         else 
           raise ArgumentError,sprintf("Can not %s a %s with mode '%s'",'open',self.class,m)
         end
-        super()
+        nil
       end
       def close()
         @scheme = RIOSCHEME

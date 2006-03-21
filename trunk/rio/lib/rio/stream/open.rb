@@ -68,11 +68,7 @@ module RIO
 
       def open_(*args)
         #p callstr('open_',args.inspect)+" mode='#{mode?}' (#{mode?.class}) ioh=#{self.ioh} open?=#{open?}"
-        unless open?
-          ios = self.rl.open(mode?,*args)
-          #noautoclose_(false) if ios.tty?
-          self.ioh = IOH::Stream.new(ios)
-        end
+        self.ioh = self.rl.open(mode?,*args) unless open?
         self
       end
 
@@ -174,29 +170,6 @@ module RIO
       include Ops::Stream::Status
 
       def check?() true end
-#       def on_eof_close(&block)
-#         begin
-#           rtn = yield
-#         ensure
-#           self.close_.softreset
-#         end
-#         rtn
-#       end
-#      def get()
-#       self.close_.softreset
-#       nil
-#      end
-#      alias :getline :get
-#      alias :getrow :get
-#      alias :getrec :get
-
-#      def readline(sep_string=$/)
-#        self.close_.softreset
-#        raise EOFError,"#{EOFError} #{self.fspath}"
-#      end
-
-
-
       def close() 
         #p callstr('close')+" mode='#{mode?}' ioh=#{self.ioh} open?=#{open?}"
         return self unless self.open? 

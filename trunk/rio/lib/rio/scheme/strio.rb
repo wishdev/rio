@@ -67,7 +67,7 @@ module RIO
       end
 
       def open(m,*args)
-        ::StringIO.new(@str,m.to_s,*args)
+        super(::StringIO.new(@str,m.to_s,*args))
       end
     end
     module Stream
