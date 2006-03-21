@@ -148,6 +148,7 @@ module RIO
           cpto_err(:<<,src) unless src.kind_of?(Rio)
           put(src)
         end
+        def mtime(*args) ioh.mtime(rl.path,*args) end
         def mdtm() ioh.mdtm(rl.path) end
         def rename(dst) 
           ioh.rename(rl.path,dst.to_s)
