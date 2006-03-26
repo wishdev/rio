@@ -12,6 +12,9 @@ class TC_cmdpipe < Test::RIO::TestCase
   @@dname = 'd'
   @@fnames = ['f0','f1','f2','g0','g1']
 
+  require 'tc/programs_util'
+  include Test::RIO::Programs
+
   def self.once
     @@once = true
     rio(@@dname).rmtree.mkpath.chdir {
@@ -26,7 +29,7 @@ class TC_cmdpipe < Test::RIO::TestCase
   end
 
   def test_cmd_out
-    ls = rio(?-,'ls d')
+    ls = rio(?-,PROG['list_dir']+' d')
     out = rio(?").chomp
     exp = @@fnames
     rtn = ls | out
@@ -35,8 +38,8 @@ class TC_cmdpipe < Test::RIO::TestCase
   end
 
   def test_cmd_cmd_out
-    ls = rio(?-,'ls d')
-    grep = rio(?-,'grep f')
+    ls = rio(?-,PROG['list_dir']+' d')
+    grep = rio(?-,PROG['find_lines']+' f')
     out = rio(?").chomp
     exp = @@fnames.select { |fn| fn =~ /f/ }
     rtn = ls | grep | out
@@ -45,9 +48,9 @@ class TC_cmdpipe < Test::RIO::TestCase
   end
 
   def test_cmd_cmd_cmd_out
-    ls = rio(?-,'ls d')
-    cmd = rio(?-,'grep f')
-    cmd2 = rio(?-,'grep 1')
+    ls = rio(?-,PROG['list_dir']+' d')
+    cmd = rio(?-,PROG['find_lines']+' f')
+    cmd2 = rio(?-,PROG['find_lines']+' 1')
     out = rio(?").chomp
     exp = @@fnames.select { |fn| fn =~ /f1/ }
     rtn = ls | cmd | cmd2 | out
@@ -66,7 +69,7 @@ class TC_cmdpipe < Test::RIO::TestCase
 
   def test_file_cmd_out
     inp = rio('d/f2')
-    cmd = rio(?-,'grep 1')
+    cmd = rio(?-,PROG['find_lines']+' 1')
     out = rio(?")
     rtn = inp | cmd | out
     exp = inp[/1/]
@@ -76,8 +79,8 @@ class TC_cmdpipe < Test::RIO::TestCase
 
   def test_file_cmd_cmd_out
     inp = rio('d/f2')
-    cmd = rio(?-,'grep 1')
-    cmd2 = rio(?-,'grep 0')
+    cmd = rio(?-,PROG['find_lines']+' 1')
+    cmd2 = rio(?-,PROG['find_lines']+' 0')
     out = rio(?")
     rtn = inp | cmd | cmd2 | out
     exp = inp[/10/]
@@ -87,8 +90,8 @@ class TC_cmdpipe < Test::RIO::TestCase
 
   def test_file_cmdpipe_out2
     inp = rio('d/f2')
-    cmd = rio(?-,'grep 1')
-    cmd2 = rio(?-,'grep 0')
+    cmd = rio(?-,PROG['find_lines']+' 1')
+    cmd2 = rio(?-,PROG['find_lines']+' 0')
 
     cmdpipe = inp | cmd | cmd2
     assert_equal('cmdpipe',cmdpipe.scheme)
@@ -108,8 +111,8 @@ class TC_cmdpipe < Test::RIO::TestCase
 
   def test_file_cmdpipe_out
     inp = rio('d/f2')
-    cmd = rio(?-,'grep 1')
-    cmd2 = rio(?-,'grep 0')
+    cmd = rio(?-,PROG['find_lines']+' 1')
+    cmd2 = rio(?-,PROG['find_lines']+' 0')
     out = rio(?")
 
     cmdpipe = cmd | cmd2
@@ -122,8 +125,8 @@ class TC_cmdpipe < Test::RIO::TestCase
   end
 
   def test_cmdpipe_without
-    cmd = rio(?-,'grep 1')
-    cmd2 = rio(?-,'grep 0')
+    cmd = rio(?-,PROG['find_lines']+' 1')
+    cmd2 = rio(?-,PROG['find_lines']+' 0')
     out = rio(?")
 
     cmdpipe = rio(?|,cmd,cmd2,out)

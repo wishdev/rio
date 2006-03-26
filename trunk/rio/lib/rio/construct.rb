@@ -39,7 +39,7 @@ module RIO
   require 'rio/ops/construct'
   include Ops::Construct
 
-  module_function *RIO::CONSTRUCTOR_SYMS
+  module_function(*RIO::CONSTRUCTOR_SYMS)
 end
 
 module RIO
