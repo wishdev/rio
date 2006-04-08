@@ -41,9 +41,10 @@ class TC_ftp2ftp < Test::RIO::TestCase
     src = FTP_ROROOT/fname
     dst = FTP_RWROOT
     dst < src
-    fs_src = FS_ROROOT/fname
-    fs_dst = FS_RWROOT/fname
-    assert_rios_equal(fs_src,fs_dst)
+    ans = rio(FTP_RWROOT,fname).to_a
+    exp = rio(FTP_ROROOT,fname).to_a.map{ |s| s.sub('ro','rw') }
+  
+    assert_equal(smap(exp),smap(ans))
   end
 
 

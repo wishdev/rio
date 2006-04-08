@@ -35,7 +35,7 @@ class TC_ftp_anon_misc < Test::RIO::TestCase
     rwdir = rio(FTP_RWROOT).chdir
     assert_equal(FTP_RWROOT.to_s,rwdir.cwd.to_s)
     rio(rwdir,'dir0').mkdir
-    assert_equal([FS_RWROOT/'dir0'],FS_RWROOT.entries[])
+    assert_equal(smap([FTP_RWROOT/'dir0']),smap(FTP_RWROOT.entries[/^dir/]))
   end
 
 end
