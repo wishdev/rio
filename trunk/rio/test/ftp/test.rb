@@ -7,7 +7,8 @@ module Test
         FTPUSER = 'ftp'
         
         FSROOT = rio('/home/ftp')
-        FTPROOT = rio('ftp://localhost/')
+        FTPHOST = '192.168.1.101'
+        FTPROOT = rio("ftp://#{FTPHOST}/")
 
         TESTDIR = rio('riotest')
 

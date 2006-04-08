@@ -4,6 +4,7 @@ require 'tc/testcase'
 #require 'tc/yaml'
 
 require 'tc/abs'
+require 'tc/tonl'
 require 'tc/files_select'
 require 'tc/emptyriodir'
 require 'tc/entsel'
