@@ -58,6 +58,7 @@ module RIO
         else
           @piper = Piper::Base.new(*args)
         end
+        super
       end
       def initialize_copy(*args)
         @piper = @piper.clone

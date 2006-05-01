@@ -49,6 +49,7 @@ module RIO
         when self.class then @cmd = cmd.cmd
         else @cmd = cmd
         end
+        super
       end
       def opaque() 
         URI.escape(@cmd,RIO::RL::ESCAPE)

@@ -37,10 +37,15 @@
 
 require 'rio/rl/base'
 require 'rio/ioh'
+require 'rio/fs/stream'
+
 module RIO
   module RL
     class IOIBase < Base
       RESET_STATE = 'Stream::Open'
+      def openfs_()
+        RIO::FS::Stream.create()
+      end
       def scheme() self.class.const_get(:RIOSCHEME) end
       def opaque() '' end
       def self.splitrl(s) nil end
@@ -58,6 +63,7 @@ module RIO
       protected(:ios=)
       def initialize(ios=nil)
         @ios = ios
+        super
       end
       def initialize_copy(cp)
         @ios = cp.ios.clone unless cp.ios.nil?

@@ -47,8 +47,10 @@ module RIO
     class RL < RL::IOIBase 
       RIOSCHEME = 'strio'
       RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
+      attr_accessor :str
       def initialize(str="")
         @str = str
+        super
       end
 
       def opaque() sprintf('0x%08x',@str.object_id) end
@@ -76,6 +78,8 @@ module RIO
         def string=(p1) ioh.string = p1 end
       end
       class Open < RIO::Stream::Open
+        def string=(p1) rl.str = p1 end
+        def string() rl.str end
         def stream_state(*args) super.extend(Ops) end
       end
     end

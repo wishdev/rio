@@ -46,6 +46,7 @@ module RIO
       attr_reader :scheme
       def initialize(sch=RIOSCHEME)
         @scheme = sch
+        #super
       end
       def opaque() '' end
       require 'rio/iomode'

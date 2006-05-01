@@ -47,7 +47,7 @@ module RIO
       HOST = URI::REGEXP::PATTERN::HOST
       SCHEME = URI::REGEXP::PATTERN::SCHEME
 
-      attr :fs
+      #attr :fs
       def initialize(pth,*args)
 
         @host = nil  # host or nil
@@ -78,7 +78,8 @@ module RIO
           @base = RL.fs2url(::Dir.getwd)+'/'
         end
         @fspath.sub!(%r|/\.$|,'/')
-        @fs = openfs_ 
+        #@fs = openfs_ 
+        super
       end
       def openfs_
         RIO::FS::Native.create()

@@ -34,22 +34,29 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
+require 'rio/fs/impl'
+require 'rio/fs/base'
 
-require 'rio/state'
 module RIO
-  module Stream
+  module FS
+    class Stream < Base
+      require 'singleton'
+      include Singleton
+      attr_reader :file,:dir
+      def initialize(*args)
+        @file = nil
+        @test = nil
+        @dir  = nil
+        @path = nil
+        @util = nil
+      end
 
-    class Base < State::Base
-      def iostate(*args) self end
-      def stream?() true end
-      def recno() nil end
-
-      # The copy code requires a directory test
-      # Streams are never directories
-      def dir?() false end
+      def self.create(*args)
+        instance(*args)
+      end
+      def symlink?(s) false end
+      def directory?(s) false end
 
     end
-
   end
 end
-

@@ -163,6 +163,7 @@ module RIO
       end
       def method_missing_trace_str(sym,*args)
         "missing: "+self.class.to_s+'['+self.to_url+" {#{self.rl.fs}}"+']'+'.'+sym.to_s+'('+args.join(',')+')'
+        #"missing: "+self.class.to_s+'['+self.to_url+""+']'+'.'+sym.to_s+'('+args.join(',')+')'
       end
 
       def method_missing(sym,*args,&block)

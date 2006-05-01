@@ -50,6 +50,7 @@ module RIO
         #puts "initialize(#{file_prefix.inspect},#{temp_dir.inspect})"
         @prefix = file_prefix || DFLT_PREFIX
         @tmpdir = temp_dir || DFLT_TMPDIR
+        super
       end
       #def path() nil end
       def scheme() self.class.const_get(:RIOSCHEME) end

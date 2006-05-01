@@ -87,9 +87,6 @@ module RIO
       #def size() self.contents.size end
       #def empty?() self.eof? end
 
-      # Temporary work-around. Should this be necessary?
-      def dir?() false end
-
       def iostate(sym)
         if mode? && mode?.allows_both?
           open_.inout()

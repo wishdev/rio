@@ -141,6 +141,7 @@ module RIO
 
         def cpto_rio_(arg,sym)
           ario = ensure_rio(arg)
+          #p ario
           ario = ario.join(self.filename) if ario.dir?
           ario.cpclose {
             ario = ario.iostate(sym)

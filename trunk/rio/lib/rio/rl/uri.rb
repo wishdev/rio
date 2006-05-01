@@ -43,7 +43,7 @@ module RIO
     class URIBase < Base
       SCHEME = URI::REGEXP::PATTERN::SCHEME
       attr_reader :uri
-      attr :fs
+      #attr :fs
       def initialize(u,*args)
         #p callstr('initialize',u,*args)
         # u should be a ::URI or something that can be parsed to one
@@ -51,7 +51,8 @@ module RIO
         @uri =  _mkuri(u)
         self.join(*args)
         @uri.path = '/' if @uri.absolute? and @uri.path == ''
-        @fs = self.openfs_
+        #@fs = self.openfs_
+        super
       end
       def openfs_()
         RIO::FS::URL.create()

@@ -45,6 +45,7 @@ module RIO
       RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].freeze
       def initialize(fd)
         @fd = fd
+        super
       end
       def open(m,*args)
         super(::IO.new(@fd,m.to_s))
