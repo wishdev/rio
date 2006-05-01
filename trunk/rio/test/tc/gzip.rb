@@ -68,20 +68,14 @@ class TC_gzip < Test::RIO::TestCase
 
   def test_tempfile
     str = "Hello World\n"
-    rio('src').print!(str)
+    src = rio(?").print!(str)
+    ans = rio(?")
 
-    rio('src.gz').delete!
-    rio('ans').delete!
-    rio('src') > rio('src.gz').gzip
-    rio('src.gz').gzip > rio('ans')
-    assert_equal(str,rio('ans').contents)
-    
-    rio('src.gz').delete!
-    rio('ans').delete!
-    rio('src.gz').gzip < rio('src') 
-    rio('ans') < rio('src.gz').gzip
-    assert_equal(str,rio('ans').contents)
-    
+    tmp = rio(??).gzip
+    tmp < src
+    assert_equal(str,tmp.rewind.contents)
+    tmp.rewind > ans
+    assert_equal(str,ans.contents)
   end
 
 

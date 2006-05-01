@@ -51,6 +51,21 @@ module RIO
         @values.delete(key)
         @explicit.delete(key)
       end
+      def get_keystate(key)
+        key_exists = @values.key?(key)
+        key_val = @values[key]
+        key_explicit = @explicit[key]
+        [key,key_exists,key_val,key_explicit]
+      end
+      def set_keystate(key,key_exists,key_val,key_explicit)
+        if(key_exists) then
+          @values[key] = key_val
+          @explicit[key] = key_explicit
+        else
+          @values.delete(key)
+          @explicit.delete(key)
+        end
+      end
       def set_(key,val)
         @values[key] = val unless @explicit[key]
       end

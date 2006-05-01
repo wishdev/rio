@@ -134,6 +134,10 @@ module RIO
         #p args
         @tempobj = nil
       end
+      def self.default_cx
+        Cx::Vars.new( { 'closeoneof' => false, 'closeoncopy' => false } )
+      end
+
       def check?() true end
       def mkdir(prefix=rl.prefix,tmpdir=rl.tmpdir)
         self.rl = RIO::Temp::Dir::RL.new(prefix, tmpdir)
@@ -171,7 +175,7 @@ module RIO
     module Stream
       class Open < RIO::Stream::Open
         def iostate(sym)
-          mode('w+').noautoclose_.open_.inout()
+          mode_('w+').open_.inout()
         end
 #        def inout() stream_state('Temp::Stream::InOut') end
       end

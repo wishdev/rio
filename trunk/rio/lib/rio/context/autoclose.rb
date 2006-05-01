@@ -47,4 +47,27 @@ module RIO
       protected :closeoneof_
     end
   end
+
+  module Cx
+    module Methods
+      def closeoncopy(arg=true,&block) cxx('closeoncopy',arg,&block) end
+      def nocloseoncopy(arg=false,&block) nocxx('closeoncopy',arg,&block) end
+      def closeoncopy?() cxx?('closeoncopy') end 
+      def closeoncopy_(arg=true)  cxx_('closeoncopy',arg) end
+      protected :closeoncopy_
+    end
+  end
+
+  module Cx
+    module Methods
+      def noautoclose(arg=false,&block)
+        closeoncopy(arg).closeoneof(arg,&block)
+      end
+      def noautoclose_(arg=false)
+        closeoncopy_(arg).closeoneof_(arg)
+      end
+      protected :noautoclose_
+    end
+  end
+
 end

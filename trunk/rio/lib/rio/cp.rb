@@ -48,6 +48,26 @@ module RIO
       module InOut
         def cpclose(*args,&block)
           if args.empty?
+            oldcoc = self.cx.get_keystate('closeoncopy')
+            self.cx['closeoncopy'] = false
+            rtn = yield
+            rtn.cx.set_keystate(*oldcoc)
+            rtn.copyclose
+          else
+            if (ario = args[0]).kind_of?(Rio)
+              oldcoc = ario.cx.get_keystate('closeoncopy')
+              ario.cx['closeoncopy'] = false
+              rtn = yield
+              ario.cx.set_keystate(*oldcoc)
+              ario.copyclose
+              rtn
+            else
+              yield
+            end
+          end
+        end
+        def cpclose0(*args,&block)
+          if args.empty?
             oldcoc,self.cx['closeoncopy'] = self.cx['closeoncopy'],false
             rtn = yield
             rtn.cx['closeoncopy'] = oldcoc

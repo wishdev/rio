@@ -48,5 +48,19 @@ class TC_tempfile < Test::RIO::TestCase
     assert_equal(str,tmp.rewind.chomp.gets)
   end
 
+  def test_copy
+    str = "Hello World\n"
+    
+    src = rio(?").print!(str)
+    ans = rio(?")
+    
+    tmp = rio(??)
+    tmp < src
+    tmp.rewind
+    assert_equal(str,tmp.contents)
+    tmp.rewind
+    tmp > ans
+    assert_equal(str,ans.contents)
+  end
 
 end
