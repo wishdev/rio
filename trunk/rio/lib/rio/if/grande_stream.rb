@@ -238,7 +238,8 @@ module RIO
     #  rio('f1') >> rio('f2')    # same thing
     # 
     def +@()
-      +target; self
+      RIO::no_warn { +target }
+      self
     end
 
     # Sets the implicit output mode to 'a+'. 

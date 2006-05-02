@@ -34,7 +34,7 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
-
+require 'rio/no_warn'
 module RIO
   class Rio
 #  module IF
@@ -403,7 +403,12 @@ module RIO
     # file on a web site into a local gzipped csv file that uses semi-colons as separators
     #  rio('http://domain/file.csv.gz').columns(0,7..9).gzip.csv[0..9] > rio('localfile.csv.gz').csv(';').gzip
     #
-    def >(destination) target > destination; self end
+    def >(destination) 
+      RIO::no_warn {
+        target > destination;
+      } 
+      self 
+    end
 
     # Alias for Rio#> (copy-to grande operator)
     def copy_to(destination) target.copy_to(destination); self end
@@ -578,7 +583,12 @@ module RIO
     #  
     # See also Rio#> (copy-to), Rio#each, Rio#[]
     #
-    def <(source) target < source; self end
+    def <(source) 
+      RIO::no_warn {
+        target < source
+      }
+      self 
+    end
 
     # Alias for Rio#< (copy-from grande operator)
     def copy_from(source) target.copy_from(source); self end

@@ -142,7 +142,7 @@ module RIO
   end # class Rio
 end # module RIO
 
-require 'rio/ext/zipfile.rb'
+#require 'rio/ext/zipfile.rb'
 
 if $0 == __FILE__
   eval DATA.read, nil, $0, __LINE__+4

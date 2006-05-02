@@ -42,6 +42,8 @@ class String #:nodoc: all
     self
   end
 end
+require 'rio/no_warn'
+
 module RIO
   module Cp #:nodoc: all
     module Util
@@ -229,7 +231,8 @@ module RIO
         end
         def spcp(arg)
           if arg.kind_of?(Rio) and arg.scheme == 'ftp'
-            arg < new_rio(rl.path)
+            arg.copy_from(new_rio(rl.path))
+            #arg < new_rio(rl.path)
             self
           else
             nil
@@ -328,7 +331,8 @@ module RIO
         include Util::Output
         def <(arg)  
           if _switch_direction?(arg)
-            arg > self
+            #arg > self
+            arg.copy_to(self)
             self
           else 
             _cpsrc(arg) < arg
