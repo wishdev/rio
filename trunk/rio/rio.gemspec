@@ -14,7 +14,7 @@ module PKG
   DOC_FILES = rio('.').files['README','lib/rio.rb','lib/rio/doc/*.rb',
                              'lib/rio/if/*.rb','lib/rio/kernel.rb','lib/rio/constructor.rb']
   XMP_FILES = rio('.').files['ex/*']
-  MSC_FILES = rio('.').files['setup.rb', 'RUNME.1st.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION']
+  MSC_FILES = rio('.').files['setup.rb', 'build_doc.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION']
   D_FILES = rio('doc').norecurse('.svn','CVS').all.files[]
   T_FILES = rio('test').all.norecurse('qp').files['*.rb']
 

@@ -42,7 +42,7 @@ $:.push 'lib'
 require 'rio/version'
 require 'rio/doc'
 
-SVN_REPOSITORY_URL = 'file:///loc/svn/'
+SVN_REPOSITORY_URL = ''
  
 SRC_FILES = FileList['lib/**/*.rb']
 DOC_FILES = FileList['README','lib/rio.rb','lib/rio/doc/*.rb',
@@ -52,11 +52,11 @@ XMP_FILES = FileList['ex/*']
 module PKG
   NAME = "rio"
   TITLE = RIO::TITLE
-  VERSION = '0.3.7'
+  VERSION = RIO::VERSION
   FULLNAME = PKG::NAME + "-" + PKG::VERSION
   SUMMARY = RIO::SUMMARY
   DESCRIPTION = RIO::DESCRIPTION
-  FILES = FileList.new(['setup.rb', 'RUNME.1st.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION', 
+  FILES = FileList.new(['setup.rb', 'build_doc.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION', 
                         'test/**/*.rb','doc/**/*'] + SRC_FILES.to_a + DOC_FILES.to_a + XMP_FILES.to_a
                        ) do |fl|
     fl.exclude( /\bsvn\b/ )
