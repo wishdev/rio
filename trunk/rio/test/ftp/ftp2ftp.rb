@@ -7,7 +7,7 @@ end
 require 'rio'
 require 'tc/testcase'
 require 'open-uri'
-require 'ftp/test'
+require 'ftp/testdef'
 
 class TC_ftp2ftp < Test::RIO::TestCase
   @@once = false
