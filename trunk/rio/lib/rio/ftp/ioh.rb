@@ -77,7 +77,7 @@ module RIO
         end
       end
       extend Forwardable
-      def_instance_delegators(:handle,:pwd,:mkdir,:rename,:put,:delete,:rmdir,:mdtm,:mtime,:root_dir)
+      def_instance_delegators(:handle,:pwd,:mkdir,:rename,:put,:delete,:rmdir,:mdtm,:mtime,:size,:root_dir)
 
       def callstr(func,*args)
         self.class.to_s+'['+self.to_s+']'+'.'+func.to_s+'('+args.join(',')+')'

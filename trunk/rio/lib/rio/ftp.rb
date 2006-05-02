@@ -128,17 +128,17 @@ module RIO
           ioh.mkdir(self.path.to_s)
           softreset
         end
-        def put(src)
-          #p callstr('put',src)
-          ioh.chdir(dirname.path.to_s)
-          ioh.put(src.to_s,filename.to_s)
-          self
-        end
         def cpto_err(sym,*args)
           cs = "#{sym}("+args.map{|el| el.to_s}.join(',')+")"
           msg = "Go Figure! rio('#{self.to_s}').#{cs} Failed"
 
           raise ArgumentError,"#{msg}\nArgument to '#{sym}' must be a Rio was a '#{args[0].class}'\n"
+        end
+        def put(src)
+          #p callstr('put',src)
+          ioh.chdir(dirname.path.to_s)
+          ioh.put(src.to_s,filename.to_s)
+          self
         end
         def <(src)
           cpto_err(:<,src) unless src.kind_of?(Rio)
@@ -149,6 +149,7 @@ module RIO
           put(src)
         end
         def mtime(*args) ioh.mtime(rl.path,*args) end
+        def size() ioh.size(rl.path) end
         def mdtm() ioh.mdtm(rl.path) end
         def rename(dst) 
           ioh.rename(rl.path,dst.to_s)

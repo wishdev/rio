@@ -67,7 +67,7 @@ module RIO
           [whole] 
         end
         def open(*args)
-          @uri.open
+          RIO::IOH::Stream.new(@uri.open)
         end
       end
     end

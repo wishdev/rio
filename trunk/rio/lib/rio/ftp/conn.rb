@@ -160,6 +160,10 @@ module RIO
         co = conn()
         co.mtime(filename,local)
       end
+      def size(filename)
+        co = conn()
+        co.size(filename)
+      end
       def conndir()
         co = conn()
         rd = co.root_dir
