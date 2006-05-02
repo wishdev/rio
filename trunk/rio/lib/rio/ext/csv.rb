@@ -56,7 +56,7 @@
 
 require 'csv'
 
-$EXTEND_CSV_RESULTS = true
+$EXTEND_CSV_RESULTS = false
 module RIO
   module Ext
     module CSV
