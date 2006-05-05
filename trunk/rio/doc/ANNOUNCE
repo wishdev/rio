@@ -1,33 +1,43 @@
-Rio 0.3.7
+Rio 0.3.8
 
 == Overview
 
 Rio is a Ruby I/O convenience class wrapping much of the functionality
 of IO, File and Dir. Rio also uses FileUtils, Tempfile, StringIO,
-OpenURI, Zlib, and CSV to provide similar functionality using a simple
-consistent interface. In addition to forwarding the interfaces
-provided by IO, File, and Dir to an appropriate object, Rio provides a
-"grande" interface that allows many common application-level I/O and
-file-system tasks to be expressed succinctly.
+OpenURI, Net::FTP, Zlib, and CSV to provide similar functionality
+using a simple consistent interface. In addition to forwarding the
+interfaces provided by IO, File, and Dir to an appropriate object, Rio
+provides a "grande" interface that allows many common application
+level I/O and file-system tasks to be expressed succinctly.
 
 == New
 
-Support for Pipe operator
- # Pipe multiple commands
- rio('afile') | rio(?-,'acmd') | 'another_cmd' | ?-
+Enhanced support for FTP file-systems. All of Rio's most powerful
+idioms are now supported seamlessly on FTP servers.
 
- # run the same series of commands, with different input and/or output
- cmdpipe = rio(?-,'acmd') | rio(?-,'another_cmd')
- rio('infile1') | cmdpipe | rio('outfile1')
- rio('infile2') | cmdpipe | rio('outfile2')
+ # copy a file from or to an FTP server
+ rio('ftp://ahost/adir/afile') > rio('localfile') # server -> local file
+ rio('ftp://ahost/adir/afile') < rio('localfile') # local file -> server
 
- cmdpipe2 = rio(?|,'cmd1','cmd2',rio('outfile')) # a cmdpipe Rio
- rio('infile1') | cmdpipe2       # run with input coming from a file
- rio(?-) | cmdpipe2              # same commands with input from stdin
+ # copy an entire directory structure from or to an FTP server
+ rio('ftp://ahost/adir') > rio('localdir') # server -> local directory
+ rio('ftp://ahost/adir') < rio('localdir') # local directory -> server
 
-Improved support for MS Windows paths containing drives and UNC paths.
- rio('D:/adir/afile')
- rio('//ahost/adir/afile')
+All of Rio's grande selection and filtering options are available for
+files and directories on FTP servers.
+
+ # create a gzipped copy of a web page on an ftp server
+ rio('ftp://ftphost/f.html.gz').gzip < rio('http://httphost/f.html')
+
+ # dump the first 10 lines of a gzipped log file on an FTP server to stdout
+ rio('ftp://ftphost/logfile.txt').lines(0...10) > ?-
+
+ # iterate through the entries of a directory on an FTP server
+ rio('ftp://ftphost/adir').entries { |entrio| ... }
+
+ # get an array of all .rb files on an ftp server
+ rb_files = rio('ftp://ftphost/').all.files['*.rb']
+
 
 == SYNOPSIS
 
@@ -134,6 +144,9 @@ Iterate through a CSVfile with each line parsed into an array
 Create a tab separated file of accounts in a UNIX passwd file,
 listing only the username, uid, and realname fields
  rio('/etc/passwd').csv(':').columns(0,2,4) > rio('rpt').csv("\t")
+
+Pipe multiple commands
+ rio('afile') | rio(?-,'acmd') | 'another_cmd' | ?-
 
 == Contact
 

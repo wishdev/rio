@@ -170,15 +170,6 @@ module RIO
       'Temp::Reset' => 'rio/scheme/temp',
       'Temp::Stream::Open' => 'rio/scheme/temp',
 
-      'FTP::State::Dir' => 'rio/ftp',
-      'FTP::State::File' => 'rio/ftp',
-      'FTP::State::Reset' => 'rio/ftp',
-      'FTP::State::Open' => 'rio/ftp',
-      'FTP::Stream::Input' => 'rio/ftp',
-      'FTP::Stream::Open' => 'rio/ftp',
-      'FTP::Stream::Close' => 'rio/ftp',
-      'FTP::Stream::Reset' => 'rio/ftp',
-
     }
     def state2class(state_name)
       #p "state_name=#{state_name}"
