@@ -37,10 +37,6 @@
 module RIO
   module FS
     class Base
-      def rootdir()
-        require 'rio/local'
-        ::RIO::Local::ROOT_DIR        
-      end
     end
   end
 end

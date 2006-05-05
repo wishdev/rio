@@ -74,6 +74,8 @@ module RIO
       def foreach(s,&block) @dir.foreach(s.to_s,&block) end
       def entries(s) @dir.entries(s.to_s) end
       def glob(gstr,*args,&block) @dir.glob(gstr,*args,&block) end
+      def pwd() @dir.pwd end
+      def getwd() @dir.getwd end
     end
     module Test
       def blockdev?(s,*args) @test.blockdev?(s,*args) end

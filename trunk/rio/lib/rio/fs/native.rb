@@ -56,6 +56,14 @@ module RIO
       def self.create(*args)
         instance(*args)
       end
+      def root()
+        require 'rio/local'
+        ::RIO::Local::ROOT_DIR        
+      end
+      def cwd()
+        self.getwd()
+      end
+
       include Str
       include File
       include Dir

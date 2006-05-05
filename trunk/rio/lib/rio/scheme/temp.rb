@@ -91,6 +91,10 @@ module RIO
           @td = ::Tempdir.new( @prefix.to_s, @tmpdir.to_s)
           super(@td.to_s)
         end
+        def dir_rl() 
+          RIO::Dir::RL.new(self.uri, {:fs => self.fs})
+          #self 
+        end
         SPLIT_RE = Temp::RL::SPLIT_RE
         def self.splitrl(s)
           Temp::RL.splitrl(s)
@@ -112,6 +116,10 @@ module RIO
           require 'tempfile'
           @tf = ::Tempfile.new( @prefix.to_s, @tmpdir.to_s)
           super(@tf.path)
+        end
+        def file_rl() 
+        RIO::File::RL.new(self.uri,{:fs => self.fs})
+          #self 
         end
         def open(mode='ignored')
           #p callstr('open',mode)

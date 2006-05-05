@@ -7,7 +7,7 @@ $testlib = rio($devlib)
 $testlib.filename = 'test'
 $:.unshift $testlib.to_s
 
-require 'ftp/test'
+require 'ftp/testdef'
 Test::RIO::FTP::init_test_files()
 
 

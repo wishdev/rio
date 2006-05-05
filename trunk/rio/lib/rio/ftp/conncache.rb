@@ -35,37 +35,52 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-module RIO
-  module Ops
-    module Path
-      module Create
-        def join(*args) 
-          new_rio(self.rl,*args) 
-        end
-        #alias :catpath :join
-        def join!(*args) 
-          rl.join(*args)
-          softreset
-        end
-        #alias :catpath! :join!
-        def /(arg)
-          join(arg)
-        end
+require 'net/ftp'
+require 'uri'
+require 'singleton'
 
-        def getwd(*args,&block) 
-          new_rio(fs.getwd,*args,&block) 
+module RIO
+  module FTP
+    class Connection
+      attr_reader :uri,:netftp,:remote_root
+      def initialize(uri)
+        @uri = uri.clone
+        @netftp = ::Net::FTP.new()
+        @netftp.connect(@uri.host,@uri.port)
+        if @uri.user
+          @netftp.login(@uri.user,@uri.password)
+        else
+          @netftp.login
         end
-        def cwd(*args,&block) 
-          new_rio(fs.cwd,*args,&block) 
+        @remote_root = @netftp.pwd
+      end
+      def method_missing(sym,*args,&block)
+        @netftp.__send__(sym,*args,&block)
+      end
+    end
+    class ConnCache
+      include Singleton
+      def initialize()
+        @conns = {}
+        @count = {}
+      end
+      def urikey(uri)
+        key_uri = uri.clone
+        key_uri.path = ''
+        key_uri.to_s
+      end
+      def connect(uri)
+        key = urikey(uri)
+        unless @conns.has_key?(key)
+          @conns[key] = Connection.new(uri)
+          @count[key] = 0
         end
-        
-        def rootpath(*args,&block) 
-          new_rio(fs.root(),*args,&block) 
-        end
-        alias :root :rootpath
-        def cleanpath(*args)
-          new_rio(fs.cleanpath(fspath,*args))
-        end
+        @count[key] += 1
+        @conns[key]
+      end
+      def close(uri)
+        key = urikey(uri)
+        @count[key] -= 1
       end
     end
   end

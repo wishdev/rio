@@ -182,7 +182,6 @@ module RIO
         def entries(*args,&block) _set_select('entries',*args,&block) end
 
         def each(*args,&block)
-          # p callstr('each',*args)
           each_(*args,&block)
         end
 

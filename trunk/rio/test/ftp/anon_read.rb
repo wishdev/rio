@@ -61,9 +61,13 @@ class TC_ftp_anon_read < Test::RIO::TestCase
   end
   def test_cpfrom_file
     rem = FTP_ROROOT/'f0'
+    #$trace_states = true
     loc = rio('f0').delete
+    #$trace_states = false
     loc < rem
+    #$trace_states = true
     assert_equal(loc.contents,rem.contents)
+    #$trace_states = false
     loc = rio('f0').delete
     rem > loc
     assert_equal(loc.contents,rem.contents)

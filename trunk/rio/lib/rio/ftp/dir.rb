@@ -34,37 +34,60 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
+require 'net/ftp'
+require 'uri'
+require 'rio/fs/native'
+require 'rio/ftp/conncache'
 
 module RIO
-  module Ops
-    module Path
-      module Create
-        def join(*args) 
-          new_rio(self.rl,*args) 
+  module FTP
+    module Dir
+      class Stream
+        attr_reader :uri,:netftp,:remote_root
+        def initialize(uri)
+          @uri = uri.clone
+          @conn = ConnCache.instance.connect(uri)
+          @remote_root = @conn.remote_root
+          @remote_root = '' if @remote_root == '/'
+          @names = nil
+          @entidx = 0
         end
-        #alias :catpath :join
-        def join!(*args) 
-          rl.join(*args)
-          softreset
+        def url_root()
+          root_uri = @uri.clone
+          root_uri.path = ''
+          root_uri.to_s
         end
-        #alias :catpath! :join!
-        def /(arg)
-          join(arg)
+        def close()
+          ConnCache.instance.close(uri)
         end
-
-        def getwd(*args,&block) 
-          new_rio(fs.getwd,*args,&block) 
+        def remote_path()
+          self.remote_root+@uri.path
         end
-        def cwd(*args,&block) 
-          new_rio(fs.cwd,*args,&block) 
+        def names()
+          @names ||= begin
+                       @conn.nlst(remote_path())
+                     rescue ::Net::FTPPermError
+                       []
+                     end
         end
-        
-        def rootpath(*args,&block) 
-          new_rio(fs.root(),*args,&block) 
+        def entpath(ent)
+          ent.sub(/^#{remote_path}/,'')
         end
-        alias :root :rootpath
-        def cleanpath(*args)
-          new_rio(fs.cleanpath(fspath,*args))
+        def read()
+          name = names[@entidx]
+          if name
+            rtn = entpath(name)
+            @entidx +=1
+            rtn
+          end
+        end
+        def each(&block)
+          p "Hello Mr. Phelps"
+          names.each { |ent|
+            @entidx += 1
+            yield entpath(ent)
+          }
+          self
         end
       end
     end

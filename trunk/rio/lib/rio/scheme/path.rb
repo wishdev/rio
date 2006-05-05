@@ -42,23 +42,35 @@ module RIO
     RESET_STATE = RL::PathBase::RESET_STATE
 
     class RL < RL::PathBase 
+      def file_rl()
+        RIO::File::RL.new(self.uri, {:fs => self.fs})
+      end
+      def dir_rl()
+        RIO::Dir::RL.new(self.uri, {:fs => self.fs})
+      end
     end
   end
   module File
     RESET_STATE = RL::PathBase::RESET_STATE
 
-    class RL < RL::PathBase 
+    class RL < RIO::Path::RL
       def open(m)
         IOH::Stream.new(fs.file.open(self.fspath,m.to_s))
+      end
+      def file_rl()
+        self
       end
     end
   end
   module Dir
     RESET_STATE = RL::PathBase::RESET_STATE
 
-    class RL < RL::PathBase 
+    class RL < RIO::Path::RL
       def open()
         IOH::Dir.new(fs.dir.open(self.fspath))
+      end
+      def dir_rl()
+        self
       end
     end
   end

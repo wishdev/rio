@@ -43,13 +43,27 @@ require 'rio/grande'
 require 'rio/cp'
 
 module RIO
-
   module FTP #:nodoc: all
     module State
-      class Base < RIO::State::Base
+      class Reset < RIO::State::Base
         include Ops::Path::URI
         include Ops::Path::Query
         include Ops::Path::Create
+        def check?() true end
+        def when_missing(sym,*args) become('FTP::State::Open')end
+      end
+    end
+  end
+end
+__END__
+
+acer aspire 3000 zl5
+AP A1003 001
+
+module RIO
+  module FTP #:nodoc: all
+    module State
+      class Base < RIO::State::Base
         def closed?() ioh.nil? || ioh.closed? end
         def open?() not closed? end
         def pwd() 
@@ -62,10 +76,6 @@ module RIO
           nr.rl.path = wd
           new_rio(nr) 
         end
-      end
-      class Reset < Base
-        def check?() true end
-        def when_missing(sym,*args) become('FTP::State::Open')end
       end
       class Open < Base
         def check?() true end

@@ -37,7 +37,7 @@ class TC_copy_from_http < Test::RIO::TestCase
 
   def test_uri_rio_to_file
     ario = rio('out').delete!.touch
-    url = 'http://localhost/rio/hw.html'
+    url = 'http://localhost/riotest/hw.html'
     urio = rio(url)
     ario < urio
     exp = urio.contents
@@ -45,7 +45,7 @@ class TC_copy_from_http < Test::RIO::TestCase
   end
   def test_uri_rio_to_dir
     ario = rio('ud').delete!.mkdir
-    url = 'http://localhost/rio/hw.html'
+    url = 'http://localhost/riotest/hw.html'
     urio = rio(url)
     #$trace_states = true
     ario < urio
@@ -56,7 +56,7 @@ class TC_copy_from_http < Test::RIO::TestCase
   end
   def test_uri_string_to_dir
     ario = rio('uds').delete!.mkdir
-    url = 'http://localhost/rio/hw.html'
+    url = 'http://localhost/riotest/hw.html'
     urio = rio(url)
     #$trace_states = true
     ario < url
@@ -67,21 +67,21 @@ class TC_copy_from_http < Test::RIO::TestCase
   end
   def test_url_string_to_file
     ario = rio('out').delete!.touch
-    url = 'http://localhost/rio/hw.html'
+    url = 'http://localhost/riotest/hw.html'
     ario < url
     exp = url
     assert_equal(exp,ario.contents)
   end
   def test_url_array_to_file
     ario = rio('out').delete!.touch
-    url = 'http://localhost/rio/hw.html'
+    url = 'http://localhost/riotest/hw.html'
     ario < [url]
     exp = url
     assert_equal(exp,ario.contents)
   end
   def test_url_string_to_nonex
     ario = rio('outz').delete!
-    url = 'http://localhost/rio/hw.html'
+    url = 'http://localhost/riotest/hw.html'
     ario < url
     exp = url
     assert_equal(exp,ario.contents)

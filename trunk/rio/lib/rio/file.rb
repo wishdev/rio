@@ -49,7 +49,8 @@ module RIO
       protected
 
       def stream_rl_
-        RIO::File::RL.new(self.to_uri,{:fs => self.fs})
+        #RIO::File::RL.new(self.to_uri,{:fs => self.fs})
+        self.rl.file_rl
       end
 
       public

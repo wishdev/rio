@@ -211,7 +211,6 @@ module RIO
     # factory creates a state from args
     def create_state(*args)
       riorl = RIO::RL::Builder.build(*args)
-#      state_class = state2class(reset_state(riorl))
       create_handle(state2class(reset_state(riorl)).new(riorl))
     end
     def clone_state(state)

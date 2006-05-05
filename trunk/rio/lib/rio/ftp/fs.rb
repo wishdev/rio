@@ -34,32 +34,140 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
-require 'rio/fs/impl'
-require 'rio/fs/base'
-require 'rio/ftp/impl'
+require 'net/ftp'
+require 'uri'
+require 'rio/fs/native'
+require 'rio/ftp/conncache'
 
 module RIO
   module FTP
-    class FS < RIO::FS::Base
-      attr_reader :file,:dir
+    class FS 
+      attr_reader :uri,:conn,:remote_root
       def initialize(uri)
-        @test = RIO::FTP::Impl::Test.new(uri)
+        @uri = uri.clone
+        @conn = ConnCache.instance.connect(@uri)
+        @remote_root = @conn.remote_root
+        @remote_root = '' if @remote_root == '/'
         @file = ::File
-        @dir  = RIO::FTP::Impl::Dir.new(uri)
-        @path = nil
-        @util = nil
       end
-
       def self.create(*args)
         new(*args)
       end
+      def root()
+        uri = @uri.clone
+        uri.path = '/'
+        uri.to_s
+      end
       include RIO::FS::Str
-      include RIO::FS::File
-      include RIO::FS::Test
-      include RIO::FS::Dir
-#      def symlink?(s) false end
-#      def directory?(s) false end
 
+      
+      def pwd() @conn.pwd end
+      def getwd()
+        self.pwd
+      end
+      def cwd()
+        remote_wd = self.pwd
+        remote_rel = remote_wd.sub(/^#{@remote_root}/,'')
+        wduri = uri.clone
+        wduri.path = remote_rel
+        wduri.to_s
+      end
+      def remote_path(url)
+        self.remote_root+URI(url).path
+      end
+      def chdir(url,&block)
+        if block_given?
+          wd = @conn.pwd
+          @conn.chdir(remote_path(url))
+          begin
+            rtn = yield remote_path(url)
+          ensure
+            @conn.chdir(wd)
+          end
+          return rtn
+        else
+          @conn.chdir(remote_path(url))
+        end
+      end
+      def mkdir(url)
+        @conn.mkdir(remote_path(url))
+      end
+      def mv(src_url,dst_url)
+        @conn.rename(remote_path(src_url),remote_path(dst_url))
+      end
+      def size(url)
+        @conn.size(remote_path(url))
+      end
+      def zero?(url)
+        size(url) == 0
+      end
+      def mtime(url)
+        @conn.mtime(remote_path(url))
+      end
+      def rmdir(url)
+        @conn.rmdir(remote_path(url))
+      end
+      def rm(url)
+        @conn.delete(remote_path(url))
+      end
+
+      def get_ftype(url)
+        pth = remote_path(url)
+        ftype = nil
+        begin
+          @conn.mdtm(pth)
+          ftype = 'file'
+        rescue Net::FTPPermError
+          wd = @conn.pwd
+          begin
+            @conn.chdir(pth)
+            ftype = 'dir'
+          rescue Net::FTPPermError
+            ftype = 'nada'
+          ensure
+            @conn.chdir(wd)
+          end
+        end
+        ftype
+      end
+      def file?(url)
+        get_ftype(url) == 'file'
+      end
+      def directory?(url)
+        get_ftype(url) == 'dir'
+      end
+      def exist?(url)
+        get_ftype(url) != 'nada'
+      end
+      def symlink?(url)
+        false
+      end
+      def mkpath(url)
+        tpath = rio(url)
+        tmprio = tpath.root
+        pathparts = tpath.path.split('/')[1..-1]
+        pathparts.each do |part|
+          tmprio.join!(part)
+          tmprio.mkdir
+        end
+      end
+      def rmtree(url)
+        ario = rio(url)
+        _rment(ario)
+      end
+
+      private
+
+      def _rment(ario)
+        if ario.file?
+          ario.rm
+        else
+          ario.each do |ent|
+            _rment(ent)
+          end
+          ario.rmdir
+        end
+      end
     end
   end
 end
