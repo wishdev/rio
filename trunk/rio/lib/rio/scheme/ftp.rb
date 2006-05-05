@@ -37,7 +37,6 @@
 
 require 'net/ftp'
 require 'open-uri'
-require 'rio/ftp/conn'
 require 'rio/ftp/fs'
 require 'rio/rl/path'
 require 'rio/ftp/dir'
