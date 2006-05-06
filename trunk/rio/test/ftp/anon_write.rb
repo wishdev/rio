@@ -35,14 +35,14 @@ class TC_ftp_anon_write < Test::RIO::TestCase
     rem = FTP_RWROOT.dup
     rem < loc
     frem = rem/fname
-    assert_equal(loc.contents,frem.contents)
+    assert_equal(loc.chomp[],frem.chomp[])
   end
   def test_cp_file_to_file
     fname = 'f0'
     loc = SRCDIR/fname
     rem = FTP_RWROOT.dup/fname
     rem < loc
-    assert_equal(loc.contents,rem.contents)
+    assert_equal(loc.chomp[],rem.chomp[])
   end
   def test_cp_dir_left
     dname = 'd0'

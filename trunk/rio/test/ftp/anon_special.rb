@@ -22,7 +22,7 @@ class TC_ftp_anon_special < Test::RIO::TestCase
     FS_RWROOT.entries { |ent| ent.delete! }
   end
 
-  def test_mkpath
+  def atest_mkpath
     rwdir = rio(FTP_RWROOT)
     tpath = rwdir/'d0'/'d1'/'d2'
     tpath.mkpath
@@ -37,12 +37,12 @@ class TC_ftp_anon_special < Test::RIO::TestCase
     rwdir/'d0'/'d1'/'f1' < "a file"
     d0 = rio(rwdir,'d0').rmtree
     assert!(d0.exist?)
-    tpath.mkpath
-    assert(tpath.dir?)
-    d0 = rio(rwdir,'d0').rmtree
-    assert!(d0.exist?)
+#    tpath.mkpath
+#    assert(tpath.dir?)
+#    d0 = rio(rwdir,'d0').rmtree
+#    assert!(d0.exist?)
   end
-  def test_sel
+  def atest_sel
     rwdir = rio(FTP_RWROOT)
     d0 = rwdir/'d0'
     d1 = d0/'d1'

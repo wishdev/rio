@@ -42,7 +42,7 @@ $:.push 'lib'
 require 'rio/version'
 require 'rio/doc'
 
-SVN_REPOSITORY_URL = ''
+SVN_REPOSITORY_URL = 'svn+ssh://rio4ruby@rubyforge.org//var/svn/trunk/rio'
  
 SRC_FILES = FileList['lib/**/*.rb']
 DOC_FILES = FileList['README','lib/rio.rb','lib/rio/doc/*.rb',
@@ -84,17 +84,14 @@ task :prepare do
   ruby "setup.rb setup"
 end
 
-
 desc "Installs the package #{PKG::NAME}"
 task :install => [:prepare] do
   ruby "setup.rb install"
 end
 
-
 task :clean do
   ruby "setup.rb clean"
 end
-
 
 CLOBBER << "doc/rdoc"
 desc "Builds the documentation"

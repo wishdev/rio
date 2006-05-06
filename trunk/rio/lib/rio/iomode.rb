@@ -81,9 +81,7 @@ module RIO
       def primarily_read?() @mode[0,1] == 'r' end
       def primarily_write?() @mode[0,1] == 'w' or primarily_append? end
       def primarily_append?() @mode[0,1] == 'a' end
-      def allows_both?()
-        @mode[1,1] == '+'
-      end
+      def allows_both?() @mode[-1,1] == '+' end
       def creates?() primarily_append? || primarily_write? end
     end
     class Str < Base
@@ -92,6 +90,21 @@ module RIO
   end
   module Mode
     class Int < Base
+      def primarily_read?() 
+#        (@mode&File::RDONLY || (@mode&File::RDWR && ~(@mode&File::TRUNC)))
+      end
+      def primarily_write?() 
+#        @mode&File::WRONLY || (@mode&File::RDWR && @mode&File::TRUNC) || primarily_append? 
+      end
+      def primarily_append?() 
+#        @mode&File::APPEND
+      end
+      def allows_both?()
+#        @mode[1,-1] == '+'
+      end
+      def creates?() 
+        # primarily_append? || primarily_write? 
+      end
     end
   end
 end

@@ -47,6 +47,15 @@ module RIO
         @values = @values.clone
         @explicit = @explicit.clone
       end
+      BEQUEATH_KEYS = %w[chomp strip closeoneof rename]
+      def bequeath()
+        keys = BEQUEATH_KEYS
+        ncx = Vars.new
+        keys.each { |key|
+          ncx.set_(key,@values[key]) if @values.has_key?(key)
+        }
+        ncx
+      end
       def delete(key)
         @values.delete(key)
         @explicit.delete(key)
@@ -99,34 +108,9 @@ module RIO
         str +='>'
         str
       end
-      def bequeath()
-        keys = %w[chomp strip closeoneof rename]
-        q = {}
-        p = {}
-        ncx = Vars.new(q,p)
-        keys.each { |key|
-          ncx.set_(key,@values[key]) if @values.has_key?(key)
-        }
-        ncx
-      end
-      def bequeath0()
-        q = @values.clone()
-        p = @explicit.clone()
-        keys = ['dirs_args','all']
-        keys.each { |key|
-          q.delete(key)
-          p.delete(key)
-        }
-        Vars.new(q,p)
-      end
+
       extend Forwardable
       def_instance_delegators(:@values,:[],:has_key?,:values_at,:keys)
     end
   end
-#  module Cx
-#    def init_cx
-#      @cx = Vars.new
-#    end
-#    
-#  end
 end  

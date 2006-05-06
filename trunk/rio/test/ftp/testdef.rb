@@ -6,7 +6,7 @@ module Test
       module Const
         FTPUSER = 'ftp'
         
-        FSROOT = rio('/home/ftp')
+        FSROOT = rio('/loc/home/ftp')
         #FTPHOST = '192.168.1.101'
         FTPHOST = 'localhost'
         FTPROOT = rio("ftp://#{FTPHOST}/")
@@ -19,9 +19,10 @@ module Test
         FTP_ROROOT = FTPROOT/TESTDIR/RODIR
         FS_RWROOT = FSROOT/TESTDIR/RWDIR
         FS_ROROOT = FSROOT/TESTDIR/RODIR
-        
-        PASSWDFILE = FSROOT/'etc/passwd'
-        UID,GID = rio(PASSWDFILE).lines[/^#{FTPUSER}/][0].split(':')[2..3].map{|strid| strid.to_i}
+        unless $mswin32
+          PASSWDFILE = FSROOT/'etc/passwd'
+          UID,GID = rio(PASSWDFILE).lines[/^#{FTPUSER}/][0].split(':')[2..3].map{|strid| strid.to_i}
+        end
       end
       include Const
       def init_test_files

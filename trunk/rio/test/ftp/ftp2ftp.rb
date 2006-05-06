@@ -26,7 +26,7 @@ class TC_ftp2ftp < Test::RIO::TestCase
     src = FTP_ROROOT/fname
     dst = FTP_RWROOT/fname
     dst < src
-    assert_equal(src.contents,dst.contents)
+    assert_equal(src.chomp[],dst.chomp[])
   end
   def test_cp_ro2rw_file2
     fname = 'f0'
@@ -34,7 +34,7 @@ class TC_ftp2ftp < Test::RIO::TestCase
     dst = FTP_RWROOT
     dst < src
     fdst = dst/fname
-    assert_equal(src.contents,fdst.contents)
+    assert_equal(src.chomp[],fdst.chomp[])
   end
   def test_cp_ro2rw_dir
     fname = 'd0'
