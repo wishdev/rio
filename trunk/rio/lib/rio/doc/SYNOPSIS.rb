@@ -177,6 +177,8 @@ Create a symbolic link 'asymlink' in 'adir' which refers to 'adir/afile'
 * RIO::Doc::INTRO
 * RIO::Doc::HOWTO
 * RIO::Rio
+* RIO::Doc::EXAMPLES
+* RIO::Doc::OPTIONAL
 
 =end
 module SYNOPSIS #:doc:

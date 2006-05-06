@@ -107,7 +107,7 @@ This option comprises 4 options
  arguments_as_rios = RIO.ARGV
 
 This option provides a function which converts each element of ruby's
-ARGV into a Rio.  Useful when writing programs that take a list of
+ARGV into a Rio.  Useful when writing a program which takes a list of
 files as its arguments
 
 == RIO.popen3
