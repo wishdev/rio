@@ -43,7 +43,18 @@ require 'stringio'
 module RIO
   module RL
     class Builder
-
+      def self.build_path_rl(rl)
+#         case rl.scheme
+#         when 'path','file'
+#           base = rl.base
+#           base = URI(base.to_s) unless base.kind_of?(::URI)
+#           if base.kind_of?(::URI) and base.scheme == 'http'
+#             uri = base.merge(URI(rl.path))
+#             return build(uri)
+#           end
+#         end
+        return rl
+      end
       def self.build(*a)
         #puts "build: #{a.inspect}" 
         a.flatten!
@@ -58,10 +69,11 @@ module RIO
           when %r|^//|
             a[0] = 'rio:file:'+a[0]
           when %r|^/|
+            #p "HERE #{a.inspect}"
             a[0] = 'file://'+a[0]
-            return Factory.instance.riorl_class('file').new(*a)
+            return build_path_rl(Factory.instance.riorl_class('file').new(*a))
           else
-            return Factory.instance.riorl_class('path').new(*a)
+            return build_path_rl(Factory.instance.riorl_class('path').new(*a))
           end
         when RIO::Rio
           a[0] = a[0].to_rl
@@ -74,7 +86,7 @@ module RIO
         when ::URI
           a0 = a.shift
           cl = Factory.instance.riorl_class(a0.scheme)
-          o = cl.new(a0,*a) unless cl.nil?
+          o = build_path_rl(cl.new(a0,*a)) unless cl.nil?
           return o
         when ::Symbol
           case a[0]
@@ -105,7 +117,7 @@ module RIO
         a0 = a.shift
         sch = Base.subscheme(a0)
         cl = Factory.instance.riorl_class(sch)
-        cl.parse(a0,*a)  unless cl.nil?
+        build_path_rl(cl.parse(a0,*a))  unless cl.nil?
 
       end
 

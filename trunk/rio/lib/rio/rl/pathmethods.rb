@@ -94,6 +94,18 @@ module RIO
       def merge(other)
         self.class.new(uri.merge(other.uri))
       end
+      def calc_abs_uri_(path_str,base_str)
+        #p path_str,base_str
+        path = URI(path_str)
+        return path unless base_str
+        if path_str[0,1] != '/' and base_str[0,1] == '/'
+          abs_str = [base_str,path_str].join('/').squeeze('/')
+          return URI(abs_str)
+        end
+        base = URI(base_str)
+        abs = base.merge(path)
+        return abs
+      end
 
       def dirname()
         ::File.dirname(self.path_no_slash)

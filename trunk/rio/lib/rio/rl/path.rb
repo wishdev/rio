@@ -36,11 +36,12 @@
 
 
 require 'rio/rl/uri'
+require 'rio/rl/withpath'
 require 'rio/rl/pathmethods'
 
 module RIO
   module RL
-    class PathBase < Base
+    class PathBase < WithPath
       RESET_STATE = 'Path::Reset'
 
       RIOSCHEME = 'path'
@@ -72,17 +73,20 @@ module RIO
         else
           self.fspath = pth
         end
+        #p "PATH pth=#{pth} args=#{args.inspect}"
         args = _get_opts_from_args(args)
+        #p "PATH pth=#{pth} base=#{@base}"
         self.join(*args) unless args.empty?
         unless self.absolute? or @base
           @base = RL.fs2url(::Dir.getwd)+'/'
         end
         @fspath.sub!(%r|/\.$|,'/')
         #@fs = openfs_ 
+        #p "PATH: base='#{@base}' fspath='#{@fspath}'"
         super
       end
       def openfs_
-        RIO::FS::Native.create()
+        @fs || RIO::FS::Native.create()
       end
       def pathroot()
         return nil unless absolute?
@@ -97,16 +101,23 @@ module RIO
 
       def _get_opts_from_args(args)
         @base = nil
+        #p "get opts: args=#{args.inspect}"
         if !args.empty? and args[-1].kind_of?(::Hash) 
+          #p "get opts: args=#{args.inspect}"
           opts = args.pop
           if b = opts[:base]
+            #p "get opts: b=#{b.inspect}"
+            
             @base = case b
+                    when ::URI,RIO::Rio then b.to_s
                     when %r%^file://(#{HOST})?(/.*)?$% then b
+                    when %r/^#{SCHEME}:/ then b
                     when %r%^/% then b
                     else RL.fs2url(::Dir.getwd)+'/'+b
                     end
             @base.squeeze('/')
           end
+          #p "get opts: base=#{@base}"
           if fs = opts[:fs]
             @fs = fs
           end
@@ -115,14 +126,25 @@ module RIO
       end
       def base(arg=nil) 
         self.base = arg unless arg.nil?
-        if absolute? 
-          #p self.dirname
-          urlpath 
-        else
-          @base
-        end
+        #p "BASE: base=#{@base.inspect}"
+        @base ? @base : urlpath
+#        if absolute? 
+#          #p self.dirname
+#          urlpath 
+#        else
+#          @base
+#        end
       end
       def base=(arg) @base = arg end
+      def abs(base=nil)
+        base ||= @base
+        absuri = calc_abs_uri_(@fspath,base) 
+        absurl = absuri.to_s
+        if @host
+          absurl.sub!(%r|^/|,"file://#{@host}/")
+        end
+        RIO::RL::Builder.build(absurl)
+      end
 
 #      def urlpath() @pth end
 #      def urlpath=(arg) @pth = arg end
@@ -163,10 +185,6 @@ module RIO
       end
       alias abs? absolute?
 
-      def abs()
-        return self if absolute?
-        self.class.new(@base, @fspath) 
-      end
     
       def uri() 
         (absolute? ? 

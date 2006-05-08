@@ -86,7 +86,8 @@ module RIO
             nrio = new_rio(rl.abs)
             nrio
           else
-            new_rio(rl,ensure_rio(base).abs.to_uri).abs
+            #new_rio(rl,{:base => ensure_rio(base).abs.to_uri}).abs
+            new_rio(rl.abs(ensure_rio(base).to_s))
           end
         end
         def abs?

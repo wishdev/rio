@@ -36,11 +36,12 @@
 
 
 require 'rio/rl/base'
+require 'rio/rl/withpath'
 require 'rio/fs/url'
 
 module RIO
   module RL
-    class URIBase < Base
+    class URIBase < WithPath
       SCHEME = URI::REGEXP::PATTERN::SCHEME
       attr_reader :uri
       #attr :fs
@@ -51,7 +52,6 @@ module RIO
         @uri =  _mkuri(u)
         self.join(*args)
         @uri.path = '/' if @uri.absolute? and @uri.path == ''
-        #@fs = self.openfs_
         super
       end
       def openfs_()
@@ -106,9 +106,10 @@ module RIO
       def absolute?() @uri.absolute? end
       alias abs? absolute?
 
-      def abs()
-        return self if absolute?
-        self.class.new(@base.merge(@uri),{:base => @base}) 
+      def abs(base=nil)
+        base ||= @base
+        absuri = calc_abs_uri_(@uri.to_s,base.to_s) 
+        RIO::RL::Builder.build(absuri)
       end
 
       def url() @uri.to_s end
