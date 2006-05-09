@@ -126,8 +126,6 @@ module RIO
         # iterate over the records, yielding only with matching records
         # implemented in terms of an underlying iterator like each_line (see RIO::RecType::*)
         def each_(*args,&block)
-          #p callstr('each_',*args)
-
           selrej,rangetops = create_selrej()
           want_ma = block.arity > 1
           catch(:stop_iter) do
@@ -193,7 +191,7 @@ module RIO
         def handle_skipped
           return self unless cx.has_key?('skip_args')
           args = cx['skip_args'] || []
-          self.skiprecords(*args)
+          self.skiprecords_(*args)
         end
         def create_selrej()
           sel_args = cx['stream_sel']

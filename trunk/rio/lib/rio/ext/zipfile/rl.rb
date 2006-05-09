@@ -40,10 +40,8 @@ module RIO
 
     require 'rio/rl/base'
     class RL < RL::Base 
-      RIOSCHEME = 'zipfile'
+      RIOSCHEME = 'zip'
       RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
-      DFLT_PREFIX = 'rio'
-      DFLT_TMPDIR = ::Dir::tmpdir
       attr_reader :prefix,:tmpdir
       def initialize(file_prefix=DFLT_PREFIX,temp_dir=DFLT_TMPDIR)
         #puts "initialize(#{file_prefix.inspect},#{temp_dir.inspect})"

@@ -146,7 +146,7 @@ module RIO
       # and change the value in the handle that is shared with the rio object
       def become(new_class,*args)
         p "become : #{self.class.to_s} => #{new_class.to_s} (#{self.mode?})" if $trace_states
-#
+        #p "BECOME #{new_class}: #{cx['ss_type']}"
         return self if new_class == self.class
 
         begin
