@@ -34,43 +34,90 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 #
+require 'uri'
+require 'rio/uri/file'
+require 'rio/ext/zipfile/fs'
+
 module RIO
   module ZipFile #:nodoc: all
-    RESET_STATE = RIO::Path::RL::RESET_STATE
-
-    require 'rio/rl/base'
-    class RL < RL::Base 
-      RIOSCHEME = 'zip'
-      RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
-      attr_reader :prefix,:tmpdir
-      def initialize(file_prefix=DFLT_PREFIX,temp_dir=DFLT_TMPDIR)
-        #puts "initialize(#{file_prefix.inspect},#{temp_dir.inspect})"
-        @prefix = file_prefix || DFLT_PREFIX
-        @tmpdir = temp_dir || DFLT_TMPDIR
-        super
-      end
-      #def path() nil end
-      def scheme() self.class.const_get(:RIOSCHEME) end
-      def opaque()
-        td = self.escape(@tmpdir.to_s)
-        td += '/' unless td.nil? or td.empty? or (td != '/' and td[-1] == ?/)
-        td + self.escape(@prefix)
-      end
+    module RootDir
+      RESET_STATE = 'ZipFile::State::Reset'
+      #RESET_STATE = RIO::RL::PathBase::RESET_STATE
       
-      SPLIT_RE = %r|(?:(.*)/)?([^/]*)$|.freeze
-      def self.splitrl(s)
-        sub,opq,whole = split_riorl(s)
-        if opq.nil? or opq.empty?
-          []
-        elsif bm = SPLIT_RE.match(opq)
-          tdir = bm[1] unless bm[1].nil? or bm[1].empty?
-          tpfx = bm[2] unless bm[2].nil? or bm[2].empty?
-          [tpfx,tdir]
-        else
-          []
+      require 'rio/rl/base'
+      class RL < RIO::RL::Base 
+        RIOSCHEME = 'zipfile'
+        RIOPATH = RIO::RL::CHMAP.invert[RIOSCHEME].to_s.freeze
+        attr_reader :zipfilepath,:infilepath
+        def initialize(zipfilepath,infilepath=nil)
+          @zipfilepath = zipfilepath
+          @uri = URI(@zipfilepath)
+          if infilepath
+            @infilepath = infilepath
+            @uri.query = @infilepath
+          end
+          @zipfile = ::Zip::ZipFile.new(@zipfilepath,::Zip::ZipFile::CREATE)
+          super()
+        end
+        def file_rl
+          RIO::File::RL.new(infilepath,{:fs => RIO::ZipFile::InFile::FS.new(@zipfile)})
+        end
+        def openfs_()
+          RIO::ZipFile::RootDir::FS.new(@zipfile)
+        end
+        def open()
+          IOH::Dir.new(ZipFile::Wrap::Stream::Root.new(@zipfile))
+        end
+        def path()
+          @infilepath
+        end
+        def fspath()
+          @infilepath
+        end
+        #def path() nil end
+        def scheme() self.class.const_get(:RIOSCHEME) end
+        def opaque()
+          @uri.to_s
+        end
+        include RIO::RL::PathMethods
+        def urlpath() 
+          return '' unless fspath
+          RIO::RL.fs2url(fspath) 
+        end
+        def urlpath=(arg) @infilepath = RIO::RL.url2fs(arg) end
+
+        # USAGE EXAMPLES
+        # zroot = rio('f.zip').zipfile
+        #
+        # rio(zroot,'tdir').mkdir
+        # rio(zroot,'tdir').mkdir
+        # rio(zroot).each {}
+        # rio(:zipfile,'t.zip','tdir').mkdir
+        # rio('zipfile:t.zip','tdir').mkdir
+        # rio('zipfile:t.zip?tdir').mkdir
+        # rio(?z,'t.zip?tdir').mkdir
+        # rio(?z,'t.zip','tdir').mkdir
+        # rio('zipfile:file:///tmp/t.zip?tdir').mkdir
+        SPLIT_RE = %r|(.+)(?:\?(.+))?$|.freeze
+        def self.splitrl(s)
+          sub,opq,whole = split_riorl(s)
+          if opq.nil? or opq.empty?
+            []
+          elsif bm = SPLIT_RE.match(opq)
+            zpath = bm[1] unless bm[1].nil? or bm[1].empty?
+            ipath = bm[2] unless bm[2].nil? or bm[2].empty?
+            [zpath,ipath]
+          else
+            []
+          end
         end
       end
     end
+  end
+end
+
+
+__END__
     module Dir
       require 'rio/rl/path'
       RESET_STATE = RIO::RL::PathBase::RESET_STATE

@@ -67,6 +67,9 @@ module RIO
                           when 'zfile','zpath'
                             require 'rio/ext/zipfile/zpath'
                             Ext::ZipFile::ZPath
+                          when 'zipfile'
+                            require 'rio/ext/zipfile/rl'
+                            ZipFile::RootDir
                           when 'stdio','stdin','stdout'
                             require 'rio/scheme/stdio'
                             StdIO
@@ -157,7 +160,7 @@ module RIO
 
       'Null::Stream::Open' => 'rio/scheme/null',
 
-      'ZipFile::CentralDir::Open' => 'rio/zipfile/centraldir',
+      'ZipFile::State::Reset' => 'rio/ext/zipfile/state',
       'ZipFile::CentralDir::Stream' => 'rio/zipfile/centraldir',
       'ZipFile::CentralDir::Close' => 'rio/zipfile/centraldir',
       'ZipFile::Path::Str' => 'rio/zipfile/path',

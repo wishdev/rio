@@ -34,6 +34,26 @@
 # <b>Rio is pre-alpha software. 
 # The documented interface and behavior is subject to change without notice.</b>
 
+require 'rio/ext/zipfile/rl'
+module RIO
+  module ZipFile
+    module Cx
+      def zipfile(arg=true,&block)
+        rootdir = new_rio_cx(:zipfile,self.to_s)
+        return rootdir.each(&block) if block_given?
+        rootdir
+      end
+    end
+  end
+end
+module RIO
+  module State
+    class Base
+      include RIO::ZipFile::Cx
+    end
+  end
+end
+__END__
 module RIO
   module_function
   def load_lib(lib)

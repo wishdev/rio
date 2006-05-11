@@ -62,6 +62,7 @@ module RIO
       ?`    => 'cmdio',
       ?|    => 'cmdpipe',
       ?#    => 'fd',
+      ?z    => 'zipfile',
     }.freeze
   end
 end

@@ -231,10 +231,19 @@ module RIO
           self.skipentries(*args)
         end
         def ent_to_rio_(ent,indir)
-          if indir
-            new_rio_cx(indir.rl,ent)
+          #p "ent_to_rio: #{ent.inspect},#{ent.fs.class} indir=#{indir}"
+          if ent.kind_of?(RIO::Rio)
+            oldpath = ent.to_s
+            ent.rl.urlpath = indir.to_s
+            ent.join!(oldpath)
+            ent.cx = self.cx.bequeath
+            ent
           else
-            new_rio_cx(ent)
+            if indir
+              new_rio_cx(indir.rl,ent)
+            else
+              new_rio_cx(ent)
+            end
           end
         end
         def handle_ent_(ent,indir,sel,&block)

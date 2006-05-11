@@ -134,16 +134,6 @@ module RIO
         _set_sstype('records',false)
         _records(args,_sel,false,&block)
       end
-      def skiprecords(*args,&block) 
-        self.records_() unless args.empty? or cx.has_key?('stream_sel')
-        _set_sstype('skiprecords')
-        _records(args,false,&block)
-      end
-      def skiprecords_(*args,&block) 
-        self.records_() unless args.empty? or cx.has_key?('stream_sel')
-        _set_sstype('skiprecords',false)
-        _records(args,false,false,&block)
-      end
 
       def rows(*args,&block) 
         if skipping?
@@ -165,6 +155,16 @@ module RIO
         self.lines() unless args.empty? or cx.has_key?('stream_sel')
         _set_sstype('skiplines')
         _lines(args,false,&block)
+      end
+      def skiprecords(*args,&block) 
+        self.records_() unless args.empty? or cx.has_key?('stream_sel')
+        _set_sstype('skiprecords')
+        _records(args,false,&block)
+      end
+      def skiprecords_(*args,&block) 
+        self.records_() unless args.empty? or cx.has_key?('stream_sel')
+        _set_sstype('skiprecords',false)
+        _records(args,false,false,&block)
       end
       def skiprows(*args,&block) 
         self.rows() unless args.empty? or cx.has_key?('stream_sel')

@@ -38,47 +38,50 @@ require 'rio/fs/base'
 require 'zip/zip'
 require 'zip/zipfilesystem'
 require 'rio/scheme/path'
-require 'rio/ext/zipfile/wrap'
+require 'rio/ext/zipfile/fs'
 
 module RIO
   module ZipFile
-    module RootDir
-      class FS
-        attr_reader :dir
-        def initialize(zipfile)
-          @zipfile = zipfile
-          @dir = @zipfile.dir
-          @test = @zipfile.file
-          #p "InFile: #{@file.class}"
-        end
-        def commit(&block)
-          yield if block_given?
-          @zipfile.commit
-        end
-        include RIO::FS::Dir
-        include RIO::FS::Test
-        def mkdir(*args)
-          commit{super}
-        end
-        def rmdir(*args)
-          commit{@dir.rmdir(*args)}
-        end
+    class RootDir
+      include Enumerable
+
+      def initialize(zipfilepath)
+        @zipfilepath = zipfilepath
+        @zipfile = Zip::ZipFile.new(@zipfilepath)
+        #puts @zipfile.methods.sort
+        @topents = get_topents_
+        @entidx = 0
       end
-    end
-    module InFile
-      class FS
-        attr_reader :file,:dir
-        def initialize(zipfile)
-          @zipfile = zipfile
-          @file = RIO::ZipFile::Wrap::File.new(@zipfile.file)
-          @dir = RIO::ZipFile::Wrap::Dir.new(@zipfile.dir)
-          @test = @file
-          #p "InFile: #{@file.class}"
-        end
-        include RIO::FS::File
-        include RIO::FS::Dir
-        include RIO::FS::Test
-        include RIO::FS::Str
+      def get_topents_
+        topents = {}
+        @zipfile.entries.map{ |ent|
+          top = ent.to_s.match(%r|^(/?[^/]+(/)?)|)[1]
+          topents[top] = ent if top == ent.to_s
+        }
+        fs = RIO::ZipFile::FS::InFile.new(@zipfile)
+        topents.values.map{ |v| rio(RIO::Path::RL.new(v.to_s,{:fs => fs})) }
+      end
+      def commit
+        @zipfile.commit
+        @topents = get_topents_
+      end
+      def read
+        return nil if @entidx >= @topents.size
+        @entidx += 1
+        @topents[@entidx-1]
+      end
+      def rewind
+        @entidx = 0
+      end
+      def each(&block)
+        @topents.each { |ent|
+          yield ent
+        }
+      end
+      def close
+      end
+      def method_missing(sym,*args,&block)
+        @zipfile.__send__(sym,*args,&block)
       end
     end
   end
