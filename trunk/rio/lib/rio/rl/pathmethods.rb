@@ -45,16 +45,16 @@ module RIO
         cp.urlpath = self.pathroot
         cp.url
       end
+      def pathdepth()
+        pth = self.path_no_slash
+        (pth == '/' ? 0 : pth.count('/'))
+      end
       def _parts()
         pr = self.pathroot
         ur = self.urlroot.sub(/#{pr}$/,'')
         up = self.urlpath.sub(/^#{pr}/,'')
 
         [ur,pr,up]
-      end
-      def pathdepth()
-        pth = self.path_no_slash
-        (pth == '/' ? 0 : pth.count('/'))
       end
       def split()
         if absolute?

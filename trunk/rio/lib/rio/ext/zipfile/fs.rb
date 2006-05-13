@@ -48,6 +48,7 @@ module RIO
         def initialize(zipfile)
           @zipfile = zipfile
           @dir = @zipfile.dir
+          @file = @zipfile.file
           @test = @zipfile.file
           #p "InFile: #{@file.class}"
         end
@@ -55,6 +56,7 @@ module RIO
           yield if block_given?
           @zipfile.commit
         end
+        include RIO::FS::Str
         include RIO::FS::Dir
         include RIO::FS::Test
         def mkdir(*args)

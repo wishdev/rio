@@ -74,6 +74,11 @@ module RIO
         def fspath()
           @infilepath
         end
+        def base(*args) 
+          #p "base: #{args.inspect}"
+          '' 
+        end
+        def path_no_slash() self.path.to_s.sub(/\/$/,'') end
         #def path() nil end
         def scheme() self.class.const_get(:RIOSCHEME) end
         def opaque()

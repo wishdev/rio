@@ -126,6 +126,8 @@ module RIO
 
     if USE_IF
       require 'rio/if'
+      require 'rio/ext/if'
+      include RIO::IF::Ext
       include Enumerable
     end
 

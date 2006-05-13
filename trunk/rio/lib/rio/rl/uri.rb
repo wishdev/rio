@@ -54,9 +54,6 @@ module RIO
         @uri.path = '/' if @uri.absolute? and @uri.path == ''
         super
       end
-      def openfs_()
-        RIO::FS::URL.create()
-      end
       def initialize_copy(*args)
         super
         @uri = @uri.clone unless @uri.nil?
@@ -74,10 +71,16 @@ module RIO
         end
         args
       end
-      def pathroot() '/' end
       def _mkuri(arg)
         (arg.kind_of?(::URI) ?  arg.dup : parse_url(arg.to_s))
       end
+
+
+      def openfs_()
+        RIO::FS::URL.create()
+      end
+
+      def pathroot() '/' end
       def base(arg=nil)
         self.base = arg unless arg.nil? or @uri.absolute?
         @base || @uri
@@ -85,6 +88,8 @@ module RIO
       def base=(arg) @base = _mkuri(arg) end
       require 'rio/rl/pathmethods'
       include PathMethods
+
+      def fspath() RL.url2fs(self.urlpath) end
 
       def urlpath=(pt) @uri.path = pt end
       def urlpath() @uri.path end

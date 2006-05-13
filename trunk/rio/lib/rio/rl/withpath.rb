@@ -35,42 +35,181 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-require 'rio/rl/uri'
-require 'rio/rl/pathmethods'
+require 'rio/rl/base'
+require 'rio/exception/notimplemented'
+#require 'rio/rl/uri'
+#require 'rio/rl/pathmethods'
+#require 'rio/abstract_method'
+
 
 module RIO
   module RL
     class WithPath < Base
-#       def self.get_opts_from_args_(args)
-#         base = nil
-#         fs = nil
-#         if !args.empty? and args[-1].kind_of?(::Hash) 
-#           opts = args.pop
-#           if b = opts[:base]
-#             base = case b
-#                    when URIBase then  b.uri if b.uri.absolute?
-#                    when ::URI then b if b.absolute?
-#                    when %r%^file://(#{HOST})?(/.*)?$% then b
-#                    when %r%^/% then b
-#                    when /^#{SCHEME}:/ then ::URI.parse(b)
-#                    else RL.fs2url(::Dir.getwd)+'/'+b
-#                    end
-#           end
-#           fs = opts[:fs]
-#         end
-#         [base,fs,args]
-#       end
 
-#       def self.build(sch,*args)
-#         base,fs,args = get_opts_from_args_(args)
-#         if base and base.kind_of?(::URI)
-#           case sch
-#           when 'file','path'
-#             if ['http' 'ftp'].include?(sch)
-              
-#             end
-#           end
-#       end
+      # returns the path as the file system sees it. Spaces are spaces and not
+      # %20 etc. This is the path that would be passed to the fs object.
+      # For windows RLs this includes the '//host' part and the 'C:' part
+      # returns a String
+      def fspath() 
+        Rl.url2fs(self.urlpath)
+      end
+
+      # returns the path portion of a URL. All spaces would be %20
+      # returns a String
+      def urlpath() nodef() end
+      def urlpath=(arg) nodef(arg) end
+
+      # For RLs that are on the file system this is fspath()
+      # For RLs that are remote (http,ftp) this is urlpath()
+      # For RLs that have no path this is nil
+      # returns a String
+      def path() nodef{} end
+      def path=(arg) nodef(arg) end
+
+      # The value of urlpath() with any trailing slash removed
+      # returns a String
+      def path_no_slash() 
+        self.urlpath.sub(/\/$/,'')
+      end
+
+      # returns A URI object representation of the RL if one exists
+      # otherwise it returns nil
+      # returns a URI
+      def uri() nodef() end
+
+      # when the URL is legal it is the URI scheme
+      # otherwise it is one of Rio's schemes
+      # returns a String
+      def scheme() nodef() end
+
+      # returns the host portion of the URI if their is one
+      # otherwise it returns nil
+      # returns a String
+      def host() nodef() end
+      def host=(arg) nodef(arg) end
+
+      # returns the portion of the URL starting after the colon
+      # following the scheme, and ending before the query portion
+      # of the URL
+      # returns a String
+      def opaque() nodef() end
+
+      # returns the portion of the path that when prepended to the 
+      # path would make it usable.
+      # For paths on the file system this would be '/'
+      # For http and ftp paths it would be http://host/
+      # For zipfile paths it would be ''
+      # For windows paths with a drive it would be 'C:/'
+      # For windows UNC paths it would be '//host/'
+      # returns a String
+      def pathroot() nodef() end
+
+
+      # returns the base of a path. 
+      # merging the value returned with this yields the absolute path
+      def base(thebase=nil) nodef(thebase) end
+
+      def _uri(arg)
+        arg.kind_of?(::URI) ? arg : URI(arg.to_s)
+      end
+      # returns the absolute path. combines the urlpath with the
+      # argument, or the value returned by base() to create an
+      # absolute path.
+      # returns a RL
+      def abs(thebase=nil) 
+        thebase ||= self.base
+        base_uri = _uri(thebase)
+        path_uri = _uri(self.to_s)
+        abs_uri = base_uri.merge(path_uri)
+        _build(abs_uri,{:fs => self.fs})
+      end
+
+
+      # returns an array of parts of a RL.
+      # 'a/b/c' => ['a','b','c']
+      # For absolute paths the first component is the pathroot
+      # '/topdir/dir/file' => ['/','topdir','dir','file']
+      # 'http://host/dir/file' => ['http://host/','dir','file']
+      # '//host/a/b' => ['file://host/','a','b']
+      # each element of the array is an RL whose base is
+      # set such that the correct absolute path would be returned
+      # returns an array of RLs
+      def _parts()
+        pr = self.pathroot
+        ur = self.urlroot.sub(/#{pr}$/,'')
+        up = self.urlpath.sub(/^#{pr}/,'')
+
+        [ur,pr,up]
+      end
+      def split()
+        if absolute?
+          parts = self._parts
+          sparts = []
+          sparts << parts[0] + parts[1]
+          sparts += parts[2].split('/')
+        else
+          sparts = self.urlpath.split('/')
+        end
+        rlparts = sparts.map { |str| self.class.new(str) }
+        (1...sparts.length).each { |i|
+          rlparts[i].base = rlparts[i-1].abs.url + '/'
+        }
+        rlparts
+      end
+
+      # changes this RLs path so that is consists of this RL's path
+      # combined with those of its arguments.
+      def join(*args)
+        return self if args.empty?
+        sa = args.map { |arg| ::URI.escape(arg.to_s,ESCAPE) }
+        sa.unshift(self.urlpath) unless self.urlpath.empty?
+        self.urlpath = sa.join('/').squeeze('/')
+        self
+      end
+
+      # returns the directory portion of the path
+      # like File#dirname
+      # returns a RL
+      def dirname() 
+        new_rl = self.clone
+        new_rl.urlpath = fs.dirname(self.path_no_slash)
+        new_rl
+      end
+        
+      # returns the tail portion of the path
+      # returns a RL
+      def filename() 
+        base_rl = self.abs
+        base_rl.urlpath = fs.dirname(self.path_no_slash)
+        path_str = fs.filename(self.path_no_slash)
+        _build(path_str,{:base => base_rl.to_s, :fs => self.to_s})
+      end
+
+      # calls URI#merge
+      # returns a RL
+      def merge(other) 
+        _build(self.uri.merge(other.uri))
+      end
+
+      # calls URI#route_from
+      # returns a RL
+      def route_from(other)
+        _build(self.uri.route_from(other.uri),{:base => other.uri})
+      end
+
+      # calls URI#route_to
+      # returns a RL
+      def route_to(other)
+        _build(self.uri.route_to(other.uri),{:base => self.uri})
+      end
+
+      # returns an appriate FS object for the scheme
+      def openfs_() nodef() end
+      include RIO::Error::NotImplemented
+
+      def _build(*args)
+        RIO::RL::Builder.build(*args)
+      end
     end
   end
 end
