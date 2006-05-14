@@ -41,7 +41,35 @@ require 'rio/rl/pathmethods'
 
 module RIO
   module RL
-    class PathBase < WithPath
+    class PathBase < URIBase
+      RESET_STATE = 'Path::Reset'
+
+
+      def scheme() 
+        uri.scheme || 'path' 
+      end
+      def url
+        str = uri.to_s
+        str = scheme + ':' +str unless uri.scheme
+        str
+      end
+      def to_s()
+        self.fspath
+      end
+      def self.splitrl(s)
+        sch,opq,whole = split_riorl(s)
+        case sch
+        when 'file' then [whole]
+        else [opq]
+        end
+      end
+    end
+  end
+end
+__END__
+module RIO
+  module RL
+    class PathBase0 < WithPath
       RESET_STATE = 'Path::Reset'
 
       RIOSCHEME = 'path'
@@ -183,7 +211,7 @@ module RIO
       def absolute?() 
         (@fspath =~ %r%^([a-zA-Z]:)?/%  ? true : false)
       end
-      alias abs? absolute?
+      alias :abs? :absolute?
 
     
       def uri() 

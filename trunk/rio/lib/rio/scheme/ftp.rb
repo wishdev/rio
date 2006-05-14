@@ -60,13 +60,14 @@ module RIO
         [whole] 
       end
       def openfs_
-        RIO::FTP::FS.create(@uri)
+        #p callstr('openfs_')
+        RIO::FTP::FS.create(self.uri)
       end
       def open(*args)
-        IOH::Dir.new(RIO::FTP::Dir::Stream.new(@uri))
+        IOH::Dir.new(RIO::FTP::Dir::Stream.new(self.uri))
       end
       def file_rl() 
-        RIO::FTP::Stream::RL.new(@uri) 
+        RIO::FTP::Stream::RL.new(self.uri) 
       end
       def dir_rl() 
         self 

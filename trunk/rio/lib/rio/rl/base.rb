@@ -113,11 +113,14 @@ module RIO
     SUBSEPAR = ':'
 
     class Base
-      attr :fs
+      attr_accessor :fs
       def initialize(*args)
+        #p callstr('Base#initialize',*args)
         @fs = openfs_
       end
-      def openfs_() nil end
+      def openfs_() 
+        nil 
+      end
       def self.subscheme(s)
         /^rio:([^:]+):/.match(s)[1]
       end

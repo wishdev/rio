@@ -40,7 +40,12 @@ module RIO
     module Path
       module Create
         def join(*args) 
-          new_rio(self.rl,*args) 
+          before = self.rl.to_s
+          arl = self.rl
+          nrio = new_rio(arl,*args) 
+          after = self.rl.to_s
+          #p "b=#{before} a=#{after}"
+          nrio
         end
         #alias :catpath :join
         def join!(*args) 
@@ -49,7 +54,8 @@ module RIO
         end
         #alias :catpath! :join!
         def /(arg)
-          join(arg)
+          ans = join(arg)
+          return ans
         end
 
         def getwd(*args,&block) 

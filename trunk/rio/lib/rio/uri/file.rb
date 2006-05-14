@@ -86,11 +86,16 @@ RFC 1738            Uniform Resource Locators (URL)        December 1994
 =end
 
   module REGEXP
+    module PATTERN
+      DRIVE_SPEC = "[A-Za-z]:"
+      ABS_FILE_PATH = "(?:/#{DRIVE_SPEC})?/#{PATH_SEGMENTS}"
+    end
     EMPTYHOST = Regexp.new("^$", false, 'N').freeze #"
+    ABS_FILE_PATH = Regexp.new("^#{PATTERN::ABS_FILE_PATH}$", false, 'N').freeze
   end # module REGEXP
 
   class FILE < Generic
-
+    #ABS_FILE_PATH = REGEXP::ABS_FILE_PATH
     COMPONENT = [
       :scheme, 
       :host,
@@ -102,6 +107,37 @@ RFC 1738            Uniform Resource Locators (URL)        December 1994
       super
     end
     private :check_host
+
+    def check_path(v)
+      # raise if both hier and opaque are not nil, because:
+      # absoluteURI   = scheme ":" ( hier_part | opaque_part )
+      # hier_part     = ( net_path | abs_path ) [ "?" query ]
+      if v && @opaque
+        raise InvalidURIError, 
+          "path conflicts with opaque"
+      end
+
+      if @scheme
+        if v && v != '' && ABS_FILE_PATH !~ v
+          raise InvalidComponentError, 
+            "bad component(expected absolute path component): #{v}"
+        end
+      else
+        if v && v != '' && ABS_FILE_PATH !~ v && REL_PATH !~ v
+          raise InvalidComponentError, 
+            "bad component(expected relative path component): #{v}"
+        end
+      end
+
+      return true
+    end
+    private :check_path
+
+    def path=(v)
+      check_path(v)
+      set_path(v)
+      v
+    end
 
     def normalize!
       super

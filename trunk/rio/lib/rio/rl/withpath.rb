@@ -37,6 +37,7 @@
 
 require 'rio/rl/base'
 require 'rio/exception/notimplemented'
+require 'rio/rl/builder'
 #require 'rio/rl/uri'
 #require 'rio/rl/pathmethods'
 #require 'rio/abstract_method'
@@ -51,7 +52,7 @@ module RIO
       # For windows RLs this includes the '//host' part and the 'C:' part
       # returns a String
       def fspath() 
-        Rl.url2fs(self.urlpath)
+        RL.url2fs(self.urlpath)
       end
 
       # returns the path portion of a URL. All spaces would be %20
@@ -70,6 +71,10 @@ module RIO
       # returns a String
       def path_no_slash() 
         self.urlpath.sub(/\/$/,'')
+      end
+      def pathdepth()
+        pth = self.path_no_slash
+        (pth == '/' ? 0 : pth.count('/'))
       end
 
       # returns A URI object representation of the RL if one exists
@@ -94,6 +99,19 @@ module RIO
       # returns a String
       def opaque() nodef() end
 
+      #phone plug
+      #sunglasses
+      #burrito wrap
+      #shampoo&cond
+      #dove cond
+      #morrocan mirror
+      #windowsil glass container perfume
+      #cd player working
+      #licolic clear purple celephane, top oof medicine cab
+
+      # 2105 n. greenwood ave
+      # pueblo, co 81003
+      
       # returns the portion of the path that when prepended to the 
       # path would make it usable.
       # For paths on the file system this would be '/'
@@ -110,7 +128,7 @@ module RIO
       def base(thebase=nil) nodef(thebase) end
 
       def _uri(arg)
-        arg.kind_of?(::URI) ? arg : URI(arg.to_s)
+        arg.kind_of?(::URI) ? arg.clone : ::URI.parse(arg.to_s)
       end
       # returns the absolute path. combines the urlpath with the
       # argument, or the value returned by base() to create an
@@ -119,8 +137,15 @@ module RIO
       def abs(thebase=nil) 
         thebase ||= self.base
         base_uri = _uri(thebase)
-        path_uri = _uri(self.to_s)
-        abs_uri = base_uri.merge(path_uri)
+        path_uri = self.uri
+        #p "abs: base_uri=#{base_uri.inspect}"
+        #p "abs: path_uri=#{path_uri.inspect}"
+        if path_uri.scheme == 'file' and base_uri.scheme != 'file'
+          abs_uri = base_uri.merge(path_uri.path)
+        else
+          abs_uri = base_uri.merge(path_uri)
+        end
+        #p "abs: abs_uri=#{abs_uri.inspect}"
         _build(abs_uri,{:fs => self.fs})
       end
 
@@ -152,9 +177,12 @@ module RIO
         end
         rlparts = sparts.map { |str| self.class.new(str) }
         (1...sparts.length).each { |i|
-          rlparts[i].base = rlparts[i-1].abs.url + '/'
+          base_str = rlparts[i-1].abs.url
+          base_str += '/' unless base_str[-1] == ?/
+          rlparts[i].base = base_str
         }
         rlparts
+
       end
 
       # changes this RLs path so that is consists of this RL's path

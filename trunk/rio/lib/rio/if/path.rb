@@ -319,7 +319,9 @@ module RIO
     #   ario = rio('adir')
     #   ario /= 'afile.rb'           #=> rio('ario/afile.rb')
     #   
-    def /(arg) target / arg end
+    def /(arg) 
+      target / arg 
+    end
 
 
     # Create a Rio referencing Rio#to_str + arg.to_str

@@ -46,6 +46,7 @@ class TC_base2 < Test::RIO::TestCase
         assert_equal(exp[0].to_s,u.to_s,msg)
         assert_equal(exp[1].to_s,u.base.to_s,msg)
         assert_equal(exp[2].to_s,u.abs.to_s,msg)
+        #p "run_case: b=#{b} abs=#{u.abs(b)}"
         assert_equal(exp[3].to_s,u.abs(b).to_s,msg)
       end
     end
@@ -53,6 +54,7 @@ class TC_base2 < Test::RIO::TestCase
 
     [bs,URI(bs)].each do |b|
       [ls,URI(ls),rio(ls)].each do |l|
+        #p "b=#{b.inspect} l=#{l.inspect}"
         u = rio(l,{:base => b})
         msg = mkmsg(bk,lk,b,l)
         assert_equal(exp[4].to_s,u.to_s,msg)
@@ -67,7 +69,7 @@ class TC_base2 < Test::RIO::TestCase
     b = @base_urls[bk]
     l = @links[lk]
     wd = ::Dir.getwd+'/'
-    abs = wd + l
+    abs = ::Pathname.new(wd + l).cleanpath
     exp = [l,wd,abs,@links['abshttp'],l,b,@links['abshttp']]
     run_case(bk,lk,exp)
   end

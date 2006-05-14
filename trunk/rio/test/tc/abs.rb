@@ -276,6 +276,10 @@ class TC_RIO_abs < Test::Unit::TestCase
       assert_kind_of(RIO::Rio,tmp)
       assert_equal('/tmp',tmp.to_s)
       
+      z = tmp.join('zippy')
+      assert_kind_of(RIO::Rio,z)
+      assert_equal('/tmp/zippy',z.to_s)
+
       z = tmp/'zippy'
       assert_kind_of(RIO::Rio,z)
       assert_equal('/tmp/zippy',z.to_s)

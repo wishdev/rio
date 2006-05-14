@@ -87,6 +87,7 @@ module RIO
             nrio
           else
             #new_rio(rl,{:base => ensure_rio(base).abs.to_uri}).abs
+            brio = ensure_rio(base)
             new_rio(rl.abs(ensure_rio(base).to_s))
           end
         end
@@ -120,8 +121,8 @@ module RIO
         def merge(other)
           new_rio(rl.merge(ensure_rio(other).rl))
         end
-        def base(b=nil)
-          new_rio(rl.base(b))
+        def base()
+          new_rio(rl.base())
         end
         def setbase(b)
           rl.base(b)
@@ -227,7 +228,7 @@ module RIO
           if cx['rename']
             must_exist.filename = arg
           else
-            rl.path = _path_with_filename(arg)
+            rl.urlpath = _path_with_filename(arg)
             softreset
           end
         end
@@ -236,7 +237,7 @@ module RIO
           if cx['rename']
             must_exist.basename = arg
           else
-            rl.path = _path_with_basename(arg)
+            rl.urlpath = _path_with_basename(arg)
             softreset
           end
         end
@@ -247,7 +248,7 @@ module RIO
           if cx['rename']
             must_exist.extname = arg
           else
-            rl.path = _path_with_ext(arg)
+            rl.urlpath = _path_with_ext(arg)
             softreset
           end
         end

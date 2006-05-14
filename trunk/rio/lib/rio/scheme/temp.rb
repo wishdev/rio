@@ -92,6 +92,7 @@ module RIO
           super(@td.to_s)
         end
         def dir_rl() 
+          #p "temp:dir_rl: #{self.uri.inspect}"
           RIO::Dir::RL.new(self.uri, {:fs => self.fs})
           #self 
         end
