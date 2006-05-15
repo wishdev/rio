@@ -54,25 +54,21 @@
 #   require 'csv'         # second choice--slower but standard
 # end
 
-require 'csv'
-
-$EXTEND_CSV_RESULTS = false
 module RIO
   module Ext
-    module CSV
+    module SplitLines
       module Cx
-        def csv(fs=',',rs=nil,&block) 
-          cx['csv_fs'] = fs
-          cx['csv_rs'] = rs
-          cxx('csv',true,&block) 
+        def splitlines(sep=',',&block) 
+          #p callstr('splitlines',sep) 
+          cx['split_lines_sep'] = sep
+          cxx('splitlines',true,&block) 
         end
-        def csv?() cxx?('csv') end 
-        def csv_(fs=',',rs=nil) 
-          cx['csv_fs'] = fs
-          cx['csv_rs'] = rs
-          cxx_('csv',true) 
+        def splitlines?() cxx?('splitlines') end 
+        def splitlines_(sep=',',rs=nil) 
+          cx['split_lines_sep'] = sep
+          cxx_('splitlines',true) 
         end
-        protected :csv_
+        protected :splitlines_
         def columns(*ranges,&block)
           if skipping?
             cx['skipping'] = false
@@ -97,70 +93,28 @@ module RIO
 end
 module RIO
   module Ext
-    module CSV
-      module Ary
-        attr_accessor :csv_rec_to_s
-        def to_s()
-          @csv_rec_to_s.call(self)
-        end
-      end
-      module Str
-        attr_accessor :csv_s_to_rec
-        def to_a()
-          @csv_s_to_rec.call(self)
-        end
-      end
-    end
-  end
-end
-
-
-module RIO
-  module Ext
-    module CSV
+    module SplitLines
       module Input
 
         protected
-#        def ior()
-#          p cx['stream_itertype']
-#          case cx['stream_itertype']
-#          when 'lines',nil
-#            self.ioh.iostack[-2]
-#          else
-#            self.ioh
-#          end
-#        end
-#         def each_rec_(&block)
-#           self.ior.each { |line|
-#             yield line
-#           }
-#           self
-#         end
 
         def to_rec_(raw_rec)
           #_init_cols_from_line(raw_rec) if @recno == 0
           #p "#{callstr('to_rec_',raw_rec.inspect,@recno)} ; itertype=#{cx['stream_itertype']}"
           case cx['stream_itertype']
           when 'lines' 
-            if $EXTEND_CSV_RESULTS
-              unless copying_from?
-                raw_rec.extend(RIO::Ext::CSV::Str)
-                raw_rec.csv_s_to_rec = _s_to_rec_proc(cx['csv_fs'],cx['csv_rs'])
-              end
-            end
             raw_rec
           when 'records'
-            _l2record(raw_rec,cx['csv_fs'],cx['csv_rs'])
-          when 'rows'
-            _l2row(raw_rec,cx['csv_fs'],cx['csv_rs'])
+            _l2record(raw_rec,cx['split_lines_sep'])
           else
-            _l2record(raw_rec,cx['csv_fs'],cx['csv_rs'])
+            _l2record(raw_rec,cx['split_lines_sep'])
           end
         end
 
         private
 
         def trim(fields)
+          #p callstr('trim',fields)
           ycols = cx['col_args']
           ncols = cx['nocol_args']
           return [] if ncols and ncols.empty?
@@ -194,52 +148,20 @@ module RIO
           end
           tfields
         end
-        def parse_line_(line,fs,rs)
-          ::CSV.parse_line(line,fs,rs)
+        def parse_line_(line,sep)
+          #p callstr('parse_line_',line,sep)
+          line.split(sep)
         end
-        def _l2a(line,fs,rs)
-          parse_line_(line,fs,rs)
+        def _l2a(line,sep)
+          parse_line_(line,dep)
         end
-        def _l2record(line,fs,rs)
-          #p callstr('_l2record',line,fs,rs,cols)
-          fields = trim(parse_line_(line,fs,rs))
-          if $EXTEND_CSV_RESULTS
-            unless copying_from?
-              fields.extend(RIO::Ext::CSV::Ary)
-              fields.csv_rec_to_s = _rec_to_s_proc(fs,rs)
-            end
-          end
-          fields
-        end
-        def cnames(num)
-          @cnames ||= trim((0...num).map { |n| "Col#{n}" })
-        end
-
-        def _l2row(line,fs,rs)
-          dat = _l2a(line,fs,rs)
-          names = cnames(dat.length)
-          dat = trim(dat)
-          rw = {}
-          (0...names.length).each { |i|
-            rw[names[i]] = dat[i]
-          }
-          rw
-        end
-
-        def _rec_to_s_proc(fs,rs)
-          proc { |a|
-            ::CSV.generate_line(a,fs,rs) 
-          }
-        end
-
-        def _s_to_rec_proc(fs,rs)
-          proc { |s|
-            ::CSV.parse_line(s,fs,rs) 
-          }
+        def _l2record(line,sep)
+          #p callstr('_l2record',line,sep)
+          trim(parse_line_(line,sep))
         end
 
         def _init_cols_from_line(line)
-          ary = _l2record(line,cx['csv_fs'],cx['csv_rs'])
+          ary = _l2record(line,cx['split_lines_sep'])
           _init_cols_from_ary(ary)
         end
 
@@ -273,15 +195,14 @@ module RIO
       end
     end
 
-    module CSV
+    module SplitLines
       module Output
 
         public
 
         def putrow(*argv)
-          require 'csv'
           row = ( argv.length == 1 && argv[0].kind_of?(::Array) ? argv[0] : argv )
-          self.puts(::CSV.generate_line(row,self.cx['csv_fs'],self.cx['csv_rs']))
+          self.puts(row.join(self.cx['split_lines_sep']))
         end
         def putrow!(*argv)
           putrow(*argv)
@@ -290,10 +211,9 @@ module RIO
 
         protected
 
-        def put_(arg,fs=cx['csv_fs'],rs=cx['csv_rs'])
+        def put_(arg,sep=cx['split_lines_sep'])
           #p callstr('put_',arg.inspect,fs,rs)
-          @header_line ||= _to_header_line(arg,fs,rs)
-          puts(_to_line(arg,fs,rs))
+          puts(_to_line(arg,sep))
         end
 
         def cpfrom_array_(ary)
@@ -311,34 +231,20 @@ module RIO
 
         private
 
-        def _to_header_line(arg,fs=cx['csv_fs'],rs=nil)
-          case arg
-          when ::String
-            arg
-          when ::Array
-            _ary_to_line(arg,fs,rs)
-          when ::Hash
-            _ary_to_line(arg.keys,fs,rs)
-          else
-            arg.to_s
-          end
-        end
-
-        def _to_line(arg,fs=cx['csv_fs'],rs=cx['csv_rs'])
+        def _to_line(arg,sep=cx['split_lines_sep'])
           #p callstr('_to_line',arg.inspect,fs,rs)
           case arg
           when ::Array
-            _ary_to_line(arg,fs,rs)
+            _ary_to_line(arg,sep)
           when ::Hash
-            _ary_to_line(arg.values,fs,rs)
+            _ary_to_line(arg.values,sep)
           else
             arg
           end
         end
 
-        def _ary_to_line(ary,fs,rs)
-          rs ||= $/
-          ::CSV.generate_line(ary,fs,rs)
+        def _ary_to_line(ary,sep)
+          ary.join(sep)
         end
         public
       end

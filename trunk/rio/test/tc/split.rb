@@ -30,10 +30,6 @@ class TC_split < Test::RIO::TestCase
     assert_equal(rio('d'),ary[-1])
     assert_equal(r,ary[-1].abs)
   end
-  # lantern s and candle holders
-  # tea candles on shelf in bathroom
-  # prayer mat
-  #
   def test_abs_drive
     r = rio('q:/a/b')
     ary = r.split

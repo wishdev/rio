@@ -54,6 +54,17 @@ module RIO
           def closed?() @closed end
         end
         class Output < DelegateClass(::Zip::ZipOutputStream)
+          def initialize(zipstream)
+            @closed = false
+            @zipstream = zipstream
+            super
+          end
+          def close()
+            p "CLOSE: #{@zipstream.inspect}"
+            #p self.__getobj__.methods.sort
+            super
+            @closed = true
+          end
         end
         class Dir < DelegateClass(::Zip::ZipFileSystem::ZipFsDirIterator)
         end
@@ -84,12 +95,15 @@ module RIO
             }
           end
           def close
+            p "JERE"
             @zipfile.commit if @zipfile.commit_required?
           end
         end
       end
       class File < DelegateClass(::Zip::ZipFileSystem::ZipFsFile)
         def open(filename, openMode, *args)
+          zipstream = super
+          
           case openMode
           when 'r' then Stream::Input.new(super)
           when 'w' then Stream::Output.new(super)

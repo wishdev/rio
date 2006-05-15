@@ -45,7 +45,8 @@ module RIO
           self.ior.gets(sep_string)
         end
         def each_rec_(&block) 
-          self.ior.each_line { |line|
+          ih = self.ior
+          ih.each_line { |line|
           #self.ior.each { |line|
             yield line
           }

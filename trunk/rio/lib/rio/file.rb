@@ -83,6 +83,7 @@ module RIO
       end
       def [](*args)
         #p "#{callstr('[]',*args)} ss_type=#{ss_type?}"
+        return self.yamldoc[*args] if cx['yamldoc']
         if _using_files_with_a_file
           unless args.empty?
             ss_args = cx['ss_args'] = args

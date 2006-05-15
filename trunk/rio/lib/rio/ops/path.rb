@@ -141,7 +141,7 @@ module RIO
           en = fs.extname(rl.path_no_slash,*args) 
           (en.empty? ? nil : en)
         end
-        def split()
+        def splitpath()
           require 'rio/to_rio'
           parts = self.rl.split
           # map to rios and extend the array with to_array

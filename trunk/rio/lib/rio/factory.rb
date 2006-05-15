@@ -173,6 +173,12 @@ module RIO
       'Temp::Reset' => 'rio/scheme/temp',
       'Temp::Stream::Open' => 'rio/scheme/temp',
 
+      'Ext::YAML::Doc::Existing' => 'rio/ext/yaml/doc',
+      'Ext::YAML::Doc::Open' => 'rio/ext/yaml/doc',
+      'Ext::YAML::Doc::Stream' => 'rio/ext/yaml/doc',
+      'Ext::YAML::Doc::Close' => 'rio/ext/yaml/doc',
+
+
     }
     def state2class(state_name)
       #p "state_name=#{state_name}"

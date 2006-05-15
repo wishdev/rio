@@ -111,6 +111,7 @@ module RIO
       include Ini
       include Filters
 
+
       def add_extensions()
         #p callstr('add_extensions')
         Ext::Input.add_extensions(self)

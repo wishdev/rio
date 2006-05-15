@@ -25,7 +25,7 @@ class TC_base < Test::RIO::TestCase
     assert_equal('/tmp/zippy',r.abs.path)
   end
   def test_longer_base
-    r = rio('zippy',{:base => '/tmp'})
+    r = rio('zippy',{:base => '/tmp/'})
     assert_equal('/tmp/zippy',r.abs.path)
   end
 end

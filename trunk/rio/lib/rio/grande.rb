@@ -50,7 +50,7 @@ module RIO
     end
 
     def fixnumss(*args)
-      #p "#{callstr('[]',*args)} ss_type=#{cx['ss_type']} stream_iter=#{stream_iter?}"
+
       #p args[0].class,ss_type?(_ss_keys())
       ss_args = cx['ss_args'] = args
       if ss_args.length == 1 and ss_args[0].kind_of?(Fixnum) and !cx.has_key?('dirlines')

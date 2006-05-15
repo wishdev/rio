@@ -55,7 +55,8 @@ module RIO
     # * the state changing mechanism
     # * and some basic error handling stubs
     class Base
-      KIOSYMS = [:gets,:getc,:open,:readline,:readlines,:chop,:to_a,:putc,:puts,:print,:printf,:split,
+      KIOSYMS = [:gets,:getc,:open,:readline,:readlines,:chop,:to_a,:putc,:puts,:print,:printf,
+                 #:split,
                  :=~,:===,:==,:eql?,:sub,:sub!,:gsub,:gsub!,:load]
       @@kernel_cleaned ||= KIOSYMS.each { |sym| undef_method(sym) } 
       undef_method(:rio)
@@ -239,7 +240,7 @@ module RIO
       end
       def clone_rio()
         cp = Rio.new(self.rl)
-        cp.cx = self.cx
+        cp.cx = self.cx.clone
         cp.ioh = self.ioh.clone unless self.ioh.nil?
         #cp.fs = self.fs
         cp

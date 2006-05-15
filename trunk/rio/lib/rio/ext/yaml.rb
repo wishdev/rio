@@ -44,6 +44,10 @@ module RIO
         def yaml(&block) 
           cxx('yaml',true,&block) 
         end
+        def yamldoc(&block) 
+          #@yamldoc = YAML::Tie::Doc.new(self.fspath).open
+          become('Ext::YAML::Doc::Existing')
+        end
         def yaml?() cxx?('yaml') end 
         def yaml_(fs=',',rs=nil) 
           cxx_('yaml',true) 
@@ -57,6 +61,7 @@ module RIO
     end
     module YAML
       module Input
+          
         def cpto_(arg)
           #p callstr('cpto_',arg.inspect)
           

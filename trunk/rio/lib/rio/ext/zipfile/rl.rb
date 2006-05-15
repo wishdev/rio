@@ -68,6 +68,9 @@ module RIO
         def open()
           IOH::Dir.new(ZipFile::Wrap::Stream::Root.new(@zipfile))
         end
+        def close()
+          p "CLOSING ZIPFILE RL"
+        end
         def path()
           @infilepath
         end
@@ -191,9 +194,9 @@ __END__
         #p args
         @tempobj = nil
       end
-      def self.default_cx
-        Cx::Vars.new( { 'closeoneof' => false, 'closeoncopy' => false } )
-      end
+      #def self.default_cx
+      #  Cx::Vars.new( { 'closeoneof' => false, 'closeoncopy' => false } )
+      #end
 
       def check?() true end
       def mkdir(prefix=rl.prefix,tmpdir=rl.tmpdir)

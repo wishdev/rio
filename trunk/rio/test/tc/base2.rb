@@ -17,8 +17,8 @@ class TC_base2 < Test::RIO::TestCase
     self.class.once unless @@once
     @base_urls = {
       'abshttp' => 'http://localhost/riotest/dir/index.html',
-      'rootdir' => '/rootdir/dir',
-      'reldir'   => 'reldir/dir',
+      'rootdir' => '/rootdir/dir/',
+      'reldir'   => 'reldir/dir/',
     }
     @links = {
       'abshttp' => 'http://localhost/riotest/hw.html',

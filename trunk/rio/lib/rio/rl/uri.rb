@@ -67,7 +67,7 @@ module RIO
         @base = @base.clone unless @base.nil?
       end
       def absolute?()
-        @uri.absolute?
+        uri.absolute?
       end
       alias :abs? :absolute?
       def openfs_()
@@ -92,12 +92,12 @@ module RIO
       def host() uri.host end
       def host=(arg) uri.host = arg end
       def opaque()
-        u = @uri.clone
+        u = uri.clone
         u.query = nil
         u.to_s.sub(/^#{SCHEME}:/,'')
       end
       def pathroot()
-        u = @uri.clone
+        u = uri.clone
         u.query = nil
         case scheme
         when 'file'
@@ -109,9 +109,6 @@ module RIO
           u.to_s
         end
       end
-      # 123 simple cookbook
-      # power adaptor 6v
-      # fabric with stripes in picnic basket on top oshelve
       def urlroot()
         return nil unless absolute?
         cp = self.clone
@@ -136,19 +133,11 @@ module RIO
         when ::URI 
           vuri = arg0
         when ::String 
-          case arg0
-          when %r%^file://(#{HOST})?(/.*)?$%
-            vuri = ::URI.parse(arg0)
-          when %r/^#{SCHEME}:/ 
-            vuri = ::URI.parse(arg0)
-          when %r{^/} 
-            vuri = ::URI.parse('file://'+arg0)
-          else
-            vuri = ::URI.parse(arg0)
-          end
+          vuri = uri_from_string_(arg0) || ::URI.parse(arg0)
         else
           raise(ArgumentError,"'#{arg0}'[#{arg0.class}] can not be used to create a Rio")
         end
+
         @uri = vuri
         self.join(*args)
         @base = vbase unless @base or vbase.nil?
@@ -164,27 +153,17 @@ module RIO
         when ::URI 
           arg if arg.absolute?
         when ::String 
-          case arg
-          when %r%^file://(#{HOST})?(/.*)?$%
-            ::URI.parse(arg)
-          when %r/^#{SCHEME}:/ 
-            ::URI.parse(arg)
-          when %r{^/}
-            arg += '/' unless arg[-1] == ?/
-            ::URI.parse('http://'+arg)
-          else
-            ::URI.parse([RL.fs2url(::Dir.getwd),arg].join('/').squeeze('/'))
-          end
+          uri_from_string_(arg) || ::URI.parse([RL.fs2url(::Dir.getwd+'/'),arg].join('/').squeeze('/'))
         else
           raise(ArgumentError,"'#{arg} is not a valid base path")
         end
       end
       def _get_opts_from_args(args)
-        @base = nil
         if !args.empty? and args[-1].kind_of?(::Hash) 
           opts = args.pop
           if b = opts[:base]
             @base = _get_base_from_arg(b)
+            #@base.path.sub!(%r{/*$},'/')
           end
           if fs = opts[:fs]
             @fs = fs
@@ -193,7 +172,11 @@ module RIO
         args
       end
     end
+  end
+end
 
+module RIO
+  module RL
     class URIBase0 < WithPath
       SCHEME = URI::REGEXP::PATTERN::SCHEME
       attr_reader :uri

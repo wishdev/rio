@@ -36,6 +36,7 @@
 
 
 require 'rio/ext/csv'
+require 'rio/ext/splitlines'
 require 'rio/ext/yaml'
 #require 'rio/ext/zipfile'
 
@@ -70,6 +71,7 @@ module RIO
 
     module Cx
       include CSV::Cx
+      include SplitLines::Cx
       include YAML::Cx
       #include ZipFile::Cx
     end
@@ -79,8 +81,12 @@ module RIO
       def add_extensions(obj)
         #p "add_extensions(#{obj.inspect})"
         #p obj.ioh
+        #p obj.splitlines?
         if obj.csv?
           obj.extend(CSV::Input)
+        end
+        if obj.splitlines?
+          obj.extend(SplitLines::Input)
         end
         obj.extend(YAML::Input) if obj.yaml?
 #        if obj.zipfile?
@@ -94,6 +100,7 @@ module RIO
     module Output
       def add_extensions(obj)
         obj.extend(CSV::Output) if obj.csv?
+        obj.extend(SplitLines::Output) if obj.splitlines?
         obj.extend(YAML::Output) if obj.yaml?
         obj
       end

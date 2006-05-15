@@ -75,7 +75,19 @@ module RIO
       protected :mode_
     end
   end
-
+  
+  
+  module Cx
+    module Methods
+      def split(*args,&block)
+        if args.empty? 
+          self.splitpath 
+        else
+          self.splitlines(*args,&block)
+        end
+      end
+    end
+  end
 
 
   module Cx

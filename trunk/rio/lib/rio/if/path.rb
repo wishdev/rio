@@ -285,7 +285,12 @@ module RIO
     def join(*args) target.join(*args) end
 
 
-    # Creates an array of Rios, one for each path element. 
+    # Rio#split has two distinct behaviors depending on 
+    # whether is is called with an argument or not.
+    #
+    # ==== split-with-no-aruments:
+    #
+    # Returns an array of Rios, one for each path element. 
     # (Note that this behavior differs from File#split.)
     #
     #  rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
@@ -301,7 +306,21 @@ module RIO
     #  ary.to_rio           #=> rio('a/d/c')
     #
     # See also Rio#join, Rio#/
-    def split() target.split() end
+    #
+    # ==== split-with-an-argument:
+    #
+    # This causes String#split(arg) to be called on every line
+    # before it is returned. An array of the split lines is
+    # returned when iterating
+    #
+    #  rio('/etc/passwd').split(':').columns(0,2) { |ary|
+    #    username,uid = ary
+    #  }
+    #  
+    #  rio('/etc/passwd').split(':').columns(0,2).to_a #=> [[user1,uid1],[user2,uid2]]
+    #
+    #  
+    def split(*args,&block) target.split(*args,&block) end
 
 
     # Subdirectory operator.

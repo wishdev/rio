@@ -38,22 +38,23 @@
 require 'rio/rl/base'
 require 'rio/exception/notimplemented'
 require 'rio/rl/builder'
-#require 'rio/rl/uri'
-#require 'rio/rl/pathmethods'
-#require 'rio/abstract_method'
-
 
 module RIO
   module RL
-    class WithPath < Base
+    module PathUtil
+    end
+  end
+end
+      # 
 
-      # returns the path as the file system sees it. Spaces are spaces and not
-      # %20 etc. This is the path that would be passed to the fs object.
-      # For windows RLs this includes the '//host' part and the 'C:' part
-      # returns a String
-      def fspath() 
-        RL.url2fs(self.urlpath)
-      end
+module RIO
+  module RL
+    class WithPath < RIO::RL::Base
+      include RIO::RL::PathUtil
+      include RIO::Error::NotImplemented
+
+      # returns an appriate FS object for the scheme
+      def openfs_() nodef() end
 
       # returns the path portion of a URL. All spaces would be %20
       # returns a String
@@ -66,16 +67,6 @@ module RIO
       # returns a String
       def path() nodef{} end
       def path=(arg) nodef(arg) end
-
-      # The value of urlpath() with any trailing slash removed
-      # returns a String
-      def path_no_slash() 
-        self.urlpath.sub(/\/$/,'')
-      end
-      def pathdepth()
-        pth = self.path_no_slash
-        (pth == '/' ? 0 : pth.count('/'))
-      end
 
       # returns A URI object representation of the RL if one exists
       # otherwise it returns nil
@@ -99,19 +90,6 @@ module RIO
       # returns a String
       def opaque() nodef() end
 
-      #phone plug
-      #sunglasses
-      #burrito wrap
-      #shampoo&cond
-      #dove cond
-      #morrocan mirror
-      #windowsil glass container perfume
-      #cd player working
-      #licolic clear purple celephane, top oof medicine cab
-
-      # 2105 n. greenwood ave
-      # pueblo, co 81003
-      
       # returns the portion of the path that when prepended to the 
       # path would make it usable.
       # For paths on the file system this would be '/'
@@ -126,6 +104,34 @@ module RIO
       # returns the base of a path. 
       # merging the value returned with this yields the absolute path
       def base(thebase=nil) nodef(thebase) end
+
+    end
+  end
+end
+
+module RIO
+  module RL
+    class WithPath < RIO::RL::Base
+      SCHEME = URI::REGEXP::PATTERN::SCHEME
+      HOST = URI::REGEXP::PATTERN::HOST
+
+      # returns the path as the file system sees it. Spaces are spaces and not
+      # %20 etc. This is the path that would be passed to the fs object.
+      # For windows RLs this includes the '//host' part and the 'C:' part
+      # returns a String
+      def fspath() 
+        RL.url2fs(self.urlpath)
+      end
+
+      # The value of urlpath() with any trailing slash removed
+      # returns a String
+      def path_no_slash() 
+        self.urlpath.sub(/\/$/,'')
+      end
+      def pathdepth()
+        pth = self.path_no_slash
+        (pth == '/' ? 0 : pth.count('/'))
+      end
 
       def _uri(arg)
         arg.kind_of?(::URI) ? arg.clone : ::URI.parse(arg.to_s)
@@ -215,30 +221,29 @@ module RIO
 
       # calls URI#merge
       # returns a RL
-      def merge(other) 
-        _build(self.uri.merge(other.uri))
-      end
+      def merge(other) _build(self.uri.merge(other.uri)) end
 
       # calls URI#route_from
       # returns a RL
-      def route_from(other)
-        _build(self.uri.route_from(other.uri),{:base => other.uri})
-      end
+      def route_from(other) _build(self.uri.route_from(other.uri),{:base => other.uri}) end
 
       # calls URI#route_to
       # returns a RL
-      def route_to(other)
-        _build(self.uri.route_to(other.uri),{:base => self.uri})
-      end
+      def route_to(other) _build(self.uri.route_to(other.uri),{:base => self.uri}) end
 
-      # returns an appriate FS object for the scheme
-      def openfs_() nodef() end
-      include RIO::Error::NotImplemented
+      def _build(*args) RIO::RL::Builder.build(*args) end
 
-      def _build(*args)
-        RIO::RL::Builder.build(*args)
+      def uri_from_string_(str)
+        case str
+        when %r%^file://(#{HOST})?(/.*)?$% then ::URI.parse(str)
+        when %r/^#{SCHEME}:/ then ::URI.parse(str)
+        #when %r{^/} then ::URI.parse('file://'+str+( ( str[-1,0] == '/' ) ? "" : "/"))
+        when %r{^/} then ::URI.parse('file://'+str)
+        else ::URI.parse(str)
+        end
       end
     end
   end
 end
+
 

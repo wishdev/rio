@@ -109,6 +109,7 @@ module RIO
           end
         end
         def cpfrom_array_(ary)
+          #p "CPFROM_ARRAY_"
           ary.inject(self) { |anio,el| anio << el }
         end
       end
@@ -187,6 +188,7 @@ module RIO
         protected
 
         def cpfrom_(arg)
+          #p "#{self} < #{arg}"
             case arg
             when ::Array then cpfrom_array_(arg)
             when ::IO then cpfrom_obj_(arg)
@@ -197,7 +199,11 @@ module RIO
             self
         end
         def cpfrom_rio_(arg)
-          ensure_rio(arg).copying(self).each { |el|
+          #p arg
+          ario = ensure_rio(arg)
+          #p ario.cx
+          ario.copying(self).each { |el|
+            #p "cpfrom_rio_[#{self.scheme}]: #{el.inspect}"
             #self.putrec(el)
             self << el
           }.copying_done(self)
