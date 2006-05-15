@@ -7,7 +7,7 @@ end
 require 'rio'
 require 'tc/testcase'
 
-class TC_split < Test::RIO::TestCase
+class TC_splitpath < Test::RIO::TestCase
   @@once = false
   def self.once
     @@once = true

@@ -242,6 +242,7 @@ module RIO
         cp = Rio.new(self.rl)
         cp.cx = self.cx.clone
         cp.ioh = self.ioh.clone unless self.ioh.nil?
+        cp.rl = self.rl.clone
         #cp.fs = self.fs
         cp
       end
@@ -254,8 +255,11 @@ module RIO
 #        end
 #      end
       def ensure_rio(arg0)
-        return arg0 if arg0.kind_of?(::RIO::Rio)
-        new_rio(arg0)
+        case arg0
+        when RIO::Rio then arg0
+        when RIO::State::Base then arg0.clone_rio
+        else new_rio(arg0)
+        end
       end
       def ensure_cmd_rio(arg)
         case arg

@@ -66,6 +66,8 @@ require 'tc/selnosel'
 require 'tc/skip'
 require 'tc/skiplines'
 require 'tc/split'
+require 'tc/splitpath'
+require 'tc/splitlines'
 require 'tc/symlink' unless $mswin32
 require 'tc/symlink0' unless $mswin32
 require 'tc/symlink1' unless $mswin32

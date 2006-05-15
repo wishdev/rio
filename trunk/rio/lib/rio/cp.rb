@@ -199,6 +199,7 @@ module RIO
         end
         def cpfrom_rio_(arg)
           ario = ensure_rio(arg)
+          #p ario.cx
           ario.copying(self).each { |el|
             self << el
           }.copying_done(self)
