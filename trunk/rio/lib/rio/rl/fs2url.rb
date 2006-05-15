@@ -35,66 +35,46 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-require 'rio/ext/csv'
-require 'rio/ext/splitlines'
-require 'rio/ext/yaml'
-#require 'rio/ext/zipfile'
-
-require 'rio/util'
-module RIO
-  module Ext #:nodoc: all
-    @@extensions = {}
-
-    module_function
-    def add(cl,meth)
-      @@extensions[cl] ||= []
-      @@extensions[cl].push(meth)
-    end
-    def extend_state(state_class,ext_module)
-      ext_proc = proc{ |obj| obj.extend(ext_module) }
-      RIO::Ext.add(state_class,ext_proc)
-    end
-
-    def became(obj)
-      if @@extensions[obj.class]
-        @@extensions[obj.class].each { |meth|
-          meth[obj]
-        }
-      end
-    end
-  end
-end
+require 'uri'
+require 'rio/local'
+require 'rio/uri/file'
+require 'rio/rl/chmap'
 
 module RIO
-  module Ext #:nodoc: all
-    OUTPUT_SYMS = Util::build_sym_hash(CSV::Output.instance_methods + YAML::Output.instance_methods)
+  module RL #:nodoc: all
+    PESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;?:@&=+$,]",false, 'N').freeze
+    ESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;\/?:@&=+$,]",false, 'N').freeze
+    def escape(pth,esc=ESCAPE)
+      ::URI.escape(pth,esc)
+    end
+    def unescape(pth)
+      ::URI.unescape(pth)
+    end
+    def fs2url(pth)
+      #pth.sub!(/^[a-zA-Z]:/,'')
+      pth = URI.escape(pth,ESCAPE)
+      pth = '/' + pth if pth =~ /^[a-zA-Z]:/
+      pth
+      #      (Local::SEPARATOR == '/' ? pth : pth.gsub(Local::SEPARATOR,%r|/|))
+    end
 
-    module Cx
-      include CSV::Cx
-      include SplitLines::Cx
-      include YAML::Cx
-      #include ZipFile::Cx
-    end
-  end
-  module Ext
-    module Input
-      def add_extensions(obj)
-        obj.extend(CSV::Input) if obj.csv?
-        obj.extend(SplitLines::Input) if obj.splitlines?
-        obj.extend(YAML::Input) if obj.yaml?
-        obj
+    def url2fs(pth)
+#      pth = pth.chop if pth.length > 1 and pth[-1] == ?/      cwd = RIO::RL.fs2url(::Dir.getwd)
+
+      #pth = pth.chop if pth != '/' and pth[-1] == ?/
+      pth = ::URI.unescape(pth)
+      if pth =~ %r#^/[a-zA-Z]:#
+        pth = pth[1..-1] 
       end
-      module_function :add_extensions
+      pth
+#      (Local::SEPARATOR == '/' ? pth : pth.gsub(%r|/|,Local::SEPARATOR))
     end
-    module Output
-      def add_extensions(obj)
-        obj.extend(CSV::Output) if obj.csv?
-        obj.extend(SplitLines::Output) if obj.splitlines?
-        obj.extend(YAML::Output) if obj.yaml?
-        obj
-      end
-      module_function :add_extensions
+
+    def getwd()
+      #::URI::FILE.build({:path => fs2url(::Dir.getwd)+'/'})
+      ::URI::FILE.build({:path => fs2url(::Dir.getwd)})
     end
+
+    module_function :url2fs,:fs2url,:getwd,:escape,:unescape
   end
 end
-

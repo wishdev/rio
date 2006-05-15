@@ -188,7 +188,6 @@ module RIO
         protected
 
         def cpfrom_(arg)
-          #p "#{self} < #{arg}"
             case arg
             when ::Array then cpfrom_array_(arg)
             when ::IO then cpfrom_obj_(arg)
@@ -199,12 +198,8 @@ module RIO
             self
         end
         def cpfrom_rio_(arg)
-          #p arg
           ario = ensure_rio(arg)
-          #p ario.cx
           ario.copying(self).each { |el|
-            #p "cpfrom_rio_[#{self.scheme}]: #{el.inspect}"
-            #self.putrec(el)
             self << el
           }.copying_done(self)
         end
@@ -238,7 +233,6 @@ module RIO
         def spcp(arg)
           if arg.kind_of?(Rio) and arg.scheme == 'ftp'
             arg.copy_from(new_rio(rl.path))
-            #arg < new_rio(rl.path)
             self
           else
             nil

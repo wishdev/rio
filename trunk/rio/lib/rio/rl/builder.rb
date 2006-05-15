@@ -44,15 +44,6 @@ module RIO
   module RL
     class Builder
       def self.build_path_rl(rl)
-#         case rl.scheme
-#         when 'path','file'
-#           base = rl.base
-#           base = URI(base.to_s) unless base.kind_of?(::URI)
-#           if base.kind_of?(::URI) and base.scheme == 'http'
-#             uri = base.merge(URI(rl.path))
-#             return build(uri)
-#           end
-#         end
         return rl
       end
       def self.build(*a)
@@ -69,7 +60,6 @@ module RIO
           when %r|^//|
             a[0] = 'rio:file:'+a[0]
           when %r|^/|
-            #p "HERE #{a.inspect}"
             a[0] = 'file://'+a[0]
             return build_path_rl(Factory.instance.riorl_class('file').new(*a))
           else
@@ -80,9 +70,6 @@ module RIO
         when RL::Base
           a0 = a.shift.clone
           return (a.empty? ? a0 : a0.join(*a))
-          #p 'THERE',a0,a0.clone
-          #return a0.clone.join(*a)
-          #return a0.class.new(a0.clone,*a)
         when ::URI
           a0 = a.shift
           cl = Factory.instance.riorl_class(a0.scheme)
@@ -119,33 +106,6 @@ module RIO
         cl = Factory.instance.riorl_class(sch)
         build_path_rl(cl.parse(a0,*a))  unless cl.nil?
 
-      end
-
-
-      def self.build0(*args)
-        #p "build(#{args.inspect})"
-
-        # aryio is a special case -- must not flatten
-        if args[0] == 'rio:aryio'
-          args.shift
-          ary = args[0] unless args.empty? 
-          require 'rio/scheme/aryio'
-          return RIO::AryIO::RL.new(ary)
-        end
-
-        args = canon(args.flatten)
-        a0 = args.shift
-        case a0
-        when RL::Base
-          a0.class.new(a0.uri.dup,*args)
-        when ::URI
-          cl = Factory.instance.riorl_class(a0.scheme)
-          cl.new(a0,*args) unless cl.nil?
-        else
-          sch = Base.subscheme(a0)
-          cl = Factory.instance.riorl_class(sch)
-          cl.parse(a0,*args)  unless cl.nil?
-        end
       end
 
     end
