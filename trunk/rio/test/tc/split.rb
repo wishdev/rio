@@ -16,4 +16,13 @@ class TC_split < Test::RIO::TestCase
     super
     self.class.once unless @@once
   end
+  def test_type
+    rtn = rio('a/b/c').split
+    assert_kind_of(::Array,rtn)
+    for el in rtn
+      assert_kind_of(RIO::Rio,el)
+    end
+    rtn = rio('hw.txt')
+    assert_kind_of(RIO::Rio,rtn)
+  end
 end

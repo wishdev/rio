@@ -56,9 +56,6 @@ class TC_yaml < Test::RIO::TestCase
     assert_instance_of(::String,obj)
     assert_equal(rio(TRIO).lines[0],[obj])
 
-    obj = rio(TRIO).yaml.rows.get
-    assert_instance_of(::String,obj)
-    assert_equal(rio(TRIO).lines[0..2].to_s,obj)
   end
   def test_getrec
     exp = TOBJS[0]
@@ -120,7 +117,8 @@ class TC_yaml < Test::RIO::TestCase
     assert_equal(exp,obj)
 
   end
-  def test_grande
+  def test_ss
+    
     
   end
 

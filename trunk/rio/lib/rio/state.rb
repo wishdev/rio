@@ -247,13 +247,6 @@ module RIO
         cp
       end
       
-#      def rio(*args)
-#        if zipfile?
-#          open_.dstream.rio(*args)
-#        else
-#          new_rio_cx(*args)
-#        end
-#      end
       def ensure_rio(arg0)
         case arg0
         when RIO::Rio then arg0

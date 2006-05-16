@@ -33,7 +33,7 @@ class TC_splitlines < Test::RIO::TestCase
       assert_equal(exp,ary)
     }
   end
-  def test_copy_array
+  def test_copy_array_in
     expstr = @str.chomp.split(',').join(':')
     exp = rio(?").puts(expstr).puts(expstr).puts!(expstr)
     aoa = rio(@infile).split(',')[]
@@ -41,10 +41,24 @@ class TC_splitlines < Test::RIO::TestCase
     ans = rio('ans')
     assert_equal(exp.chomp[],ans.chomp[])
   end
-  def test_assign
+  def test_copy_array_out
+    expary = @str.chomp.split(',')
+    exp = [expary,expary,expary]
+    aoa = []
+    rio(@infile).chomp.split(',') > aoa
+    assert_equal(exp,aoa)
+  end
+  def test_copy_left
     expstr = @str.chomp.split(',').join(':')
     exp = rio(?").puts(expstr).puts(expstr).puts!(expstr)
     rio('ans').split(':') < rio(@infile).split(',')
+    ans = rio('ans')
+    assert_equal(exp.chomp[],ans.chomp[])
+  end
+  def test_copy_right
+    expstr = @str.chomp.split(',').join(':')
+    exp = rio(?").puts(expstr).puts(expstr).puts!(expstr)
+    rio(@infile).split(',') > rio('ans').split(':')
     ans = rio('ans')
     assert_equal(exp.chomp[],ans.chomp[])
   end
