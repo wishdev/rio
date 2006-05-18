@@ -68,7 +68,6 @@ module RIO
 
       attr_accessor :rl
       attr_accessor :ioh
-      #attr_accessor :fs
 
       attr_accessor :cx
 
@@ -82,12 +81,6 @@ module RIO
         _init(rl,cx,ioh)
         #        @handled_by = self.class.to_s
       end
-#      def initialize(rl=nil,cx=nil,ioh=nil,fs=nil)
-#        fs ||= RIO::FS::Native.create()
-#        cx ||= self.class.default_cx
-#        _init(rl,cx,ioh,fs)
-#        #        @handled_by = self.class.to_s
-#      end
       
       def _init(riorl,cntx,iohandle=nil)
         @rl = riorl
@@ -96,14 +89,6 @@ module RIO
 #        raise Exception::FailedCheck.new(self) unless check?
         self
       end
-#       def _init(riorl,cntx,iohandle=nil,fs=nil)
-#         @rl = riorl
-#         @cx = cntx
-#         @ioh = iohandle
-#         @fs = fs
-# #        raise Exception::FailedCheck.new(self) unless check?
-#         self
-#       end
       private :_init
 
       def initialize_copy(*args)
@@ -120,24 +105,12 @@ module RIO
       end
       def self.new_other(other)
         new(other.rl,other.cx,other.ioh)
-        #new.copy_state(other)
       end
-#       def self.new_other(other)
-#         new(other.rl,other.cx,other.ioh,other.fs)
-#         #new.copy_state(other)
-#       end
 
       alias :ior :ioh
       alias :iow :ioh
 
-#      def copy_state(other)
-#        _init(other.rl,other.cx,other.ioh,other.fs)
-#      end
 
-#      def self.new_r(riorl)
-#        #new(riorl,default_cx)
-#        new(riorl)
-#      end
 
 
       # Section: State Switching
@@ -160,7 +133,7 @@ module RIO
         new_state
       end
       def became(obj)
-        RIO::Ext.became(obj)
+        #RIO::Ext.became(obj)
       end
       def method_missing_trace_str(sym,*args)
         "missing: "+self.class.to_s+'['+self.to_url+" {#{self.rl.fs}}"+']'+'.'+sym.to_s+'('+args.join(',')+')'

@@ -45,7 +45,7 @@ module RIO
     class Reset < State::Base
       def base_state() 
         #p "RETURNING WIERD BASE STATE"
-        Reset 
+        'Path::Reset' 
       end
 
       def check?() true end

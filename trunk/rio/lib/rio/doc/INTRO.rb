@@ -964,8 +964,6 @@ operators:
 
 ==== YAML mode
 
-<b>YAML Mode is currently in work. Please disregard this section</b>
-
 Rio uses the YAML class from the Ruby standard library to provide
 support for reading and writing YAML files. Normally
 using <tt>(skip)records</tt> is identical to <tt>(skip)lines</tt> because
@@ -1016,23 +1014,6 @@ which is aliased to #dump
  }
  rio('afile.yaml').yaml.dump(anobject)
 
-The YAML extension changes the way the grande copy operators
-interpret their argument. Rio#< (copy-from) and Rio#<< (append-from)
-treat an array as an array of objects which are converted using their 
-#to_yaml method before writing.
-
- rio('afile.yaml').yaml < [obj1, obj2, obj3]
-
-Because of this, copying an ::Array must be done like this:
-
- rio('afile.yaml').yaml < [anarray]
-
-If their argument is a Rio or ::IO it is iterate through as normal, 
-with each record converted using its to_yaml method.
-
-For all other objects, the result of their +to_yaml+ operator is simply written.
-
- rio('afile.yaml').yaml < anobject
 
 Rio#> (copy-to) and Rio#>> (append-to) will fill an array with with all selected
 YAML documents in the Rio. For non-arrays, the yaml text is copied. (This may change
@@ -1048,11 +1029,10 @@ Single objects can be loaded using Rio#getrec (aliase to Rio#getobj and Rio#load
 
  anobject = rio('afile.yaml').yaml.getobj
 
-Note that other than this redefinition of what a record is and how the copy
-operators interpret their argument, a Rio in yaml-mode is just like any other
-Rio. And all the things you can do with any Rio come for free.
-They can be iterated over using #each and read into an array using #[]
-just like any other Rio. All the selection criteria are identical also.
+A Rio in yaml-mode is just like any other Rio. And all the things you
+can do with any Rio come for free.  They can be iterated over using
+#each and read into an array using #[] just like any other Rio. All
+the selection criteria are identical also.
 
 Get the first three objects into an array:
 
@@ -1068,10 +1048,6 @@ Selecting records using a Proc can be used as normal:
 
  anarray = rio('afile.yaml').yaml(proc{|anobject| ...}).to_a
 
-One could even use the copy operator to convert a CSV file to a YAML representation of
-the same data:
-
- rio('afile.yaml').yaml < rio('afile.csv').csv 
 
 
 ---
@@ -1080,6 +1056,7 @@ the same data:
 See also:
 * RIO::Doc::SYNOPSIS
 * RIO::Doc::HOWTO
+* RIO::Doc::EXAMPLES
 * RIO::Rio
 
 =end

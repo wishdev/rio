@@ -97,7 +97,7 @@ module RIO
           }
         end
         def cpto_string_(string)
-          string << YAML.dump_stream(self.contents)
+          string << ::YAML.dump_stream(self.contents)
         end
         def get_(arg=nil)
           case cx['stream_itertype']

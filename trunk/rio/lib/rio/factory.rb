@@ -44,13 +44,210 @@
 require 'singleton'
 require 'rio/handle'
 require 'rio/rl/builder'
-
+#require 'rio/state/machine'
 
 module RIO
+#   class StateDesc
+#     attr_accessor :class_name,:class_file
+#     def initialize(class_name,class_file)
+#       @class_name = class_name
+#       @class_file = class_file
+#     end
+#   end
+#   module StateMap
+#     class Base
+#       STATE_FILE = {
+#         'Path::Reset' => 'rio/path/reset',
+#         'Path::Empty' => 'rio/path',
+#         'Path::Str' => 'rio/path',
+#         'Path::NonExisting' => 'rio/path',
+        
+#         'File::Existing' => 'rio/file',
+#         'File::NonExisting' => 'rio/file',
+        
+#         'Dir::Existing' => 'rio/dir',
+#         'Dir::Open' => 'rio/dir',
+#         'Dir::Close' => 'rio/dir',
+#         'Dir::Stream' => 'rio/dir',
+#         'Dir::NonExisting' => 'rio/dir',
+        
+#         'Stream::Reset' => 'rio/stream',
+#         'Stream::Open' => 'rio/stream/open',
+#         'Stream::Input' => 'rio/stream',
+#         'Stream::Output' => 'rio/stream',
+#         'Stream::InOut' => 'rio/stream',
+#         'Stream::Close' => 'rio/stream/open',
+#       }
+#       def class_name(state_name)
+#         'State::' + state_name
+#       end
+#       def file_name(state_name)
+#         STATE_FILE[state_name]
+#       end
+#       def path_reset() 'Path::Reset' end
+#       def path_empty() 'Path::Empty' end
+#       def path_str() 'Path::Str' end
+#       def path_nonexisting() 'Path::NonExisting' end
+#       def file_existing() 'File::Existing' end
+#       def file_nonexisting() 'File::NonExisting' end
+#       def dir_existing() 'Dir::Existing' end
+#       def dir_open() 'Dir::Open' end
+#       def dir_close() 'Dir::Close' end
+#       def dir_stream() 'Dir::Stream' end
+#       def dir_nonexisting() 'Dir::NonExisting' end
+#       def stream_reset() 'Stream::Reset' end
+#       def stream_open() 'Stream::Open' end
+#       def stream_input() 'Stream::Input' end
+#       def stream_output() 'Stream::Output' end
+#       def stream_inout() 'Stream::InOut' end
+#       def stream_close() 'Stream::Close' end
+#     end
+#   end
+#   module Path
+#     class StateMap < RIO::StateMap::Base
+#       def stream_open() 'Path::Stream::Open' end
+#     end
+#   end
+#   module Path
+#     class StateMap < RIO::StateMap::Base
+#       STATE_FILE = { 'Stream::Open' => 'rio/scheme/path' }
+#       def stream_open() 'Path::Stream::Open' end
+#     end
+#   end
+#   module CmdPipe
+#     class StateMap < RIO::StateMap::Base
+#       def stream_reset() 'CmdPipe::Stream::reset' end
+#     end
+#   end
 
-#  module TryState
-#    attr_accessor :try_state
-#  end
+#   module States
+#     class Base
+#     end
+#   end
+
+#   class StateMapper
+#     include Singleton
+
+#     STD_STATE_FILES = {
+#       'Path::Reset' => 'rio/path/reset',
+#       'Path::Empty' => 'rio/path',
+#       'Path::Str' => 'rio/path',
+#       'Path::NonExisting' => 'rio/path',
+
+#       'File::Existing' => 'rio/file',
+#       'File::NonExisting' => 'rio/file',
+
+#       'Dir::Existing' => 'rio/dir',
+#       'Dir::Open' => 'rio/dir',
+#       'Dir::Close' => 'rio/dir',
+#       'Dir::Stream' => 'rio/dir',
+#       'Dir::NonExisting' => 'rio/dir',
+
+#       'Stream::Reset' => 'rio/stream',
+#       'Stream::Open' => 'rio/stream/open',
+#       'Stream::Input' => 'rio/stream',
+#       'Stream::Output' => 'rio/stream',
+#       'Stream::InOut' => 'rio/stream',
+#       'Stream::Close' => 'rio/stream/open',
+#     }
+#     SCHEME_STATE_FILES = {
+#       'Stream::Duplex::Open' => 'rio/stream/duplex',
+
+#       #'Path::Stream::Open' => 'rio/scheme/path',
+
+#       #'StrIO::Stream::Open' => 'rio/scheme/strio',
+
+#       #'Null::Stream::Open' => 'rio/scheme/null',
+
+#       #'CmdPipe::Stream::Reset' => 'rio/scheme/cmdpipe',
+
+#       #'HTTP::Stream::Input' => 'rio/scheme/http',
+#       #'HTTP::Stream::Open' => 'rio/scheme/http',
+
+#       'Temp::Reset' => 'rio/scheme/temp',
+#       'Temp::Stream::Open' => 'rio/scheme/temp',
+
+#       'Ext::YAML::Doc::Existing' => 'rio/ext/yaml/doc',
+#       'Ext::YAML::Doc::Open' => 'rio/ext/yaml/doc',
+#       'Ext::YAML::Doc::Stream' => 'rio/ext/yaml/doc',
+#       'Ext::YAML::Doc::Close' => 'rio/ext/yaml/doc',
+#     }
+#     def initialize()
+#       @state_cache = {}
+#     end
+#     def scheme_states()
+#       { 
+#         'path' => { 'Stream::Open' => 'Path::Stream::Open' },
+#         'file' => { 'Stream::Open' => 'Path::Stream::Open' },
+#         'strio' => { 'Stream::Open' => 'StrIO::Stream::Open' },
+#         'cmdpipe' => { 'Stream::Reset' => 'CmdPipe::Stream::Reset' },
+#         'http' => {'Stream::Input' => 'HTTP::Stream::Input', 
+#                    'Stream::Open' => 'HTTP::Stream::Open' },
+#       }
+#     end
+#     def known?(state_name)
+#       STD_STATE_FILES.has_key?(state_name) or SCHEME_STATE_FILES.has_key?(state_name)
+#     end
+#     def std_state_name(state_name)
+#       case 
+#       when STD_STATE_FILES.has_key?(state_name) then 'State::'+state_name
+#       when SCHEME_STATE_FILES.has_key?(state_name) then state_name
+#       else raise ArgumentError,"Unknown State Name (#{state_name})" 
+#       end
+#     end
+#     def mode_mixins()
+#       { 
+#         'Stream::Input' => { 'splitlines' => 'Ext::SplitLines::Stream::Input', },
+#         'Stream::Output' => { 'splitlines' => 'Ext::SplitLines::Stream::Output', },
+#       }
+#     end
+#     def mode_state_name(state_name,cx)
+#       mixins = mode_mixins()
+#       return state_name unless mixins.has_key?(state_name)
+#       modes = mstates[state_name]
+#       for mode in modes.keys
+#         next unless cx[mode]
+#         return modes[mode]
+#       end
+#     end
+
+#     def scheme_state_name(state_name,scheme)
+#       schemes = scheme_states()
+#       if schemes.has_key?(scheme)
+#         states = schemes[scheme]
+#         if states.has_key?(state_name)
+#           return scheme_states[scheme][state_name]
+#         end
+#       end
+#       return std_state_name(state_name)
+#     end
+#     def state_file(state_name,rio_handle)
+#       case 
+#       when STD_STATE_FILES.has_key?(state_name) then STD_STATE_FILES[state_name]
+#       when SCHEME_STATE_FILES.has_key?(state_name) then SCHEME_STATE_FILES[state_name]
+#       else raise ArgumentError,"Unknown State Name (#{state_name})" 
+#       end
+#     end
+#     def state2class(state_name,rio_handle=nil)
+#       scheme = rio_handle.rl.scheme unless rio_handle.nil?
+#       state = nil
+#       if scheme_cache = @state_cache[scheme]
+#         return state if state = scheme_cache[state_name]
+#       end
+#       mapped_name = rio_handle.nil? ? std_state_name(state_name) : scheme_state_name(state_name,rio_handle.rl.scheme)
+#       if self.known?(state_name)
+#         require self.state_file(state_name,rio_handle)
+#         @state_cache[scheme] ||= {}
+#         @state_cache[scheme][state_name] = RIO.module_eval(mapped_name)
+#         return @state_cache[scheme][state_name]
+#       else
+#         raise ArgumentError,"Unknown State Name (#{state_name})" 
+#       end
+#     end
+                   
+#   end
+
+
   class Factory  #:nodoc: all
     include Singleton
     def initialize()
@@ -59,6 +256,12 @@ module RIO
       @state_class = {}
       @ss_class = {}
     end
+
+    def state2class(state_name,rio_handle=nil)
+      StateMapper.instance.state2class(state_name,rio_handle)
+    end
+    # 2105 N Greenwood Ave, Pueblo, CO 81003
+    # 719-545-0685
     def subscheme_module(sch)
       @ss_module[sch] ||= case sch
                           when 'file','path'
@@ -118,15 +321,6 @@ module RIO
                           end
     end
 
-    def riorl_class(sch)
-      subscheme_module(sch).const_get(:RL) 
-    end
-
-    def reset_state(rl)
-      mod = subscheme_module(rl.scheme)
-      mod.const_get(:RESET_STATE) unless mod.nil?
-    end
-
     STATE2FILE = {
       'Path::Reset' => 'rio/path/reset',
       'Path::Empty' => 'rio/path',
@@ -172,8 +366,16 @@ module RIO
 
 
     }
+    def riorl_class(sch)
+      subscheme_module(sch).const_get(:RL) 
+    end
+
+    def reset_state(rl)
+      mod = subscheme_module(rl.scheme)
+      mod.const_get(:RESET_STATE) unless mod.nil?
+    end
+
     def state2class(state_name)
-      #p "state_name=#{state_name}"
       return @state_class[state_name] if @state_class.has_key?(state_name)
       if STATE2FILE.has_key?(state_name)
         require STATE2FILE[state_name]
@@ -181,6 +383,13 @@ module RIO
       else
         raise ArgumentError,"Unknown State Name (#{state_name})" 
       end
+    end
+    def try_state_proc1(current_state,rio_handle)
+      #p "try_state_proc cur=#{current_state}[#{current_state.class}] han=#{rio_handle}[#{rio_handle.class}]"
+      proc { |new_state_name|
+#        new_state_class = state2class(new_state_name)
+        _change_state(state2class(new_state_name,rio_handle),current_state,rio_handle)
+      }
     end
     def try_state_proc(current_state,rio_handle)
       proc { |new_state_name|
@@ -201,6 +410,10 @@ module RIO
     private :_change_state
 
     # factory creates a state from args
+    def create_state1(*args)
+      riorl = RIO::RL::Builder.build(*args)
+      create_handle(state2class(reset_state(riorl)).new(riorl))
+    end
     def create_state(*args)
       riorl = RIO::RL::Builder.build(*args)
       create_handle(state2class(reset_state(riorl)).new(riorl))

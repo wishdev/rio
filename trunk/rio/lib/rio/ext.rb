@@ -67,6 +67,21 @@ end
 
 module RIO
   module Ext #:nodoc: all
+    class Extension
+      def initialize(etest,mod)
+        @inc = { 
+          cxmod => mod+'::Cx',
+          inpmod => mod+'::Input',
+          outmod => mod+'::Output',
+        }
+        
+      end
+    end
+    
+  end
+end
+module RIO
+  module Ext #:nodoc: all
     OUTPUT_SYMS = Util::build_sym_hash(CSV::Output.instance_methods + YAML::Output.instance_methods)
 
     module Cx
