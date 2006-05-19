@@ -195,12 +195,16 @@ module RIO
       # combined with those of its arguments.
       def join(*args)
         return self if args.empty?
-        sa = args.map { |arg| ::URI.escape(arg.to_s,ESCAPE) }
+        #sa = args.map { |arg| ::URI.escape(arg.to_s,ESCAPE) }
+        sa = args.map { |arg| arg.to_s }
+        join_(sa)
+      end
+      def join_(sa)
         sa.unshift(self.urlpath) unless self.urlpath.empty?
         self.urlpath = sa.join('/').squeeze('/')
         self
       end
-
+      protected :join_
       # returns the directory portion of the path
       # like File#dirname
       # returns a RL

@@ -44,7 +44,19 @@ module RIO
     class PathBase < URIBase
       RESET_STATE = 'Path::Reset'
 
-
+      def arg0_info_(arg0,*args)
+        #p callstr('init_from_args_',arg0.inspect,args)
+        vuri,vbase,vfs = nil,nil,nil
+        case arg0
+        when RIO::Rio, URIBase, ::URI
+          return super
+        when ::String 
+          vuri = uri_from_string_(RL.fs2url(arg0)) || ::URI.parse(RL.fs2url(arg0))
+        else
+          raise(ArgumentError,"'#{arg0}'[#{arg0.class}] can not be used to create a Rio")
+        end
+        [vuri,vbase,vfs]
+      end
       def scheme() 
         uri.scheme || 'path' 
       end
@@ -53,6 +65,30 @@ module RIO
         str = scheme + ':' +str unless uri.scheme
         str
       end
+      def use_host?
+        hst = uri.host
+        !(hst.nil? || hst.empty? || hst == 'localhost')
+      end
+
+      def join(*args)
+        return self if args.empty?
+        join_(args.map{ |arg| RL.fs2url(arg.to_s)})
+      end
+      def fspath() 
+        if use_host?
+          '//' + uri.host + RL.url2fs(self.urlpath)
+        else 
+          RL.url2fs(self.urlpath)
+        end
+      end
+#      def fspath=(pt)
+#        if pt =~ %r|^//(#{HOST})(/.*)?$|
+#          @host = $1
+#          @fspath = $2 || '/'
+#        else
+#          @fspath = pt
+#        end
+#      end
       def to_s()
         self.fspath
       end

@@ -61,9 +61,9 @@ module RIO
             a[0] = 'rio:file:'+a[0]
           when %r|^/|
             a[0] = 'file://'+a[0]
-            return build_path_rl(Factory.instance.riorl_class('file').new(*a))
+            return Factory.instance.riorl_class('file').new(*a)
           else
-            return build_path_rl(Factory.instance.riorl_class('path').new(*a))
+            return Factory.instance.riorl_class('path').new(*a)
           end
         when RIO::Rio
           a[0] = a[0].to_rl
@@ -73,7 +73,7 @@ module RIO
         when ::URI
           a0 = a.shift
           cl = Factory.instance.riorl_class(a0.scheme)
-          o = build_path_rl(cl.new(a0,*a)) unless cl.nil?
+          o = cl.new(a0,*a) unless cl.nil?
           return o
         when ::Symbol
           case a[0]
@@ -104,7 +104,7 @@ module RIO
         a0 = a.shift
         sch = Base.subscheme(a0)
         cl = Factory.instance.riorl_class(sch)
-        build_path_rl(cl.parse(a0,*a))  unless cl.nil?
+        cl.parse(a0,*a)  unless cl.nil?
 
       end
 

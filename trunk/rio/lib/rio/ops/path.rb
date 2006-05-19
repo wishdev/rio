@@ -108,13 +108,6 @@ module RIO
           base += '/' if base.directory? and base.to_s[-1] != '/'
           route_from(base)
         end
-#        def rel(other=nil)
-#          if other.nil?
-#            route_from(other)
-#          else
-#            route_from(base.to_url + '/')
-#          end
-#        end
         def route_to(other)
           new_rio(rl.abs.route_to(ensure_rio(other).rl.abs))
         end
@@ -163,11 +156,6 @@ module RIO
         def _calc_base()
           dn = fs.dirname(rl.path_no_slash)
           dn[0] == ?/ ? dn : self.base.to_url + dn + '/' #'
-#          if dn[0] == ?/
-#            dn 
-#          else
-#            self.base.to_url + dn + '/'
-#          end
         end
         private :_calc_base
 

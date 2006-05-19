@@ -115,10 +115,6 @@ module RIO
         cx['retrystate'] = cl
 
         become(cl).add_rec_methods.add_extensions.add_filters.setup
-        #become(cl).add_rec_methods.add_filters.add_extensions.setup
-        #become(cl).add_extensions.add_rec_methods.add_filters.setup
-        #next_state.extend(Ops::Symlink::Existing) if symlink?
-        #next_state
       end
       def output() stream_state('Stream::Output') end
       def input()  stream_state('Stream::Input')  end

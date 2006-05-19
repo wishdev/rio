@@ -35,49 +35,46 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-require 'uri'
-require 'rio/local'
-require 'rio/uri/file'
-require 'rio/rl/chmap'
-
+require 'mp3info'
+require 'forwardable'
 module RIO
-  module RL #:nodoc: all
-    PESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;?:@&=+$,]",false, 'N').freeze
-    ESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;\/?:@&=+$,]",false, 'N').freeze
-    def escape(pth,esc=ESCAPE)
-      ::URI.escape(pth,esc)
-    end
-    def unescape(pth)
-      ::URI.unescape(pth)
-    end
-    def fs2urls(*args)
-      args.map{ |pth| fs2url(pth) }
-    end
-    def fs2url(pth)
-      #pth.sub!(/^[a-zA-Z]:/,'')
-      pth = URI.escape(pth,ESCAPE)
-      pth = '/' + pth if pth =~ /^[a-zA-Z]:/
-      pth
-      #      (Local::SEPARATOR == '/' ? pth : pth.gsub(Local::SEPARATOR,%r|/|))
-    end
+  module Ext
+    module Mp3Info
+        def mp3info() ::Mp3Info.new(self.fspath) end
 
-    def url2fs(pth)
-#      pth = pth.chop if pth.length > 1 and pth[-1] == ?/      cwd = RIO::RL.fs2url(::Dir.getwd)
+        extend Forwardable
 
-      #pth = pth.chop if pth != '/' and pth[-1] == ?/
-      pth = ::URI.unescape(pth)
-      if pth =~ %r#^/[a-zA-Z]:#
-        pth = pth[1..-1] 
-      end
-      pth
-#      (Local::SEPARATOR == '/' ? pth : pth.gsub(%r|/|,Local::SEPARATOR))
+        def_instance_delegators(:mp3info,:tag,:bitrate,:samplerate)
+        def_instance_delegators(:tag,:tracknum)
+        def title() _chop0(tag.title) end
+        def album() _chop0(tag.album) end
+        def artist() _chop0(tag.artist) end
+        def year() _chop0(tag.year.to_s) end
+        def mp3length() mp3info.length end
+        def vbr?() mp3info.vbr end
+        def time() 
+          t = Time.at(mp3length).getutc
+          t.strftime(t.hour == 0 ? "%M:%S" : "%H:%M:%S") 
+        end
+
+        private
+
+        def _chop0(str)
+          str && str.length > 0 && str[-1] == 0 ? str.chop : str
+        end
     end
-
-    def getwd()
-      #::URI::FILE.build({:path => fs2url(::Dir.getwd)+'/'})
-      ::URI::FILE.build({:path => fs2url(::Dir.getwd)})
-    end
-
-    module_function :url2fs,:fs2url,:fs2urls,:getwd,:escape,:unescape
   end
 end
+    
+
+module RIO
+  module Ops
+    module File
+      module Existing
+        include RIO::Ext::Mp3Info
+      end
+    end
+  end
+end
+
+__END__

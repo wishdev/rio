@@ -70,16 +70,40 @@ module RIO
     class Extension
       def initialize(etest,mod)
         @inc = { 
-          cxmod => mod+'::Cx',
-          inpmod => mod+'::Input',
-          outmod => mod+'::Output',
+          'cx' => mod+'::Cx',
+          'input' => mod+'::Input',
+          'output' => mod+'::Output',
         }
+      end
+      def add(obj,state)
+        case state
+          when 'Stream::Input' then obj.extend(@inc['input'])
+          when 'Stream::Output' then obj.extend(@inc['output'])
+        end
+      end
+      
+    end
+  end
+end
+module RIO
+  module Ext #:nodoc: all
+    class Extensions
+      def initialize()
+        @ext
+        @inc = { 
+          'cx' => mod+'::Cx',
+          'input' => mod+'::Input',
+          'output' => mod+'::Output',
+        }
+      end
+      def add(obj)
         
       end
     end
-    
   end
 end
+
+
 module RIO
   module Ext #:nodoc: all
     OUTPUT_SYMS = Util::build_sym_hash(CSV::Output.instance_methods + YAML::Output.instance_methods)
