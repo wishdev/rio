@@ -51,7 +51,8 @@ module RIO
         def artist() _chop0(tag.artist) end
         def year() _chop0(tag.year.to_s) end
         def mp3length() mp3info.length end
-        def vbr?() mp3info.vbr end
+        def vbr() mp3info.vbr end
+        alias :vbr? :vbr
         def time() 
           t = Time.at(mp3length).getutc
           t.strftime(t.hour == 0 ? "%M:%S" : "%H:%M:%S") 

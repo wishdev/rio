@@ -232,6 +232,18 @@ else
 
 end
 
+desc "Build the gem from the gemspec"
+task :buildgem => ['rio.gemspec'] do
+  cmd = "gem build 'rio.gemspec'"
+  sh cmd
+end
+
+desc "Install development gem"
+task :installgem => [:buildgem] do
+  cmd = "gem install #{PKG::FULLNAME}"
+  sh cmd
+end
+
 =begin
 desc "Creates a tag in the repository"
 task :tag do
