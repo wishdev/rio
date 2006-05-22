@@ -45,7 +45,7 @@ module RIO
   def promptd(str="",default=nil)
     dstr = default ? "[#{default}]: " : ": "
     pstr = str + dstr
-    ans = rio(?-).strip.print(pstr).gets
+    ans = prompt(pstr)
     ans.empty? ? default : ans
   end
   module_function :prompt,:promptd
