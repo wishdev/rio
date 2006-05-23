@@ -135,7 +135,7 @@ module Test
           assert_equal(exp.readlink,ans.readlink,"symlinks read the same")
         when exp.file?
           assert(ans.file?,"entry is a file")
-          assert_equal(exp.readlines,ans.readlines,"file has same contents")
+          assert_equal(exp.chomp.lines[],ans.chomp.lines[],"file has same contents")
         when exp.dir?
           assert(ans.dir?,"entry is a dir")
           assert_dirs_equal(exp,ans,"directories are the same")
