@@ -58,6 +58,14 @@ class TC_copy_dir_samevar < Test::RIO::TestCase
     assert_rios_equal(rio('exp',@f0),rio(@f0))
     assert_rios_equal(rio('exp',@f1),rio(@f1))
   end
+  def test_copy_files_array_sel
+    rio(@d0).files { |f|
+      f < f.lines[/^L0/]
+    }
+    assert_rios_equal(rio('exp',@f0),rio(@f0))
+    exp = rio('exp',@f1).lines[0]
+    assert_equal(exp,rio(@f1).lines[])
+  end
   def test_copy_all_files_array
     rio(@d0).all.files { |f|
       f < f.lines[]
