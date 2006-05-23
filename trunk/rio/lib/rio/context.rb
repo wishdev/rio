@@ -47,10 +47,12 @@ module RIO
         @values = @values.clone
         @explicit = @explicit.clone
       end
-      BEQUEATH_KEYS = %w[chomp strip closeoneof rename]
-      def bequeath()
+      BEQUEATH_KEYS = %w[chomp strip rename closeoneof closeoncopy]
+      #BEQUEATH_KEYS = %w[chomp strip rename]
+      def bequeath(oldcx)
         keys = BEQUEATH_KEYS
-        ncx = Vars.new
+        ncx = oldcx.clone
+        #ncx = Vars.new
         keys.each { |key|
           ncx.set_(key,@values[key]) if @values.has_key?(key)
         }

@@ -236,7 +236,7 @@ module RIO
             oldpath = ent.to_s
             ent.rl.urlpath = indir.to_s
             ent.join!(oldpath)
-            ent.cx = self.cx.bequeath
+            ent.cx = self.cx.bequeath(ent.cx)
             ent
           else
             if indir
@@ -249,11 +249,13 @@ module RIO
         def handle_ent_(ent,indir,sel,&block)
           begin
             erio = ent_to_rio_(ent,indir)
+            #p "handle_ent_1: #{erio.cx.inspect}"
             if stream_iter?
               _add_stream_iter_cx(erio).each(&block) if erio.file? and sel.match?(erio)
             else
               yield _add_iter_cx(erio) if sel.match?(erio)
             end
+            #p "handle_ent_2: #{erio.cx.inspect}"
             
             if cx.has_key?('all') and erio.directory?
               rsel = Match::Entry::SelectorClassic.new(cx['r_sel'],cx['r_nosel'])

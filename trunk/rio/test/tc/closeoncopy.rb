@@ -13,6 +13,9 @@ class TC_closeoncopy < Test::RIO::TestCase
     @@once = true
 
     make_lines_file(3,'f0')
+    rio('d0').delete!.mkdir.chdir {
+      make_lines_file(3,'f1')
+    }
   end
   def setup
     super
@@ -85,7 +88,15 @@ class TC_closeoncopy < Test::RIO::TestCase
     ato(rio(@f0),rio('copyto').open('a'))
     ato(rio(@f0),orio)
   end
-
-
+  def test_cx_set
+    rio('d0').files { |f|
+      assert(f.closeoncopy?)
+    }
+  end
+  def test_cx_bequeath
+    rio('d0').nocloseoncopy.files { |f|
+      assert!(f.closeoncopy?)
+    }
+  end
 end
 __END__

@@ -207,7 +207,9 @@ module RIO
       end
       def new_rio_cx(*args)
         n = new_rio(*args)
-        n.cx = self.cx.bequeath
+        #p "new_rio_cx 1: #{n.cx.inspect}"
+        n.cx = self.cx.bequeath(n.cx)
+        #p "new_rio_cx 2: #{n.cx.inspect}"
         #n.fs = self.fs
         n
       end
