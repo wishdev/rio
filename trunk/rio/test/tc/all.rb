@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'tc/testcase'
 
-#require 'tc/yaml'
+require 'tc/yaml'
 
 require 'tc/abs'
 require 'tc/tonl'

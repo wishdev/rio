@@ -48,7 +48,7 @@ rdoc_files = [
   rio('lib/rio.rb'),
   rio('lib/rio/')['kernel.rb','constructor.rb'],
   rio('lib/rio/doc')['*.rb'],
-  rio('lib/rio/if').skipfiles('yaml.rb').files['*.rb'],
+  rio('lib/rio/if').files['*.rb'],
 ]
 
 cmd = sprintf("rdoc %s %s",RDOC_OPTIONS.join(' '),rdoc_files.join(' '))

@@ -107,7 +107,7 @@ rd = Rake::RDocTask.new do |rdoc|
   rdoc.options = RDOC_OPTIONS
   rdoc.main = 'RIO::Doc::SYNOPSIS'
   DOC_FILES.to_a.each do |glb|
-    next if glb =~ /yaml.rb$/
+    #next if glb =~ /yaml.rb$/
     rdoc.rdoc_files.include( glb )
   end
   rdoc.template = 'doc/generators/template/html/rio.rb'
