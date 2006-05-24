@@ -42,13 +42,18 @@ module RIO
     def [](*args)
       #p "#{callstr('[]',*args)} ss_type=#{cx['ss_type']} stream_iter=#{stream_iter?}"
       ss_args = cx['ss_args'] = args
+      rtn = nil
       if ss_args and (ss_type = ss_type?(_ss_keys()))
-        return self.__send__(ss_type,*(ss_args)).to_a
+        rtn = self.__send__(ss_type,*(ss_args)).to_a
       else
-        return to_a()
+        rtn = to_a()
       end
+      ss_returns_first? ? rtn[0] : rtn
     end
-
+    private
+    def ss_returns_first?
+      cx['line'] || cx['record'] || cx['row']
+    end
     def fixnumss(*args)
 
       #p args[0].class,ss_type?(_ss_keys())

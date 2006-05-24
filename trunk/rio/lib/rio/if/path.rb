@@ -329,14 +329,14 @@ module RIO
     #
     #   a = rio('a')
     #   b = rio('b')
-    #   c = a/b          #=> rio('a/b')
+    #   c = a/b                   #=> rio('a/b')
     #
     #   ario = rio('adir')
-    #   ario/'afile.rb'           #=> rio('ario/afile.rb')
-    #   ario/'b'/'c'/'d'          #=> rio('ario/b/c/d')
+    #   ario/'afile.rb'           #=> rio('adir/afile.rb')
+    #   ario/'b'/'c'/'d'          #=> rio('adir/b/c/d')
     #   
     #   ario = rio('adir')
-    #   ario /= 'afile.rb'           #=> rio('ario/afile.rb')
+    #   ario /= 'afile.rb'        #=> rio('adir/afile.rb')
     #   
     def /(arg) 
       target / arg 

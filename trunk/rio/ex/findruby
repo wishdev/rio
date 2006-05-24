@@ -3,7 +3,7 @@
 require 'rio'
 require 'rio/argv'
 
-is_ruby_exe = proc{ |f| f.executable? and f.gets =~ /^#!.+ruby/ }
+is_ruby_exe = proc{ |f| f.executable? and f.line[0] =~ /^#!.+ruby/ }
 
 RIO.ARGV.each do |rpath|
   rpath.norecurse('.svn','pkg').files('*.rb',is_ruby_exe) do |f|
@@ -11,4 +11,6 @@ RIO.ARGV.each do |rpath|
   end
 end
 
+# 740 Duclo Ave 
+# manitou springs co 80829
 __END__

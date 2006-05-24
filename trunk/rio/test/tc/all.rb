@@ -2,6 +2,7 @@ require 'test/unit'
 require 'tc/testcase'
 
 require 'tc/yaml'
+require 'tc/line_record_row'
 
 require 'tc/abs'
 require 'tc/tonl'

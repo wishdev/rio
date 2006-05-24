@@ -38,6 +38,24 @@
 module RIO
   class Rio
 
+    # Calls Rio#lines(*args) but when used with the subscript operator
+    # returns the first element of the returned array instead of the array.
+    #
+    # If afile contains ["line 0\n","line 1\n"]
+    #  rio('afile').line[0]       #=> "line 0\n"
+    #  rio('afile').line[1]       #=> "line 1\n"
+    #  rio('afile').lines[0]      #=> ["line 0\n"]
+    #  rio('afile').lines[1]      #=> ["line 1\n"]
+    #  rio('afile').lines[0][0]   #=> "line 0\n"
+    #  rio('afile').lines[1][0]   #=> "line 1\n"
+    def line(*args,&block) target.line(*args,&block); self end
+
+    # See Rio#line.
+    def record(*args,&block) target.record(*args,&block); self end
+
+    # See Rio#line.
+    def row(*args,&block) target.row(*args,&block); self end
+    
     # Sets the rio to read lines and returns the Rio
     # 
     # If called with a block behaves as if <tt>lines(*args).each(&block)</tt> had been called

@@ -121,6 +121,17 @@ module RIO
         _lines(args,_sel,false,&block)
       end
 
+      def line(*args,&block)   
+        #p callstr('line',*args)
+        cx['line'] = true
+        self.lines(*args,&block)
+      end
+      def line_(*args,&block) 
+        #p callstr('line_',*args)
+        cx.set_('line',true)
+        self.lines_(*args,&block)
+      end
+
       def records(*args,&block) 
         if skipping?
           cx['skipping'] = false
@@ -135,6 +146,17 @@ module RIO
         _records(args,_sel,false,&block)
       end
 
+      def record(*args,&block)   
+        #p callstr('record',*args)
+        cx['record'] = true
+        self.records(*args,&block)
+      end
+      def record_(*args,&block) 
+        #p callstr('record_',*args)
+        cx.set_('record',true)
+        self.records_(*args,&block)
+      end
+
       def rows(*args,&block) 
         if skipping?
           cx['skipping'] = false
@@ -147,6 +169,17 @@ module RIO
       def rows_(*args,&block) 
         _set_sstype('rows',false)
         _rows(args,_sel,false,&block)
+      end
+
+      def row(*args,&block)   
+        #p callstr('row',*args)
+        cx['row'] = true
+        self.rows(*args,&block)
+      end
+      def row_(*args,&block) 
+        #p callstr('row_',*args)
+        cx.set_('row',true)
+        self.rows_(*args,&block)
       end
 
 
