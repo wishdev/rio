@@ -251,6 +251,7 @@ module RIO
             erio = ent_to_rio_(ent,indir)
             #p "handle_ent_1: #{erio.cx.inspect}"
             if stream_iter?
+              # case for iterating files in a directory (e.g. rio('adir').lines) 
               _add_stream_iter_cx(erio).each(&block) if erio.file? and sel.match?(erio)
             else
               yield _add_iter_cx(erio) if sel.match?(erio)
@@ -267,7 +268,7 @@ module RIO
           end
         end
         def each_(*args,&block)
-          #p "#{callstr('each_',*args)} sel=#{cx['sel'].inspect} nosel=#{cx['nosel'].inspect}"
+          #p "#{callstr('each_',*args)} sel=#{cx['entry_sel'].inspect}"
           handle_skipped()
           sel = Match::Entry::Selector.new(cx['entry_sel'])
           indir = (self.to_s == '.' ? nil : self)

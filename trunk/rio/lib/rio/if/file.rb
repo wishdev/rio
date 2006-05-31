@@ -36,46 +36,55 @@
 
 
 module RIO
-  class Rio
-    # Calls FileUtils#rm
-    #
-    # Deletes the referenced file, returning the Rio. Raises an exception on any error. 
-    #
-    # See also Rio#delete, Rio#delete!, Rio#rmdir.
-    def rm() target.rm(); self end
-    
-    
-    # Calls FileUtils#touch
-    #
-    # Updates modification time (mtime) and access time (atime) of a Rio.
-    # A file is created if it doesn't exist.
-    #
-    def touch() target.touch(); self end
-    
-    # Calls File#truncate
-    #
-    # Truncates a file referenced by a Rio to be at most +sz+ bytes long. 
-    # Not available on all platforms.
-    #
-    #  f = rio("out")
-    #  f.print!("1234567890")
-    #  f.size                     #=> 10
-    #  f.truncate(5)
-    #  f.size()                   #=> 5
-    #
-    # If called with no arguments, truncates the Rio at the
-    # value returned by Rio#pos().
-    #  f.read(2)
-    #  f.truncate.size            #=> 2
-    #  f.contents                 #=> "12"
-    #
-    # Returns the Rio
-    #
-    def truncate(sz=pos()) target.truncate(sz); self end
-    
-    # Calls Rio#truncate(0)
-    #
-    def clear() target.clear(); self end
+  module IF
+    module File
+      
+      # Calls FileUtils#rm
+      #
+      # Deletes the referenced file, returning the Rio. Raises an exception on any error. 
+      #
+      # See also IF::Grande#delete, IF::Grande#delete!, IF::GrandeStream#rmdir.
+      def rm() target.rm(); self end
+      
+      
+      # Calls FileUtils#touch
+      #
+      # Updates modification time (mtime) and access time (atime) of a Rio.
+      # A file is created if it doesn't exist.
+      #
+      def touch() target.touch(); self end
+      
+      # Calls File#truncate
+      #
+      # Truncates a file referenced by a Rio to be at most +sz+ bytes long. 
+      # Not available on all platforms.
+      #
+      #  f = rio("out")
+      #  f.print!("1234567890")
+      #  f.size                     #=> 10
+      #  f.truncate(5)
+      #  f.size()                   #=> 5
+      #
+      # If called with no arguments, truncates the Rio at the
+      # value returned by IF::FileOrDir#pos().
+      #  f.read(2)
+      #  f.truncate.size            #=> 2
+      #  f.contents                 #=> "12"
+      #
+      # Returns the Rio
+      #
+      def truncate(sz=pos()) target.truncate(sz); self end
+      
+      # Calls IF::File#truncate(0)
+      #
+      def clear() target.clear(); self end
 
+    end
+  end
+end
+
+module RIO
+  class Rio
+    include RIO::IF::File
   end
 end

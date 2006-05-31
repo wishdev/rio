@@ -42,9 +42,9 @@ module RIO
       #def dir() target.dir end
       
       # Puts a Rio in CSV mode and sets the field and record separators.
-      # In csv mode selecting with Rio#records will cause each line
+      # In csv mode selecting with IF::GrandeStream#records will cause each line
       # read to be parsed into a line with the CSV standard library.
-      # Specifying using Rio#lines to select will return unparsed strings
+      # Specifying using IF::GrandeStream#lines to select will return unparsed strings
       # as normal.
       #
       #  # copy a csv file, changing the field separator

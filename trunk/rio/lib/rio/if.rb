@@ -46,15 +46,20 @@ end
 
 require 'rio/if/internal'
 require 'rio/if/basic'
-require 'rio/if/grande'
-require 'rio/if/grande_entry'
-require 'rio/if/grande_stream'
 
-require 'rio/if/test'
-require 'rio/if/path'
-require 'rio/if/fileordir'
-require 'rio/if/file'
-require 'rio/if/dir'
-require 'rio/if/stream'
-require 'rio/if/temp'
-require 'rio/if/string'
+module RIO
+  class Rio
+    require 'rio/if/grande'
+    require 'rio/if/grande_entry'
+    require 'rio/if/grande_stream'
+    
+    require 'rio/if/test'
+    require 'rio/if/path'
+    require 'rio/if/fileordir'
+    require 'rio/if/file'
+    require 'rio/if/dir'
+    require 'rio/if/stream'
+    require 'rio/if/temp'
+    require 'rio/if/string'
+  end
+end

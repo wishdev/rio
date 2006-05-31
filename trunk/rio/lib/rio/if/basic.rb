@@ -42,7 +42,7 @@ module RIO
     
     # Returns the length of the Rio's String representation
     # 
-    # To get the size of the underlying file system object use Rio#size
+    # To get the size of the underlying file system object use RIO::IF::Test#size
     def length() target.length end
 
     # Equality - calls to_s on the other object and compares it with the value returned by Rio#to_s

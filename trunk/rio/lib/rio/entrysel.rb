@@ -167,43 +167,42 @@ module RIO
           @sel = @nosel = nil
           process_entry_sel() if @entry_sel
         end
-        def es_args() 
-          es = @entry_sel
-          es['args']
+        def entry_sel_args() 
+          @entry_sel['args']
         end
         def something_selected?
-          %w[entries files dirs].any? { |k| es_args.has_key?(k) }
+          %w[entries files dirs].any? { |k| entry_sel_args.has_key?(k) }
         end
         def something_skipped?
-          %w[skipentries skipfiles skipdirs].any? { |k| es_args.has_key?(k) }
+          %w[skipentries skipfiles skipdirs].any? { |k| entry_sel_args.has_key?(k) }
         end
         def skip_type(skip_args)
           
         end
         def process_entry_sel()
-          ea = es_args
-          raise RuntimeError, "Internal error: entry_sel_args not set" unless ea
+          sel_args = self.entry_sel_args
+          raise RuntimeError, "Internal error: entry_sel_args not set" unless sel_args
           if something_selected?
             @sel = Match::Entry::Sels.new 
-            @sel << Match::Entry::List.new(:true?,*ea['entries']) if ea.has_key?('entries')
-            @sel << Match::Entry::List.new(:file?,*ea['files']) if ea.has_key?('files')
-            @sel << Match::Entry::List.new(:dir?,*ea['dirs']) if ea.has_key?('dirs')
+            @sel << Match::Entry::List.new(:true?,*sel_args['entries']) if sel_args.has_key?('entries')
+            @sel << Match::Entry::List.new(:file?,*sel_args['files']) if sel_args.has_key?('files')
+            @sel << Match::Entry::List.new(:dir?,*sel_args['dirs']) if sel_args.has_key?('dirs')
           end
           if something_skipped?
             @nosel = Match::Entry::Sels.new 
-            if ea.has_key?('skipentries')
-              @nosel << Match::Entry::List.new(:true?,*ea['skipentries'])
+            if sel_args.has_key?('skipentries')
+              @nosel << Match::Entry::List.new(:true?,*sel_args['skipentries'])
             end
-            if ea.has_key?('skipfiles')
-              @nosel << Match::Entry::List.new(:file?,*ea['skipfiles'])
-              unless ea['skipfiles'].empty? or ea.has_key?('files')
+            if sel_args.has_key?('skipfiles')
+              @nosel << Match::Entry::List.new(:file?,*sel_args['skipfiles'])
+              unless sel_args['skipfiles'].empty? or sel_args.has_key?('files')
                 @sel ||= Match::Entry::Sels.new 
                 @sel << Match::Entry::List.new(:file?)
               end
             end
-            if ea.has_key?('skipdirs')
-              @nosel << Match::Entry::List.new(:dir?,*ea['skipdirs'])
-              unless ea['skipdirs'].empty? or ea.has_key?('dirs')
+            if sel_args.has_key?('skipdirs')
+              @nosel << Match::Entry::List.new(:dir?,*sel_args['skipdirs'])
+              unless sel_args['skipdirs'].empty? or sel_args.has_key?('dirs')
                 @sel ||= Match::Entry::Sels.new 
                 @sel << Match::Entry::List.new(:dir?)
               end

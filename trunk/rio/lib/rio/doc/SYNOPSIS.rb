@@ -35,7 +35,7 @@
 # The documented interface and behavior is subject to change without notice.</b>
 
 
-:title: Rio
+# :title: Rio
 
 module RIO
 # Copyright (c) 2005, Christopher Kleckner.

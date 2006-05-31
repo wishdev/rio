@@ -122,14 +122,6 @@ module RIO
       sprintf('#<%s:0x%x:"%s" (%s)>',cl,self.object_id,self.to_url,st)
     end
     
-    USE_IF = true #:nodoc:
-
-    if USE_IF
-      require 'rio/if'
-      require 'rio/ext/if'
-      include RIO::IF::Ext
-      include Enumerable
-    end
 
     protected
 
@@ -143,6 +135,19 @@ module RIO
 
   end # class Rio
 end # module RIO
+module RIO
+  class Rio
+    USE_IF = true #:nodoc:
+    
+    if USE_IF
+      include Enumerable
+      require 'rio/if'
+      include RIO::IF::Grande
+      require 'rio/ext/if'
+      include RIO::IF::Ext
+    end
+  end
+end
 
 #require 'rio/ext/zipfile.rb'
 

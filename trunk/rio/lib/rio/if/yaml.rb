@@ -51,7 +51,7 @@ module RIO
       # +lines+ is the default.
       #
       # The YAML extension distingishes between items selected using
-      # Rio#records, Rio#rows and Rio#lines. Rio returns objects loaded via
+      # IF::GrandeStream#records, IF::GrandeStream#rows and IF::GrandeStream#lines. Rio returns objects loaded via
       # YAML#load when +records+ is used; returns the YAML text as a String
       # when +rows+ is used; and returns lines as Strings as normal when
       # +lines+ is used.  +records+ is the default. In yaml-mode,
@@ -94,7 +94,7 @@ module RIO
       #  rio('afile.yaml').yaml.dump(anobject)
       #
       # The YAML extension changes the way the grande copy operators interpret
-      # their argument. Rio#< (copy-from) and Rio#<< (append-from) treat an
+      # their argument. IF::Grande#< (copy-from) and IF::Grande#<< (append-from) treat an
       # array as an array of objects which are converted using their #to_yaml
       # method before writing.
       #
@@ -112,19 +112,19 @@ module RIO
       #
       #  rio('afile.yaml').yaml < anobject
       #
-      # Rio#> (copy-to) and Rio#>> (append-to) will fill an array with with
+      # IF::Grande#> (copy-to) and IF::Grande#>> (append-to) will fill an array with with
       # all selected YAML documents in the Rio. For non-arrays, the yaml text
       # is copied. (This may change if a useful reasonable alternative can be
       # found) rio('afile.yaml').yaml > anarray # load all YAML documents from
       # 'afile.yaml'
       #
-      # Single objects can be written using Rio#putrec (aliased to Rio#putobj
-      # and Rio#dump)
+      # Single objects can be written using IF::Grande#putrec (aliased to IF::YAML#putobj
+      # and IF::YAML#dump)
       #
       #  rio('afile.yaml').yaml.putobj(anobject)
       #
-      # Single objects can be loaded using Rio#getrec (aliase to Rio#getobj
-      # and Rio#load)
+      # Single objects can be loaded using IF::Grande#getrec (aliase to IF::Grande#getobj
+      # and IF::YAML#load)
       #
       #  anobject = rio('afile.yaml').yaml.getobj
       #
@@ -200,7 +200,7 @@ module RIO
       # Calls YAML.dump, leaving the Rio open.
       def putobj(obj) target.putobj(obj); self end
 
-      # Dumps an object to a Rio as with Rio#putobj, and closes the Rio.
+      # Dumps an object to a Rio as with IF::YAML#putobj, and closes the Rio.
       #
       #  rio('afile.yaml').yaml.putobj!(anobject)
       #
@@ -210,7 +210,7 @@ module RIO
       #
       def putobj!(obj) target.putobj!(obj); self end
 
-      # Alias for Rio#putobj!
+      # Alias for IF::YAML#putobj!
       def dump(obj) target.dump(obj); self end
 
     end

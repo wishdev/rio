@@ -39,7 +39,7 @@ require 'rio'
 module RIO
   TITLE = "Rio"
   SUMMARY = "Rio - Ruby I/O Comfort Class"
-  DESCRIPTION = "Rio is a convenience class wrapping much of the functionality of " +
+  DESCRIPTION = "Rio is a Ruby class wrapping much of the functionality of " +
                 "IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 "
 end
