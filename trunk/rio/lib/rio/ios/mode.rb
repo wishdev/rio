@@ -38,7 +38,7 @@
 require 'rio/exception/notsupported'
 
 module RIO
-  module IOS
+  module IOS #:nodoc: all
     class Mode #:nodoc: all
       def initialize(mode_string)
         @str = mode_string

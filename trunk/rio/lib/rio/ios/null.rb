@@ -38,13 +38,13 @@
 require 'rio/exception/notsupported'
 require 'rio/ios/mode'
 module RIO
-  module IOS
+  module IOS #:nodoc: all
     module Methods
     end
   end
 end
 module RIO
-  module IOS
+  module IOS #:nodoc: all
     module Exception
       class NotDuplex < RIO::Exception::Base
       end
@@ -53,7 +53,7 @@ module RIO
 end
 
 module RIO
-  module IOS
+  module IOS #:nodoc: all
     class Null  #:nodoc: all
       def initialize(el=nil,m='r') 
         @lineno = 0
