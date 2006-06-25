@@ -40,7 +40,45 @@ module RIO
     # Returns the String associated with a Rio which references a StringIO object.
     # For any other type of Rio, is undefined.
     def string() target.string end
-
   end
 end
 
+module RIO
+  module IF
+    module String
+
+      # Create a Rio referencing Rio#to_str + arg.to_str
+      #
+      #  rio('afile') + '-0.1'   #=> rio('afile-0.1')
+      #
+      def +(arg) target + arg end
+
+      # Create a new Rio referencing the result of applying ::String#sub to the 
+      # value returned by Rio#to_s. So:
+      #
+      #  ario.sub(re,string)
+      # is equivelent to
+      #  rio(ario.to_s.sub(re,string))
+      #
+      # See also #gsub, #+
+      def sub(re,string) target.sub(re,string) end
+
+      # Create a new Rio referencing the result of applying ::String#gsub to the 
+      # value returned by Rio#to_s. So:
+      #
+      #  ario.gsub(re,string)
+      # is equivelent to
+      #  rio(ario.to_s.gsub(re,string))
+      #
+      # See also #sub #+
+      def gsub(re,string) target.gsub(re,string) end
+      
+      
+    end
+  end
+end
+module RIO
+  class Rio
+    include RIO::IF::String
+  end
+end
