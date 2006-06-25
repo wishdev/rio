@@ -45,7 +45,7 @@ module RIO
 end
 
 module RIO
-  module IOS
+  module IOS #:nodoc: all
     module Fail  #:nodoc: all
       def notsupported(sym) 
         raise RIO::Exception::NotSupported,RIO::Exception::NotSupported.emsg(sym,self)
