@@ -88,7 +88,7 @@ module RIO
         end
       end
       class Proc < Base
-        def =~(entry) @match_to[entry] end
+        def =~(entry) @match_to[entry.clone] end
       end
       class Symbol < Base
         def =~(entry) entry.__send__(@match_to) end
