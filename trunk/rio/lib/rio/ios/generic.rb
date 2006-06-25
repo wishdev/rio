@@ -59,7 +59,7 @@ module RIO
 end
 
 module RIO
-  module IOS
+  module IOS #:nodoc: all
     class Generic  #:nodoc: all
       def initialize(el,m='r')
       end
