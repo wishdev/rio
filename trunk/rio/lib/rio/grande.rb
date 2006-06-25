@@ -48,10 +48,20 @@ module RIO
       else
         rtn = to_a()
       end
-      ss_returns_first? ? rtn[0] : rtn
+      _ss_returns_first? ? _ss_return_first(rtn) : rtn
     end
     private
-    def ss_returns_first?
+    def _ss_return_first(ary)
+      _ss_clear_single_return()
+      ary[0] 
+    end
+    SINGLE_RETURN_KEYS = %[line record row]
+    def _ss_clear_single_return
+      cx.delete('line')
+      cx.delete('record')
+      cx.delete('row')
+    end
+    def _ss_returns_first?
       cx['line'] || cx['record'] || cx['row']
     end
     def fixnumss(*args)
