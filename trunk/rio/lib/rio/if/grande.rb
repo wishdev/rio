@@ -38,8 +38,10 @@ require 'rio/no_warn'
 module RIO
   module IF
     module Grande
-      # Returns the contents of the rio as an array.
-      # Rio#to_a is implemented in terms of IF::Grande#each so the the following are roughly equivelent
+
+      # Returns the contents of the rio as an array. (See ::Enumerable#to_a)
+      #
+      # IF::Grande#to_a is implemented in terms of #each so the the following are roughly equivelent
       #
       #  ary = ario.to_a
       #
@@ -48,7 +50,8 @@ module RIO
       #    ary << ary
       #  end
       #
-      # What constitutes an array element is determined by IF::GrandeStream#lines, IF::GrandeStream#bytes, or 
+      # What constitutes an array element is determined by IF::GrandeStream#lines, 
+      # IF::GrandeStream#bytes, IF::GrandeStream#records, IF::GrandeStream#rows or 
       # by an extension such as IF::CSV#csv. IF::GrandeStream#lines is the default.
       #
       #  rio('afile.txt').to_a # returns an array of the lines in afile.txt
@@ -60,7 +63,7 @@ module RIO
       #
       # See also IF::Grande#[] (subscript operator)
       #
-      #    def to_a() target.to_a() end
+      def to_a() target.to_a() end
 
       # Grande subscript operator. 
       # 
@@ -71,7 +74,7 @@ module RIO
       # === Files
       #
       # This combines the record selection offered by IF::GrandeStream#records with
-      # the conversion to an array provided by Rio#to_a. The following two are equivelant:
+      # the conversion to an array provided by IF::Grande#to_a. The following two are equivelant:
       # * ario[*args]
       # * ario.records(*args).to_a
       #
@@ -107,7 +110,7 @@ module RIO
       # === Directories
       # 
       # This combines the entry selection offered by IF::GrandeEntry#entries with
-      # the conversion to an array provided by Rio#to_a. The following two are equivelant:
+      # the conversion to an array provided by IF::Grande#to_a. The following two are equivelant:
       # * ario[*args]
       # * ario.entries(*args).to_a
       #
@@ -198,13 +201,15 @@ module RIO
 
 
       # Iterate through a rio. Executes the block for each item selected for the Rio. 
-      # See IF::GrandeStream#lines, IF::GrandeStream#records, IF::GrandeStream#bytes, IF::GrandeEntry#files, IF::GrandeEntry#dirs, IF::Grande#[] 
-      # and Rio#to_a for more information
+      # See IF::GrandeStream#lines, IF::GrandeStream#records, IF::GrandeStream#bytes, 
+      # IF::GrandeEntry#files, IF::GrandeEntry#dirs, IF::Grande#[] 
+      # and IF::Grande#to_a for more information
       # on how records are selected and what kind of record is passed to the block.
       # 
       # IF::Grande#each is the fundemental method for all the Rio grande operators.
-      # Rio#to_a and the Rio copy operators IF::Grande#< IF::Grande#<< IF::Grande#>> IF::Grande#> are all implemented 
-      # in terms of IF::Grande#each.
+      # IF::Grande#to_a and the Rio copy operators 
+      # IF::Grande#<, IF::Grande#<<, IF::Grande#>>, and IF::Grande#> 
+      # are all implemented in terms of IF::Grande#each.
       #
       # While IF::Grande#each is fundamental to a Rio, it rarely needs 
       # actually be called because all the grande configuration methods will also take a block 
@@ -331,9 +336,9 @@ module RIO
       #  rio('adir/asubdir').delete!.mkpath 
       #
       # ==== Deleting Summary
-      # * To delete something only if it is not a directory use IF::GrandeStream#rm
-      # * To delete an empty directory use IF::GrandeStream#rmdir
-      # * To delete an entire directory tree use IF::GrandeStream#rmtree
+      # * To delete something only if it is not a directory use IF::File#rm
+      # * To delete an empty directory use IF::Dir#rmdir
+      # * To delete an entire directory tree use IF::Dir#rmtree
       # * To delete anything except a populated directory use IF::Grande#delete
       # * To delete anything use IF::Grande#delete!
       #
