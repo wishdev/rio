@@ -931,7 +931,7 @@ array CSV fields, rather than just an array of strings.
  array_of_lines[0].to_a                          #==>["f0", "f1"]
  array_of_records[0].to_s                        #==>"f0,f1"
 
-Rio#csv takes two optional parameters, which are passed on to the CSV
+IF::CSV#csv takes two optional parameters, which are passed on to the CSV
 library. They are the +field_separator+ and the +record_separator+.
 
  rio('semisep').puts!(["h0;h1","f0;f1"])                 
@@ -945,8 +945,8 @@ using the copy operators.
  rio('colonsep').contents  #==>"h0:h1\nf0:f1\n"
 
 Rio provides two methods for selecting fields from CSV records in a
-manner similar to that provided for selecting lines -- Rio#columns and
-Rio#skipcolumns.
+manner similar to that provided for selecting lines -- IF::CSV#columns and
+IF::CSV#skipcolumns.
 
  rio('f.csv').puts!(["h0,h1,h2,h3","f0,f1,f2,f3"])
 
@@ -955,7 +955,7 @@ Rio#skipcolumns.
  rio('f.csv').csv.columns(1..2).to_a    #==>[["h1", "h2"], ["f1", "f2"]]
  rio('f.csv').csv.skipcolumns(1..2).to_a  #==>[["h0", "h3"], ["f0", "f3"]]
 
-Rio#columns can, of course be used with the +each+ and the copy
+IF::CSV#columns can, of course be used with the +each+ and the copy
 operators:
 
  rio('f.csv').csv.columns(0..1) > rio('out').csv
@@ -1021,11 +1021,11 @@ if a useful reasonable alternative can be found)
  
  rio('afile.yaml').yaml > anarray # load all YAML documents from 'afile.yaml'
 
-Single objects can be written using Rio#putrec (aliased to Rio#putobj and Rio#dump)
+Single objects can be written using Rio#putrec (aliased to IF::YAML#putobj and IF::YAML#dump)
 
  rio('afile.yaml').yaml.putobj(anobject)
 
-Single objects can be loaded using Rio#getrec (aliase to Rio#getobj and Rio#load)
+Single objects can be loaded using Rio#getrec (aliase to IF::YAML#getobj and IF::YAML#load)
 
  anobject = rio('afile.yaml').yaml.getobj
 
