@@ -55,7 +55,6 @@ require 'tc/overload'
 require 'tc/pa'
 require 'tc/paths'
 require 'tc/pid'
-require 'tc/pid'
 require 'tc/piper' unless $mswin32
 require 'tc/qae'
 require 'tc/qae_riovar'

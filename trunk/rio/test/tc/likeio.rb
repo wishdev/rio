@@ -42,10 +42,14 @@ class TC_likeio < Test::RIO::TestCase
   end
   
   def check_read_method(fruby,frio,n,sym,*args)
+    #$trace_states = true
     n.times {
-      assert_equal(fruby.__send__(sym,*args),frio.__send__(sym,*args))
+      exp = fruby.__send__(sym,*args)
+      ans = frio.__send__(sym,*args)
+      assert_equal(exp,ans)
       assert_equal(fruby.eof?,frio.eof?)
     }
+    #$trace_states = false
   end
 
   def check_read_method_raises_eof(fruby,frio,n,sym,*args)

@@ -11,6 +11,4 @@ RIO.ARGV.each do |rpath|
   end
 end
 
-# 740 Duclo Ave 
-# manitou springs co 80829
 __END__
