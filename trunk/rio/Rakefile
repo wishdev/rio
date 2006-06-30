@@ -259,7 +259,7 @@ end
 =end
 
 desc "Upload documentation to homepage"
-task :uploaddoc => [:rdoc] do
+task :uploaddoc => [:rio_rdoc] do
   Dir.chdir('doc/rdoc')
   puts
   puts "rio4ruby@rubyforge.org:/var/www/gforge-projects/#{PKG::NAME}/"
