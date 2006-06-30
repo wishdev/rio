@@ -29,6 +29,7 @@
 $:.unshift 'lib'
 require 'rio'
 
+
 module DFLT
   RDOC_DIR = rio('doc/rdoc')
 end
@@ -41,7 +42,12 @@ rdoc_dir = rio(rdoc_dir)
 
 puts "Building the Rio RDoc documentation in '#{rdoc_dir}'"
 
-RDOC_OPTIONS = ['--line-numbers', '-m RIO::Doc::SYNOPSIS',"--op #{rdoc_dir}", "-T doc/generators/template/html/rio"]
+RDOC_OPTIONS = ['--show-hash', 
+                '--line-numbers', 
+                '-m RIO::Doc::SYNOPSIS',
+                "--op #{rdoc_dir}", 
+                "-T doc/generators/template/html/rio",
+]
 
 rdoc_files = [
   rio('README'), 
@@ -51,7 +57,7 @@ rdoc_files = [
   rio('lib/rio/if').files['*.rb'],
 ]
 
-cmd = sprintf("rdoc %s %s",RDOC_OPTIONS.join(' '),rdoc_files.join(' '))
+cmd = sprintf("doc/bin/rdoc %s %s",RDOC_OPTIONS.join(' '),rdoc_files.join(' '))
 
 rio(?-,cmd) > ?-
 

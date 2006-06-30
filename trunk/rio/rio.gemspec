@@ -1,3 +1,5 @@
+$:.unshift 'doc/patched_rdoc'
+require 'rdoc/generators/html_generator'
 $:.unshift 'lib'
 require 'rubygems'
 require 'rio'
@@ -15,10 +17,11 @@ module PKG
                              'lib/rio/if/*.rb','lib/rio/kernel.rb','lib/rio/constructor.rb']
   XMP_FILES = rio('.').files['ex/*']
   MSC_FILES = rio('.').files['setup.rb', 'build_doc.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION']
-  D_FILES = rio('doc').norecurse('.svn','CVS').all.files[]
+  D_FILES = rio('doc').norecurse('.svn','CVS','rdoc').all.files[]
+  C_FILES = rio('doc/patched_rdoc').all.files['*.rb']
   T_FILES = rio('test').all.norecurse('qp').files['*.rb']
 
-  FILES = SRC_FILES+DOC_FILES+XMP_FILES+MSC_FILES+D_FILES+T_FILES
+  FILES = SRC_FILES+DOC_FILES+XMP_FILES+MSC_FILES+D_FILES+T_FILES+C_FILES
 
   OUT_DIR = 'pkg'
   OUT_FILES = %w[.gem .tar.gz .zip].map { |ex| OUT_DIR + '/' + FULLNAME + ex }
@@ -38,6 +41,7 @@ spec = Gem::Specification.new do |s|
           #s.add_dependency( 'extensions', '>= 0.6.0' )
 
   s.require_path = 'lib'
+  s.require_paths << 'doc/patched_rdoc'
   s.autorequire = 'rio'
 
   s.has_rdoc = true

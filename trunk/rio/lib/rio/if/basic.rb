@@ -45,7 +45,8 @@ module RIO
     # To get the size of the underlying file system object use RIO::IF::Test#size
     def length() target.length end
 
-    # Equality - calls to_s on the other object and compares it with the value returned by Rio#to_s
+    # Equality - calls to_s on _other_ and compares its return value 
+    # with the value returned by Rio#to_s
     def ==(other) target == other end
 
     # Equality (for case statements) same as Rio#==
@@ -57,7 +58,7 @@ module RIO
     # Returns true if their String representations are eql?
     def eql?(other) target.eql?(other) end
 
-    # Match - invokes other.=~, passing the value returned by Rio#to_str
+    # Match - invokes _other_.=~, passing the value returned by Rio#to_str
     def =~(other) target =~ other end
       
   end

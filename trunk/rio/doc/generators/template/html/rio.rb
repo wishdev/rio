@@ -496,7 +496,6 @@ CONTEXT_CONTENT = %{
 FOOTER = %{
 <div id="validator-badges">
    <p><small>Copyright &copy; 2005, 2006 Christopher Kleckner.  <a href="http://www.gnu.org/licenses/gpl.html">All rights reserved</a>.</small></p>
-  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
 </div>
 
 </body>

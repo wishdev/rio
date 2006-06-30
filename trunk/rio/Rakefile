@@ -95,28 +95,28 @@ end
 
 CLOBBER << "doc/rdoc"
 desc "Builds the documentation"
-task :doc => [:rdoc] do
+task :doc => [:rio_rdoc] do
     puts "\nGenerating online documentation..."
 #    ruby %{-I../lib ../bin/webgen -V 2 }
 end
 
-RDOC_OPTIONS = ['--line-numbers']
-rd = Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_dir = 'doc/rdoc'
-  rdoc.title    = PKG::TITLE
-  rdoc.options = RDOC_OPTIONS
-  rdoc.main = 'RIO::Doc::SYNOPSIS'
-  DOC_FILES.to_a.each do |glb|
-    #next if glb =~ /yaml.rb$/
-    rdoc.rdoc_files.include( glb )
-  end
-  rdoc.template = 'doc/generators/template/html/rio.rb'
-end
+# RDOC_OPTIONS = ['--line-numbers']
+# rd = Rake::RDocTask.new do |rdoc|
+#   rdoc.rdoc_dir = 'doc/rdoc'
+#   rdoc.title    = PKG::TITLE
+#   rdoc.options = RDOC_OPTIONS
+#   rdoc.main = 'RIO::Doc::SYNOPSIS'
+#   DOC_FILES.to_a.each do |glb|
+#     #next if glb =~ /yaml.rb$/
+#     rdoc.rdoc_files.include( glb )
+#   end
+#   rdoc.template = 'doc/generators/template/html/rio.rb'
+# end
 
 desc "Build custom RDoc"
 task :rio_rdoc do 
   require 'rio/doc/SYNOPSIS'
-  ruby "-Idoc/patched_rdoc -Ilib /bin/rdoc --show-hash --op doc/rdoc --title #{PKG::TITLE} --line-numbers  --template doc/generators/template/html/rio.rb #{DOC_FILES} --main #{RIO::Doc::SYNOPSIS}" 
+  ruby "-Idoc/patched_rdoc -Ilib doc/bin/rdoc --show-hash --op doc/rdoc --title #{PKG::TITLE} --line-numbers  --template doc/generators/template/html/rio.rb #{DOC_FILES} --main #{RIO::Doc::SYNOPSIS}" 
 end
 CLOBBER << "test/rio.log"
 task :test do |t|
@@ -194,47 +194,6 @@ task :svn_commit do
   msg = rio(?-).print("Comment: ").chomp.gets
   cmd = sprintf('svn commit -m "%s"', msg)
   sh cmd
-end
-
-if !defined? Gem
-  puts "Package Target requires RubyGEMs"
-else
-  spec = Gem::Specification.new do |s|
-
-    #### Basic information
-
-    s.name = PKG::NAME
-    s.version = PKG::VERSION
-    s.summary = PKG::SUMMARY
-    s.description = PKG::DESCRIPTION
-
-    #### Dependencies, requirements and files
-
-    s.files = PKG::FILES.to_a
-    # s.add_dependency( 'extensions', '>= 0.6.0' )
-
-    s.require_path = 'lib'
-    s.autorequire = 'rio'
-
-    #### Documentation
-
-    s.has_rdoc = true
-    #s.extra_rdoc_files = ['doc/generators/template/html/rio.rb']
-    s.rdoc_options << RDOC_OPTIONS 
-
-    #### Author and project details
-
-    s.author = "Christopher Kleckner"
-    s.email = "rio4ruby@rubyforge.org"
-    s.homepage = "http://rio.rubyforge.org/"
-    s.rubyforge_project = "rio"
-  end
-
-  Rake::GemPackageTask.new( spec ) do |pkg|
-    pkg.need_zip = true
-    pkg.need_tar_gz = true
-  end
-
 end
 
 desc "Build the gem from the gemspec"

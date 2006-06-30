@@ -42,7 +42,7 @@ require 'rdoc/markup/simple_markup'
 require 'rdoc/markup/simple_markup/to_html'
 require 'cgi'
 
-p 'Using Custom RDoc Generator'
+p 'Using Custom Rio RDoc Generator'
 
 module Generators
 
