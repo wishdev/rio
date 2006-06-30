@@ -40,7 +40,7 @@
 #
 # = Rio
 #
-# Copyright (c) 2005, Christopher Kleckner
+# Copyright (c) 2005, 2006 Christopher Kleckner
 #
 #
 
