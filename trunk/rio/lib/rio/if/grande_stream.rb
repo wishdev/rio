@@ -160,7 +160,7 @@ module RIO
       # 
       # Returns the Rio
       #
-      # See also #records, #skiplines, #lines
+      # See also #records, #skiplines, #lines, IF::Grande#skip
       #
       # If no args are provided, no records are rejected. What constitutes a record is affected by #lines,#bytes,
       # and extensions such as IF::CSV#csv and IF::YAML#yaml.
@@ -191,7 +191,7 @@ module RIO
       # 
       # Returns the Rio
       #
-      # See also #lines, #records
+      # See also #lines, #records, IF::Grande#skip
       #
       # If no args are provided, no lines are rejected.
       #
@@ -223,6 +223,29 @@ module RIO
       # #skiprows is intended for use by extensions, where the concept of a row is 
       # reasonable. In the absence of an extension behaves like #skiprecords
       def skiprows(*args,&block) target.skiprows(*args,&block); self end
+
+      # Temporarily set the Rio to read records, and call IF::Grande#get
+      #
+      # See also IF::GrandeStream#records, IF::GrandeStream#lines, IF::Grande#each, IF::Grande#[]
+      #
+      def getrec() target.getrec() end
+
+      # Temporarily set the Rio to read rows, and call IF::Grande#get
+      #
+      # See also IF::GrandeStream#rows, IF::GrandeStream#lines, IF::Grande#each, IF::Grande#[]
+      #
+      def getrow() target.getrow() end
+
+      # Temporarily set the Rio to read lines, and call IF::Grande#get
+      #
+      # See also IF::GrandeStream#records, IF::GrandeStream#lines, IF::Grande#each, IF::Grande#[]
+      #
+      def getline() target.getline() end
+
+
+      # Writes a single record to a Rio
+      def putrec(el) target.putrec(el) end
+
 
       # Sets the implicit output mode to 'a'.
       # 
@@ -502,6 +525,15 @@ module RIO
       # See #closeoncopy
       #
       def closeoncopy?() target.closeoncopy?() end
+
+
+      # Turns off both closeoneof and closeoncopy
+      # Equivelent to
+      #  ario.nocloseoneof.closeoneof
+      #  ario.nocloseoneof(&block) => ario
+      # See #nocloseoneof and #nocloseoncopy
+      #
+      def noautoclose(arg=false,&block) target.noautoclose(arg,&block); self end
 
 
       # Queries the Rio's chomp-mode.

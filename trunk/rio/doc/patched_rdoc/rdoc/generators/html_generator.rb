@@ -42,7 +42,7 @@ require 'rdoc/markup/simple_markup'
 require 'rdoc/markup/simple_markup/to_html'
 require 'cgi'
 
-p 'Custom rdoc Generators'
+p 'Using Custom RDoc Generator'
 
 module Generators
 
@@ -125,7 +125,13 @@ module Generators
       end
 
       if ref and ref.document_self
-        "<a href=\"#{ref.as_href(@from_path)}\">#{name}</a>"
+        name.sub!(/^(RIO::)?IF::.+\#/,'Rio#')
+        name.sub!(/^#/,'Rio#')
+        if %w[Rio Grande String].include?(name)
+          name
+        else
+          "<a href=\"#{ref.as_href(@from_path)}\">#{name}</a>"
+        end
       else
         name
       end

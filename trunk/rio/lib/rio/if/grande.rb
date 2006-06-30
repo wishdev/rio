@@ -129,17 +129,19 @@ module RIO
       # * The types of entries is also affected by IF::GrandeEntry#files and IF::GrandeEntry#dirs.
       #    rio('adir').files['*.txt'] # array of all _.txt_ files
       #    rio('adir').dirs(/^\./) # array of all dot directories
-      # * Recursion is enabled using IF::GrandeStream#all
+      # * Recursion is enabled using IF::GrandeEntry#all
       #    rio('adir').all.files['*.[ch]'] # array of c source files in _adir_ and its subdirecories
       #    rio('adir').all.dirs[/^\.svn/]  # array of subversion directories in _adir_ and subdirectories
-      # * IF::GrandeEntry#files and IF::GrandeEntry#dirs act independetly of each other. Specifying both will cause both to be returned. 
+      # * IF::GrandeEntry#files and IF::GrandeEntry#dirs act independetly of each other. 
+      #   Specifying both will cause both to be returned. 
       #   The argument list to IF::Grande#[] will be applied to the closest.
       #    rio('adir').files('*.rb').dirs['ruby*'] # array of _.rb_ files and 
       #                                            # directories starting with 'ruby'
       #    rio('adir').dirs('ruby*').files['*.rb'] # same thing
       #
       # === Lines
-      # This section applies similarly to IF::GrandeStream#lines, IF::GrandeStream#bytes, IF::GrandeStream#records, and IF::GrandeStream#rows
+      # This section applies similarly to IF::GrandeStream#lines, IF::GrandeStream#bytes, 
+      # IF::GrandeStream#records, and IF::GrandeStream#rows
       #
       # Using IF::GrandeStream#lines and related methods with a Rio referencing a directory 
       # imples IF::GrandeEntry#files and will cause an array of the lines or bytes in the files to be returned. As above,
@@ -600,24 +602,6 @@ module RIO
       def copy_from(source) target.copy_from(source); self end
 
 
-      # Temporarily set the Rio to read records, and call #get
-      #
-      # See also IF::GrandeStream#records, IF::GrandeStream#lines, IF::Grande#each, IF::Grande#[]
-      #
-      def getrec() target.getrec() end
-
-      # Temporarily set the Rio to read rows, and call #get
-      #
-      # See also IF::GrandeStream#rows, IF::GrandeStream#lines, IF::Grande#each, IF::Grande#[]
-      #
-      def getrow() target.getrow() end
-
-      # Temporarily set the Rio to read lines, and call #get
-      #
-      # See also IF::GrandeStream#records, IF::GrandeStream#lines, IF::Grande#each, IF::Grande#[]
-      #
-      def getline() target.getline() end
-
       # Reads and returns the next record or entry from a Rio, 
       # honoring the grande selection methods. 
       #
@@ -637,10 +621,6 @@ module RIO
       #
       def get() target.get() end
 
-      # Writes a single record to a Rio
-      def putrec(el) target.putrec(el) end
-
-
       # Grande Exclude method
       # 
       # +skip+ can be used in two ways.
@@ -658,8 +638,8 @@ module RIO
       # used more than once. If no grande selection method is seen, +skip+ is
       # ignored.
       #
-      # When called with arguments it acts like IF::Grande#skipentries for directory 
-      # Rios and like IF::Grande#skiprecords for stream Rios.
+      # When called with arguments it acts like IF::GrandeEntry#skipentries for directory 
+      # Rios and like IF::GrandeStream#skiprecords for stream Rios.
       #
       #  rio('afile').lines(/Rio/).skip[0..4] # lines containg 'Rio' excluding the
       #                                       # first five lines
@@ -671,8 +651,8 @@ module RIO
       #
       # Returns the Rio.
       #
-      # See IF::Grande#skiplines, IF::Grande#skiprecords, IF::Grande#skiprows, IF::GrandeEntry#skipfiles, 
-      # IF::Grande#skipdirs, and IF::Grande#skipentries.
+      # See IF::GrandeStream#skiplines, IF::GrandeStream#skiprecords, IF::GrandeStream#skiprows, 
+      # IF::GrandeEntry#skipfiles, IF::GrandeEntry#skipdirs, and IF::GrandeEntry#skipentries.
       #
       def skip(*args,&block) target.skip(*args,&block); self end 
 

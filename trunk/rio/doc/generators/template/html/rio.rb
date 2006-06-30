@@ -34,7 +34,7 @@ body {
   font-family: Verdana,Arial,Helvetica,sans-serif;
   font-size:   90%;
   margin: 0;
-  margin-left: 40px;
+  margin-left: 0px;
   padding: 0;
   background: white;
 }
@@ -77,7 +77,7 @@ small {
 
 div#index {
   margin: 0;
-  margin-left: -40px;
+  margin-left: 0px;
   padding: 0;
   font-size: 90%;
   background: #ffdead;
@@ -115,7 +115,7 @@ div#index-entries a:hover {
   /*   background: #8b4500; */
   
   border-bottom: 1px solid #999;
-  margin-left: -20px;
+  margin-left: 0px;
 }
 
 div#index .section-bar {
@@ -133,7 +133,7 @@ div#index .section-bar {
   color: #eee;
   padding: 3px;
   margin-top: 2em;
-  margin-left: -30px;
+  margin-left: 0px;
   border: 1px solid #999;
 }
 
@@ -142,7 +142,7 @@ div#classHeader, div#fileHeader {
   color: white;
   padding: 0.5em 1.5em 0.5em 1.5em;
   margin: 0;
-  margin-left: -40px;
+  margin-left: 0px;
   border-bottom: 3px solid #006;
 }
 
@@ -248,12 +248,24 @@ table.header-table {
     color: #eee;
     padding: 3px;
     margin-top: 2em;
-    margin-left: -30px;
+    margin-left: 0px;
     border: 1px solid #999;
 }
 
 .top-aligned-row {  vertical-align: top }
 .bottom-aligned-row { vertical-align: bottom }
+
+span.include-name {
+  font-size: small;  
+}
+.include-name a {
+  font-weight: bold;
+}
+ul.includes-ul {
+  list-style-type: none;
+  padding-left: 1em;
+}
+
 
 /* --- Context section classes ----------------------- */
 
@@ -484,6 +496,7 @@ CONTEXT_CONTENT = %{
 FOOTER = %{
 <div id="validator-badges">
    <p><small>Copyright &copy; 2005, 2006 Christopher Kleckner.  <a href="http://www.gnu.org/licenses/gpl.html">All rights reserved</a>.</small></p>
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
 </div>
 
 </body>
@@ -617,7 +630,6 @@ END:methods
     </div>
 ENDIF:methods
 
-  </div>
 
 
     <!-- if includes -->
@@ -626,9 +638,13 @@ IF:includes
       <h3 class="section-bar">Included Modules</h3>
 
       <div id="includes-list">
+        <ul class="includes-ul">
 START:includes
-        <span class="include-name">HREF:aref:name:</span>
+          <li class="include-li">
+            <span class="include-name">HREF:aref:name:</span>
+          </li>
 END:includes
+        </ul>
       </div>
     </div>
 ENDIF:includes
@@ -780,6 +796,7 @@ END:method_list
     </div>
 ENDIF:method_list
 END:sections
+</div>
 }
 #def mlist(*args)
   #p(args)

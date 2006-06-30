@@ -116,7 +116,7 @@ end
 desc "Build custom RDoc"
 task :rio_rdoc do 
   require 'rio/doc/SYNOPSIS'
-  ruby "-Idoc/patched_rdoc -Ilib /bin/rdoc --op doc/rdoc --title #{PKG::TITLE} --line-numbers  --template doc/generators/template/html/rio.rb #{DOC_FILES} --main #{RIO::Doc::SYNOPSIS}" 
+  ruby "-Idoc/patched_rdoc -Ilib /bin/rdoc --show-hash --op doc/rdoc --title #{PKG::TITLE} --line-numbers  --template doc/generators/template/html/rio.rb #{DOC_FILES} --main #{RIO::Doc::SYNOPSIS}" 
 end
 CLOBBER << "test/rio.log"
 task :test do |t|

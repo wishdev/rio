@@ -114,6 +114,8 @@ module RIO
       #
       # Behaves like #entries, except that matching entries are excluded.
       #
+      # See also #entries, IF::Grande#skip
+      #
       def skipentries(*args,&block) target.skipentries(*args,&block); self end
 
       
@@ -284,7 +286,7 @@ module RIO
       #
       # If a block is given behaves like <tt>ario.skipfiles(*args).each(&block)</tt>
       #
-      # See #files
+      # See #files, IF::Grande#skip
       #
       #  rio('adir').skipfiles { |ent| ... } # iterate through everything except files
       #  rio('adir').skipfiles('*~') { |frio| ... } # iterate through files, skipping those ending with a tilde

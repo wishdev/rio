@@ -248,15 +248,15 @@ to the File or URI classes with the return values converted to a Rio.
 ==== Creating a Rio from a Rio's component parts.
 
 The Rio methods for creating a Rio from a Rio's component parts are
-Rio#dirname, Rio#filename, Rio#basename, and Rio#extname.  The
-behavior of Rio#basename depends on the setting of the +ext+
+IF::Path#dirname, IF::Path#filename, IF::Path#basename, and IF::Path#extname.  The
+behavior of IF::Path#basename depends on the setting of the +ext+
 configuration variable and is different from its counterpart in the
 File class. The default value of the +ext+ configuration variable is
 the string returned File#extname. The +ext+ configuration variable can
-be changed using Rio#ext and Rio#noext and can be queried using
-Rio#ext?. This value is used by calls to Rio#basename.
+be changed using IF::Path#ext and IF::Path#noext and can be queried using
+IF::Path#ext?. This value is used by calls to IF::Path#basename.
 
-Rio#filename returns the last component of a path, and is basically
+IF::Path#filename returns the last component of a path, and is basically
 the same as +basename+ without consideration of an extension.
 
    rio('afile.txt').basename       #=> rio('afile')
@@ -271,8 +271,8 @@ the same as +basename+ without consideration of an extension.
 ==== Changing a path's component parts.
 
 Rio also provides methods for changing the component parts of its
-path.  They are Rio#dirname=, Rio#filename=, Rio#basename=, and
-Rio#extname=. These methods replace the part extracted as described
+path.  They are IF::Path#dirname=, IF::Path#filename=, IF::Path#basename=, and
+IF::Path#extname=. These methods replace the part extracted as described
 above with their argument.
 
    ario = rio('dirA/dirB/afile.rb')
@@ -287,7 +287,7 @@ discussed in the section on Renaming and Moving.
 
 ==== Splitting a Rio
 
-Rio#split returns an array of Rios, one for each path element. (Note
+IF::Path#split returns an array of Rios, one for each path element. (Note
 that this behavior differs from File#split.)
 
    rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
@@ -307,7 +307,7 @@ constructor will take, the constructor can be used.
    ario = rio('adir')
    rio(ario,'b')    #=> rio('adir/b')
 
-Rio#join and Rio#/ do the same thing, but the operator version
+IF::Path#join and IF::Path#/ do the same thing, but the operator version
 <tt>/</tt> can take only one argument.
 
    a = rio('a')
@@ -324,8 +324,8 @@ The arguments to +join+ and <tt>/</tt> do not need to be Rios, of course
 
 ==== Manipulating a Rio path by treating it as a string.
 
-The Rio methods which treat a Rio as a string are Rio#sub, Rio#gsub
-and Rio#+.  These methods create a new Rio using the string created by
+The Rio methods which treat a Rio as a string are IF::String#sub, IF::String#gsub
+and IF::String#+.  These methods create a new Rio using the string created by
 forwarding the method to the String returned by Rio#to_s.
 
    ario = rio('dirA/dirB/afile') + '-1.1.1'   # rio('dirA/dirB/afile-1.1.1')
@@ -334,7 +334,7 @@ forwarding the method to the String returned by Rio#to_s.
 
 ==== Creating a Rio based on its relationship to another
 
-Rio#abs creates a new rio whose path is the absolute path of a Rio.
+IF::Path#abs creates a new rio whose path is the absolute path of a Rio.
 If provided with an argument, it uses that as the base path, otherwise
 it uses an internal base path (usually the current working directory
 when it was created).
@@ -344,16 +344,16 @@ when it was created).
      rio('a').abs('/usr')    #=> rio('/usr/a')
    end
 
-Rio#rel creates a new rio with a path relative to a Rio.
+IF::Path#rel creates a new rio with a path relative to a Rio.
 
    rio('/tmp').chdir do
      rio('/tmp/a').rel       #=> rio('a')
    end
    rio('/tmp/b').rel('/tmp') #=> rio('b')
 
-Rio#route_to and Rio#route_from creates a new rio with a path
+IF::Path#route_to and IF::Path#route_from creates a new rio with a path
 representing the route to get to/from a Rio. They are based on the
-methods of the same names in the URI class
+methods of the same names in the ::URI class
 
 === Configuring a Rio
 
@@ -381,7 +381,7 @@ Rio's configuration mehods fall into three categories.
   grande I/O methods
 
 All of Rio's configuration and selection methods can be passed a
-block, which will cause the Rio to behave as if +each+ had been called
+block, which will cause the Rio to behave as if IF::Grande#each had been called
 with the block after the method.
 
 ==== IO manipulators
@@ -501,9 +501,9 @@ Rio is configured with +chomp+.
 
 In all cases, if the result returned by the underlying object, could
 itself be used for further I/O operations it is returned as a Rio. For
-example: where File#dirname returns a string, Rio#dirname returns a
+example: where File#dirname returns a string, IF::Path#dirname returns a
 Rio; where Dir#read returns a string representing a directory entry,
-Rio#read returns a Rio.
+IF::FileOrDir#read returns a Rio.
 
 With some noteable exceptions, most of the operations available if one
 were using the underlying Ruby I/O class are available to the Rio and
@@ -531,7 +531,7 @@ For things that exist on a file system:
 
   * +dirname+, and +readlink+ return Rios instead of strings
 
-  * Rio has its own Rio#basename, Rio#join and Rio#symlink, which
+  * Rio has its own IF::Path#basename, IF::Path#join and IF::FileOrDir#symlink, which
     provide similar functionality.
 
   * The class methods which take multiple filenames
@@ -578,7 +578,7 @@ For directories:
 * the class methods +mkdir+, +delete+, +rmdir+ are provided as
   instance methods.
 
-* +chdir+ is provided as an instance method. Rio#chdir returns a Rio
+* +chdir+ is provided as an instance method. IF::Dir#chdir returns a Rio
   and passes a Rio to a block if one is provided.
 
 * +glob+ is provided as an instance method, but returns an array of
@@ -600,7 +600,7 @@ appropriate. For example
   
 ==== Grande operators
 
-The primary grande operator is Rio#each. +each+ is used to iterate
+The primary grande operator is IF::Grande#each. +each+ is used to iterate
 through Rios. When applied to a file it iterates through records in
 the file. When applied to a directory it iterates through the entries
 in the directory. Its behavior is modified by configuring the Rio
@@ -617,7 +617,7 @@ explicitly. For example:
  rio('adir').all.files('*.rb') { |f| ... } 
 
 Because a Rio is an Enumerable, it supports +to_a+, which is the basis
-for the grande subscript operator.  Rio#[] with no arguments simply
+for the grande subscript operator.  IF::Grande#[] with no arguments simply
 calls to_a. With arguments it behaves as if those arguments had been
 passed to the most recently called of the grande selection methods
 listed above, and then calls to_a. For example to get the first ten
@@ -678,20 +678,22 @@ For example:
 === Renaming and Moving
 
 Rio provides two methods for directly renaming objects on the
-filesystem: Rio#rename and Rio#rename!. Both of these use
-File#rename. The difference between them is the returned
-Rio. Rio#rename leaves the path of the Rio unchanged, while
-Rio#rename! changes the path of the Rio to refer to the renamed path.
+filesystem: IF::FileOrDir#rename and IF::FileOrDir#rename!. 
+Both of these use File#rename. 
+The difference between them is the returned Rio. 
+IF::FileOrDir#rename leaves the path of the Rio unchanged, 
+while IF::FileOrDir#rename! changes the path of the Rio to refer 
+to the renamed path.
 
    ario = rio('a')
    ario.rename('b')  # file 'a' has been renamed to 'b' but 'ario' => rio('a')
    ario.rename!('b')  # file 'a' has been renamed to 'b' and 'ario' => rio('b')
 
 Rio also has a +rename+ mode, which causes the path manipulation
-methods Rio#dirname=, Rio#filename=, Rio#basename= and Rio#extname= to
-rename an object on the filesystem when they are used to change a
-Rio's path. A Rio is put in +rename+ mode by calling Rio#rename with
-no arguments.
+methods IF::Path#dirname=, IF::Path#filename=, IF::Path#basename= and
+IF::Path#extname= to rename an object on the filesystem when they are
+used to change a Rio's path. A Rio is put in +rename+ mode by calling
+IF::FileOrDir#rename with no arguments.
 
    rio('adir/afile.txt').rename.filename = 'bfile.rb' # adir/afile.txt => adir/bfile.rb
    rio('adir/afile.txt').rename.basename = 'bfile'    # adir/afile.txt => adir/bfile.txt
@@ -707,20 +709,20 @@ in the Rios created when iterating through that directory.
 
 === Deleting 
 
-The Rio methods for deleting filesystem objects are Rio#rm, Rio#rmdir,
-Rio#rmtree, Rio#delete, and Rio#delete!. +rm+, +rmdir+ and +rmtree+
-are passed the like named methods in the FileUtils module. Rio#delete
+The Rio methods for deleting filesystem objects are IF::File#rm, IF::Dir#rmdir,
+IF::Dir#rmtree, IF::Grande#delete, and IF::Grande#delete!. +rm+, +rmdir+ and +rmtree+
+are passed the like named methods in the FileUtils module. IF::Grande#delete
 calls +rmdir+ for directories and +rm+ for anything else, while
-Rio#delete!  calls Rio#rmtree for directories.
+IF::Grande#delete!  calls IF::Dir#rmtree for directories.
 
-* To delete something only if it is not a directory use Rio#rm
-* To delete an empty directory use Rio#rmdir
-* To delete an entire directory tree use Rio#rmtree
-* To delete anything except a populated directory use Rio#delete
-* To delete anything use Rio#delete!
+* To delete something only if it is not a directory use IF::File#rm
+* To delete an empty directory use IF::Dir#rmdir
+* To delete an entire directory tree use IF::Dir#rmtree
+* To delete anything except a populated directory use IF::Grande#delete
+* To delete anything use IF::Grande#delete!
 
 It is not an error to call any of the deleting methods on something
-that does not exist. Rio provides Rio#exist? and Rio#symlink? to check
+that does not exist. Rio provides IF::Test#exist? and IF::Test#symlink? to check
 if something exists (<tt>exist?</tt> returns false for symlinks to
 non-existant object even though the symlink itself exists).  The
 deleting methods' purpose is to make things not exist, so calling one
@@ -742,7 +744,7 @@ that name exists one might do this
 ==== Using Symbolic Links
 
 To create a symbolic link (symlink) to the file-system entry refered
-to by a Rio, use Rio#symlink.  Rio#symlink differs from File#symlink
+to by a Rio, use IF::FileOrDir#symlink.  IF::FileOrDir#symlink differs from File#symlink
 in that it calculates the path from the symlink location to the Rio's
 position.
 
@@ -762,12 +764,12 @@ Note that the return value from +symlink+ is the calling Rio and not a
 Rio refering to the symlink.  This is done for consistency with the
 rest of Rio.
 
-Rio#symlink? can be used to test if a file-system object is a
-symlink. A Rio is extended with Rio#readlink, and Rio#lstat only if
-Rio#symlink? returns true. So for non-symlinks, these will raise a
-NoMethodError. These are both passed to their counterparts in
-File. Rio#readlink returns a Rio refering to the result of
-File#readlink.
+IF::Test#symlink? can be used to test if a file-system object is a
+symlink. A Rio is extended with IF::FileOrDir#readlink, and
+IF::Test#lstat only if IF::Test#symlink? returns true. So for
+non-symlinks, these will raise a NoMethodError. These are both passed
+to their counterparts in File. IF::FileOrDir#readlink returns a Rio
+refering to the result of File#readlink.
 
 
 ==== Using A Rio as an IO (or File or Dir)
@@ -781,7 +783,7 @@ circumstances.
 Even in cases where Rio supports the required IO interface, A Rio
 feature that seems to cause the most incompatibility, is its automatic
 closing of files. To turn off all of Rio's automatic closing use
-Rio#noautoclose.
+IF::GrandeStream#noautoclose.
 
 For example:
  require 'yaml'
@@ -797,8 +799,8 @@ Rio closes files automatically in three instances.
 When reading from an IO it is closed when the end of file is
 reached. While this is a reasonable thing to do in many cases,
 sometimes this is not desired.  To turn Rio's automatic closing on end
-of file use Rio#nocloseoneof (it can be turned back on via
-Rio#closeoneof)
+of file use IF::GrandStream#nocloseoneof (it can be turned back on via
+IF::GrandeStream#closeoneof)
 
  ario = rio('afile').nocloseoneof
  lines = ario[]
@@ -814,15 +816,16 @@ again, and will be reopened if another read operation is attempted.
 
 Another time a Rio will be closed atomatically is when writing to it
 with one of the copy operators (<tt><, <<, >, >></tt>).  This behavior
-can be turned off with Rio#nocloseoncopy.
+can be turned off with IF::GrandeStream#nocloseoncopy.
 
 To turn off both of thes types of automatic closing use
-Rio#noautoclose.
+IF::GrandeStream#noautoclose.
 
 The third instance when Rio will close a file automatically is when a
 file opened for one type of access receives a method which that access
-mode does not support.  So, the code rio('afile').puts("Hello
-World").gets will open the file for write access when the +puts+
+mode does not support.  So, the code 
+ rio('afile').puts("Hello World").gets 
+will open the file for write access when the +puts+
 method is received. When +gets+ is called the file is closed and
 reopened with read access.
 
@@ -837,10 +840,12 @@ incorrect, some of Rio's extranious ways of closing a file may be
 rethought.
 
 That being said, Rio support several ways to explicitly close a
-file. Rio#close will close any open Rio. The output methods Rio#puts!,
-Rio#putc!, Rio#printf!, Rio#print!, and Rio#write!  behave as if their
+file. IF::RubyIO#close will close any open Rio. 
+The output methods 
+IF::RubyIO#puts!, IF::RubyIO#putc!, IF::RubyIO#printf!, IF::RubyIO#print!, and IF::RubyIO#write!  
+behave as if their
 counterparts without the exclamation point had been called and then
-call Rio#close or Rio#close_write if the underlying IO object is
+call IF::RubyIO#close or IF::RubyIO#close_write if the underlying IO object is
 opened for duplex access.
 
 
@@ -850,7 +855,7 @@ A Rio is typically not explicitly opened. It opens a file
 automatically when an input or output methed is called. For output
 methods Rio opens a file with mode 'w', and otherwise opens a file
 with mode 'r'. This behavior can be modified using the tersely named
-methods Rio#a, Rio#a!, Rio#r, Rio#r!, Rio#w, and Rio#w!, which cause
+methods IF::RubyIO#a, IF::RubyIO#a!, IF::RubyIO#r, IF::RubyIO#r!, IF::RubyIO#w, and IF::RubyIO#w!, which cause
 the Rio to use modes 'a','a+','r','r+','w',and 'w+' respectively.
 
 One way to append a string to a file and close it in one line is
@@ -862,13 +867,13 @@ Run a cmd that must be opened for read and write
  ans = rio(?-,'cat').w!.puts!("Hello Kitty").readlines
 
 The automatic selection of mode can be bypassed entirely using
-Rio#mode and Rio#open.
+IF::RubyIO#mode and IF::RubyIO#open.
 
 If a mode is specified using +mode+, the file will still be opened
 automatically, but the mode specified in the +mode+ method will be
 used regardless of whether it makes sense.
 
-A Rio can also be opened explicitly using Rio#open. +open+ takes one
+A Rio can also be opened explicitly using IF::RubyIO#open. +open+ takes one
 parameter, a mode.  This also will override all of Rio's automatic
 mode selection.
 
@@ -888,7 +893,7 @@ effectively means
  rio('afile').lines.records(1..2)
 
 The CSV extension distingishes between items selected using
-Rio#records and those selected using Rio#lines. Rio returns records
+IF::GrandeStream#records and those selected using IF::GrandeStream#lines. Rio returns records
 parsed into Arrays by the CSV library when +records+ is used, and
 returns Strings as normal when +lines+ is used.  +records+ is the
 default.
@@ -971,7 +976,7 @@ while +records+ only selects and does not specify the record-type,
 +lines+ is the default. 
 
 The YAML extension distingishes between items selected using
-Rio#records, Rio#rows and Rio#lines. Rio returns objects
+IF::GrandeStreamrecords, IF::GrandeStreamrows and IF::GrandeStreamlines. Rio returns objects
 loaded via YAML#load when +records+ is used; returns the YAML text
 as a String when +rows+ is used; and
 returns lines as Strings as normal when +lines+ is used.  
@@ -1015,24 +1020,24 @@ which is aliased to #dump
  rio('afile.yaml').yaml.dump(anobject)
 
 
-Rio#> (copy-to) and Rio#>> (append-to) will fill an array with with all selected
+IF::Grande#> (copy-to) and IF::Grande#>> (append-to) will fill an array with with all selected
 YAML documents in the Rio. For non-arrays, the yaml text is copied. (This may change
 if a useful reasonable alternative can be found)
  
  rio('afile.yaml').yaml > anarray # load all YAML documents from 'afile.yaml'
 
-Single objects can be written using Rio#putrec (aliased to IF::YAML#putobj and IF::YAML#dump)
+Single objects can be written using IF::GrandeStream#putrec (aliased to IF::YAML#putobj and IF::YAML#dump)
 
  rio('afile.yaml').yaml.putobj(anobject)
 
-Single objects can be loaded using Rio#getrec (aliase to IF::YAML#getobj and IF::YAML#load)
+Single objects can be loaded using IF::GrandeStream#getrec (aliase to IF::YAML#getobj and IF::YAML#load)
 
  anobject = rio('afile.yaml').yaml.getobj
 
 A Rio in yaml-mode is just like any other Rio. And all the things you
 can do with any Rio come for free.  They can be iterated over using
-#each and read into an array using #[] just like any other Rio. All
-the selection criteria are identical also.
+IF::Grande#each and read into an array using IF::Grande#[] just like
+any other Rio. All the selection criteria are identical also.
 
 Get the first three objects into an array:
 
