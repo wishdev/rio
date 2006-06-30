@@ -73,9 +73,9 @@ class TC_skip < Test::RIO::TestCase
   end
   def test_rec_postfix_a
     exp = rio(@g1).lines[/2/]
-    p exp
+    #p exp
     exp = rio(@g1).records(/2/).skip[/L2/]
-    p exp
+    #p exp
 #    ans = rio(@g1).lines(/2/).skip[0..5]
 #    p ans
     
