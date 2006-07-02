@@ -23,16 +23,15 @@
 #
 # To create the documentation for Rio run the command
 #  ruby build_doc.rb
-# from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
+# from the distribution directory.
 #
 # Suggested Reading
 # * RIO::Doc::SYNOPSIS
 # * RIO::Doc::INTRO
 # * RIO::Doc::HOWTO
+# * RIO::Doc::EXAMPLES
 # * RIO::Rio
 #
-# <b>Rio is pre-alpha software. 
-# The documented interface and behavior is subject to change without notice.</b>
 
 
 require 'zlib'

@@ -22,18 +22,17 @@
 #++
 #
 # To create the documentation for Rio run the command
-#  rake rdoc
-# from the distribution directory. Then point your browser at the 'doc/rdoc' directory.
+#  ruby build_doc.rb
+# from the distribution directory.
 #
 # Suggested Reading
 # * RIO::Doc::SYNOPSIS
 # * RIO::Doc::INTRO
 # * RIO::Doc::HOWTO
+# * RIO::Doc::EXAMPLES
 # * RIO::Rio
 #
-# <b>Rio is pre-alpha software. 
-# The documented interface and behavior is subject to change without notice.</b>
-#
+
 require 'tmpdir'
 module RIO
   module Temp #:nodoc: all
