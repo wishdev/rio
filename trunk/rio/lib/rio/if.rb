@@ -57,7 +57,7 @@ module RIO
     require 'rio/if/fileordir'
     require 'rio/if/file'
     require 'rio/if/dir'
-    require 'rio/if/stream'
+    require 'rio/if/rubyio'
     require 'rio/if/temp'
     require 'rio/if/string'
   end
