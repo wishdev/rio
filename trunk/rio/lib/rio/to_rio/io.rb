@@ -35,6 +35,6 @@
 
 require 'rio/to_rio'
 
-class IO
+class IO #:nodoc:
   include RIO::ToRio::IO
 end

@@ -35,7 +35,7 @@
 
 require 'rio/to_rio'
 
-class Object
+class Object #:nodoc:
   include RIO::ToRio::Object
 end
 require 'rio/to_rio/io'

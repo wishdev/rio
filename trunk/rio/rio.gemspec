@@ -1,5 +1,5 @@
-$:.unshift 'doc/patched_rdoc'
-require 'rdoc/generators/html_generator'
+#$:.unshift 'doc/patched_rdoc'
+#require 'rdoc/generators/html_generator'
 $:.unshift 'lib'
 require 'rubygems'
 require 'rio'
@@ -21,7 +21,7 @@ module PKG
   C_FILES = rio('doc/patched_rdoc').all.files['*.rb']
   T_FILES = rio('test').all.norecurse('qp').files['*.rb']
 
-  FILES = SRC_FILES+DOC_FILES+XMP_FILES+MSC_FILES+D_FILES+T_FILES+C_FILES
+  DIST_FILES = SRC_FILES+DOC_FILES+XMP_FILES+MSC_FILES+D_FILES+T_FILES+C_FILES
 
   OUT_DIR = 'pkg'
   OUT_FILES = %w[.gem .tar.gz .zip].map { |ex| OUT_DIR + '/' + FULLNAME + ex }
@@ -37,16 +37,15 @@ spec = Gem::Specification.new do |s|
 
   s.platform = Gem::Platform::RUBY
   s.summary = PKG::SUMMARY
-  s.files = PKG::FILES.map { |rf| rf.to_s }
+  s.files = PKG::DIST_FILES.map { |rf| rf.to_s }
           #s.add_dependency( 'extensions', '>= 0.6.0' )
 
   s.require_path = 'lib'
-  s.require_paths << 'doc/patched_rdoc'
   s.autorequire = 'rio'
 
   s.has_rdoc = true
 
-  RDOC_OPTIONS = ['--line-numbers','-mRIO::Doc::SYNOPSIS','-Tdoc/generators/template/html/rio.rb']
+  RDOC_OPTIONS = ['--show-hash','--line-numbers','-mRIO::Doc::SYNOPSIS','-Tdoc/generators/template/html/rio.rb']
   s.rdoc_options << RDOC_OPTIONS 
 end
 

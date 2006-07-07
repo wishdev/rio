@@ -34,6 +34,6 @@
 #
 
 require 'rio/to_rio'
-class Array
+class Array #:nodoc:
   include RIO::ToRio::Array
 end

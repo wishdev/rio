@@ -242,6 +242,13 @@ module RIO
       def getline() target.getline() end
 
 
+      # Slurps the contents of the rio into a string.
+      #
+      #  astring = rio('afile.txt').contents # slurp the entire contents of afile.txt into astring
+      # 
+      def contents() target.contents() end
+
+
       # Writes a single record to a Rio
       def putrec(el) target.putrec(el) end
 

@@ -43,7 +43,7 @@ module RIO
 end
 
 module RIO
-  module Error
+  module Error  #:nodoc: all
     module NotImplemented
       def nodef(*args) 
         method_name = Kernel.caller[0].match(/(?:.+):in \`(.+)\'$/)[1]

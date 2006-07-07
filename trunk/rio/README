@@ -36,10 +36,8 @@ Suggested Reading
 * RIO::Doc::EXAMPLES
 * RIO::Rio
 
-To install Rio untar the distribution and type
-  ruby setup.rb config
-  ruby setup.rb setup
-  ruby setup.rb install
+To install Rio: from the distribution directory type
+  ruby setup.rb
 
 Rio is also available as a gem. If you have rubygems installed use:
   gem install rio

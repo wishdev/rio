@@ -35,6 +35,6 @@
 
 require 'rio/to_rio'
 
-class String
+class String #:nodoc:
   include RIO::ToRio::String
 end

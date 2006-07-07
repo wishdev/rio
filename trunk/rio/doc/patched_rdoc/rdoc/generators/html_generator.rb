@@ -1218,6 +1218,8 @@ module Generators
         template = File.join("rdoc/generators/template",
                              @options.generator.key, template)
       end
+      p "HOHOHO Template #{template}"
+
       require template
       extend RDoc::Page
     rescue LoadError

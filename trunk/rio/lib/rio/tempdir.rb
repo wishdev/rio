@@ -30,7 +30,7 @@ it apart in tempdir.rb.
 
 require 'tmpdir'
 
-module AutoRemoval
+module AutoRemoval #:nodoc: all
   MAX_TRY = 10
   @@cleanlist = []
 
@@ -96,7 +96,7 @@ module AutoRemoval
 end
 
 require 'pathname'
-class Tempdir < Pathname
+class Tempdir < Pathname #:nodoc: all
   include AutoRemoval
 
   def initialize(*args)

@@ -49,13 +49,6 @@ module RIO
       #
       def gets(sep_string=$/) target.gets(sep_string) end
 
-      # Slurps the contents of the rio into a string.
-      #
-      #  astring = rio('afile.txt').contents # slurp the entire contents of afile.txt into astring
-      # 
-      def contents() target.contents() end
-
-
       # IF::Grande#each_record
       # 
       #
