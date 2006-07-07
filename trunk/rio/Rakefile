@@ -57,20 +57,19 @@ module PKG
   EMAIL = "rio4ruby@rubyforge.org"
   HOMEPAGE = "http://rio.rubyforge.org/"
   RUBYFORGE_PROJECT = "rio"
+  RDOC_OPTIONS = ['--show-hash','--line-numbers','-mRIO::Doc::SYNOPSIS','-Tdoc/generators/template/html/rio.rb']
 
   SRC_FILES = FileList['lib/**/*.rb']
   DOC_FILES = FileList['README','lib/rio.rb','lib/rio/doc/*.rb',
                        'lib/rio/if/*.rb','lib/rio/kernel.rb','lib/rio/constructor.rb']
   XMP_FILES = FileList['ex/*']
-  D_FILES = FileList['doc/**/*']
-  TST_FILES = FileList['test/**/*.rb']
+  D_FILES = FileList.new('doc/**/*') { |f| f.exclude('doc/rdoc') }
+  TST_FILES = FileList.new('test/**/*.rb') { |f| f.exclude('test/qp') }
   MSC_FILES = FileList['setup.rb', 'build_doc.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION']
   DIST_FILES =  FileList.new(SRC_FILES.to_a + DOC_FILES.to_a + XMP_FILES.to_a + 
                                              D_FILES.to_a + TST_FILES.to_a + MSC_FILES.to_a
                              ) do |fl|
     fl.exclude( /\bsvn\b/ )
-    fl.exclude( 'test/qp' )
-    fl.exclude( 'test/coverage' )
     fl.exclude( 'doc/rdoc' )
   end
   OUT_DIR = 'pkg'
@@ -109,11 +108,10 @@ task :doc => [:rio_rdoc] do
 #    ruby %{-I../lib ../bin/webgen -V 2 }
 end
 
-RDOC_OPTIONS = ['--line-numbers']
 rd = Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = 'doc/rdoc'
   rdoc.title    = PKG::TITLE
-  rdoc.options = RDOC_OPTIONS
+  rdoc.options = PKG::RDOC_OPTIONS
   rdoc.main = 'RIO::Doc::SYNOPSIS'
   PKG::DOC_FILES.to_a.each do |glb|
     #next if glb =~ /yaml.rb$/
@@ -127,15 +125,11 @@ task :rio_rdoc do
   require 'rio/doc/SYNOPSIS'
   ruby "-Idoc/patched_rdoc -Ilib doc/bin/rdoc --show-hash --op doc/rdoc --title #{PKG::TITLE} --line-numbers  --template doc/generators/template/html/rio.rb #{PKG::DOC_FILES} --main #{RIO::Doc::SYNOPSIS}" 
 end
-CLOBBER << "test/rio.log"
+CLOBBER << "test/rio.log" << "test/qp"
 task :test do |t|
     sh "cd test;ruby -I../lib -I. runtests.rb"
 end
 
-#task :package => [:gen_files] do |var|
-#  require 'rio/kernel'
-#  rio(ZIP_DIR) << rio('pkg').files['*.tgz','*.tar.gz','*.zip','*.gem']
-#end
 task :ziparc do |var|
   require 'rio'
   #$trace_states = true
@@ -155,7 +149,8 @@ end
 #task :gen_files => [:gen_changelog, :gen_version, :gen_installrb]
 #CLOBBER << "ChangeLog" << "VERSION" << "install.rb"
 
-task :gen_files => [:gen_changelog, :gen_version]
+#task :gen_files => [:gen_changelog, :gen_version]
+task :gen_files => [:gen_version]
 CLOBBER << "ChangeLog" << "VERSION" 
 task :no_old_pkg do
 #  unless Dir["pkg/#{PKG::FULLNAME}*"].empty?
@@ -174,6 +169,34 @@ Rake::PackageTask.new( PKG::NAME, PKG::VERSION ) do |p|
   p.need_tar_gz = true
   p.need_zip = true
   p.package_files = PKG::DIST_FILES
+end
+
+Spec = Gem::Specification.new do |s|
+  s.name = PKG::NAME
+  s.version = PKG::VERSION
+  s.author = "Christopher Kleckner"
+  s.email = "rio4ruby@rubyforge.org"
+  s.homepage = "http://rio.rubyforge.org/"
+  s.rubyforge_project = "rio"
+
+  s.platform = Gem::Platform::RUBY
+  s.summary = PKG::SUMMARY
+  s.files = PKG::DIST_FILES.map { |rf| rf.to_s }
+
+  s.require_path = 'lib'
+  s.autorequire = 'rio'
+
+  s.has_rdoc = true
+
+  s.rdoc_options << PKG::RDOC_OPTIONS 
+end
+
+Rake::GemPackageTask.new(Spec) do |p| end
+
+desc "Build the Gem spec file for the rio package"
+task :gemspec => "pkg/rio.gemspec"
+file "pkg/rio.gemspec" => ["pkg", "Rakefile"] do |t|
+  open(t.name, "w") do |f| f.puts Spec.to_yaml end
 end
 
 desc "Make a new release (test,package,svn_version)"
@@ -205,29 +228,21 @@ task :svn_commit do
   sh cmd
 end
 
-desc "Build the gem from the gemspec"
-task :buildgem => ['rio.gemspec'] do
-  cmd = "gem build 'rio.gemspec'"
-  sh cmd
-end
+#desc "Build the gem from the gemspec"
+#task :buildgem => ['rio.gemspec'] do
+#  cmd = "gem build 'rio.gemspec'"
+#  sh cmd
+#end
 
+GEM_FILENAME = "pkg/#{Spec.full_name}.gem"
 desc "Install development gem"
-task :installgem => [:buildgem] do
-  cmd = "gem install #{PKG::FULLNAME}"
+task :installgem => [GEM_FILENAME] do
+  cmd = "gem install #{GEM_FILENAME}"
   sh cmd
 end
-
-=begin
-desc "Creates a tag in the repository"
-task :tag do
-  repositoryPath = File.dirname( $1 ) if `svn info` =~ /^URL: (.*)$/
-  fail "Tag already created in repository " if /#{PKG::NAME}/ =~ `svn ls #{repositoryPath}/versions`
-  sh "svn cp -m 'Created version #{PKG::NAME}' #{repositoryPath}/trunk #{repositoryPath}/versions/#{PKG::NAME}"
-end
-=end
 
 desc "Upload documentation to homepage"
-task :uploaddoc => [:rio_rdoc] do
+task :uploaddoc => [:rdoc] do
   Dir.chdir('doc/rdoc')
   puts
   puts "rio4ruby@rubyforge.org:/var/www/gforge-projects/#{PKG::NAME}/"
