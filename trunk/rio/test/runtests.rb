@@ -12,3 +12,5 @@ require 'tc/all'
 $trace_states = false
 require 'test/unit/ui/console/testrunner'
 #require 'test/unit/ui/tk/testrunner'
+#require 'test/unit/ui/fox/testrunner'
+#Test::Unit::UI::Tk::TestRunner.run(TC_MyTest)

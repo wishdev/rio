@@ -69,6 +69,7 @@ class TC_RIO_expand_path < Test::Unit::TestCase
   end
 
   def test_expand_path_from_tilde
+    return if $mswin32
     @tdir.chdir do
       srel = 'groovy'
       sbase = '~'

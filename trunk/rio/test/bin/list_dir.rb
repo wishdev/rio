@@ -9,6 +9,6 @@ require 'rio'
 
 dir = ARGV.shift || '.'
 rio(dir).chdir {
-  puts rio.to_a
+  puts rio[]
 }
 

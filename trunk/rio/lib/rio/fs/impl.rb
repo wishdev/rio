@@ -112,7 +112,7 @@ module RIO
       def cp_r(s,d)  @util.cp_r(s.to_s,d.to_s) end
       def rmtree(s) @util.rmtree(s.to_s) end
       def mkpath(s) @util.mkpath(s.to_s) end
-      def rm(s) @util.rm(s.to_s) end
+      def rm(s) @file.delete(s.to_s) end
       def touch(s) @util.touch(s.to_s) end
 
       # file or dir

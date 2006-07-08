@@ -15,9 +15,9 @@ module Test
         'list_dir'    => "ruby #{TEST_BIN_DIR}/list_dir.rb",
       }
       PROG = {
-        'count_lines' => XPROGS['count_lines'],
-        'find_lines'  => XPROGS['find_lines'],
-        'list_dir'    => XPROGS['list_dir'],
+        'count_lines' => ($mswin32 ? RPROGS['count_lines'] : XPROGS['count_lines']),
+        'find_lines' => ($mswin32 ? RPROGS['find_lines'] : XPROGS['find_lines']),
+        'list_dir' => ($mswin32 ? RPROGS['list_dir'] : XPROGS['list_dir']),
       }
     end
   end
