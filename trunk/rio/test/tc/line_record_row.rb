@@ -12,7 +12,7 @@ class TC_line_record_row < Test::RIO::TestCase
   def self.once
     @@once = true
     rio('f0') < ['zero','one','two','three'].map{ |w| w + $/ }
- end
+  end
   def setup
     super
     self.class.once unless @@once
