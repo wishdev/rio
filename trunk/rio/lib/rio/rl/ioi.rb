@@ -65,6 +65,7 @@ module RIO
         super
       end
       def initialize_copy(cp)
+        super
         @ios = cp.ios.clone unless cp.ios.nil?
       end
       def open(ios=nil)

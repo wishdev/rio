@@ -60,6 +60,7 @@ module RIO
         super
       end
       def initialize_copy(*args)
+        super
         @piper = @piper.clone
       end
       def opaque()
