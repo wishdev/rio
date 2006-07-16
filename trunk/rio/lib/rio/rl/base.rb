@@ -54,6 +54,9 @@ module RIO
         #p callstr('Base#initialize',*args)
         @fs = openfs_
       end
+      def initialize_copy(cp)
+        super
+      end
       def openfs_() 
         nil 
       end

@@ -41,19 +41,21 @@ require 'rio/ftp/conncache'
 module RIO
   module FTP
     class FS 
-      attr_reader :uri,:conn,:remote_root
+      attr_reader :uri
       def initialize(uri)
         @uri = uri.clone
         @file = ::File
-        @conn = ConnCache.instance.connect(@uri)
-        @remote_root = @conn.remote_root
-        @remote_root = '' if @remote_root == '/'
+        @conn = nil
       end
       def self.create(*args)
         new(*args)
       end
-
-
+      def remote_root
+        conn.remote_root
+      end
+      def conn
+        @conn ||= ConnCache.instance.connect(@uri)
+      end
 
 
 
@@ -65,7 +67,7 @@ module RIO
       include RIO::FS::Str
 
       
-      def pwd() @conn.pwd end
+      def pwd() conn.pwd end
       def getwd()
         self.pwd
       end
@@ -81,55 +83,55 @@ module RIO
       end
       def chdir(url,&block)
         if block_given?
-          wd = @conn.pwd
-          @conn.chdir(remote_path(url))
+          wd = conn.pwd
+          conn.chdir(remote_path(url))
           begin
             rtn = yield remote_path(url)
           ensure
-            @conn.chdir(wd)
+            conn.chdir(wd)
           end
           return rtn
         else
-          @conn.chdir(remote_path(url))
+          conn.chdir(remote_path(url))
         end
       end
       def mkdir(url)
-        @conn.mkdir(remote_path(url))
+        conn.mkdir(remote_path(url))
       end
       def mv(src_url,dst_url)
-        @conn.rename(remote_path(src_url),remote_path(dst_url))
+        conn.rename(remote_path(src_url),remote_path(dst_url))
       end
       def size(url)
-        @conn.size(remote_path(url))
+        conn.size(remote_path(url))
       end
       def zero?(url)
         size(url) == 0
       end
       def mtime(url)
-        @conn.mtime(remote_path(url))
+        conn.mtime(remote_path(url))
       end
       def rmdir(url)
-        @conn.rmdir(remote_path(url))
+        conn.rmdir(remote_path(url))
       end
       def rm(url)
-        @conn.delete(remote_path(url))
+        conn.delete(remote_path(url))
       end
 
       def get_ftype(url)
         pth = remote_path(url)
         ftype = nil
         begin
-          @conn.mdtm(pth)
+          conn.mdtm(pth)
           ftype = 'file'
         rescue Net::FTPPermError
-          wd = @conn.pwd
+          wd = conn.pwd
           begin
-            @conn.chdir(pth)
+            conn.chdir(pth)
             ftype = 'dir'
           rescue Net::FTPPermError
             ftype = 'nada'
           ensure
-            @conn.chdir(wd)
+            conn.chdir(wd)
           end
         end
         ftype
