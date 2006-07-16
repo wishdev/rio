@@ -93,7 +93,10 @@ module RIO
       def to_rl() self.rl end
 
       def url() self.scheme+SUBSEPAR+self.opaque end
-      def close() nil end
+      def close() 
+        #p "Closing RL #{self}"
+        nil 
+      end
 
       def fs2url(pth) RL.fs2url(pth) end
       def url2fs(pth) RL.url2fs(pth) end

@@ -44,14 +44,19 @@ module RIO
       attr_reader :uri,:conn,:remote_root
       def initialize(uri)
         @uri = uri.clone
+        @file = ::File
         @conn = ConnCache.instance.connect(@uri)
         @remote_root = @conn.remote_root
         @remote_root = '' if @remote_root == '/'
-        @file = ::File
       end
       def self.create(*args)
         new(*args)
       end
+
+
+
+
+
       def root()
         uri = @uri.clone
         uri.path = '/'
@@ -66,7 +71,7 @@ module RIO
       end
       def cwd()
         remote_wd = self.pwd
-        remote_rel = remote_wd.sub(/^#{@remote_root}/,'')
+        remote_rel = remote_wd.sub(/^#{self.remote_root}/,'')
         wduri = uri.clone
         wduri.path = remote_rel
         wduri.to_s

@@ -259,8 +259,6 @@ module RIO
     def state2class(state_name,rio_handle=nil)
       StateMapper.instance.state2class(state_name,rio_handle)
     end
-    # 2105 N Greenwood Ave, Pueblo, CO 81003
-    # 719-545-0685
     def subscheme_module(sch)
       @ss_module[sch] ||= case sch
                           when 'file','path'

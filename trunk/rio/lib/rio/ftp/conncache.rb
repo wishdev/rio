@@ -41,11 +41,18 @@ require 'singleton'
 module RIO
   module FTP
     class Connection
-      attr_reader :uri,:netftp,:remote_root
+      attr_reader :uri
       def initialize(uri)
         @uri = uri.clone
+        @netftp = nil
+        @remote_root = nil
+        _init_connection()
+      end
+      def _init_connection
         @netftp = ::Net::FTP.new()
+        #p 'Connecting'
         @netftp.connect(@uri.host,@uri.port)
+        #p "Logging In"
         if @uri.user
           @netftp.login(@uri.user,@uri.password)
         else
@@ -53,7 +60,16 @@ module RIO
         end
         @remote_root = @netftp.pwd
       end
+      def netftp()
+        #_init_connection() unless @netftp
+        @netftp
+      end
+      def remote_root
+        #_init_connection() unless @netftp
+        @remote_root
+      end
       def method_missing(sym,*args,&block)
+        #_init_connection() unless @netftp
         @netftp.__send__(sym,*args,&block)
       end
     end
@@ -80,6 +96,7 @@ module RIO
       def close(uri)
         key = urikey(uri)
         @count[key] -= 1
+        #p "Closed #{uri} count=#{@count[key]}"
       end
     end
   end
