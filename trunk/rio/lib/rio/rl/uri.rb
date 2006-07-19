@@ -140,6 +140,12 @@ module RIO
         else urlpath()
         end
       end
+      def path=(pth)
+        case scheme
+        when 'file','path' then self.fspath = pth
+        else self.urlpath = pth
+        end
+      end
       def scheme() uri.scheme end
       def host() uri.host end
       def host=(arg) uri.host = arg end

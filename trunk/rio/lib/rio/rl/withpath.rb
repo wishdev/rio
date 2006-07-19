@@ -122,10 +122,15 @@ module RIO
         RL.url2fs(self.urlpath)
       end
 
+      def fspath=(fpth)
+        self.urlpath = RL.fs2url(fpth)
+      end
+
       # The value of urlpath() with any trailing slash removed
       # returns a String
       def path_no_slash() 
-        self.urlpath.sub(/\/$/,'')
+        pth = self.path
+        pth == '/' ? pth : pth.sub(/\/$/,'')
       end
       def pathdepth()
         pth = self.path_no_slash
@@ -209,7 +214,8 @@ module RIO
       # returns a RL
       def dirname() 
         new_rl = self.clone
-        new_rl.urlpath = fs.dirname(self.path_no_slash)
+        #p self.path_no_slash
+        new_rl.path = fs.dirname(self.path_no_slash)
         new_rl
       end
         
@@ -239,9 +245,11 @@ module RIO
       def uri_from_string_(str)
         case str
         when %r%^file://(#{HOST})?(/.*)?$% then ::URI.parse(str)
+        when %r/^[a-zA-Z]:/ then 
+          ::URI.parse(str)
         when %r/^#{SCHEME}:/ then ::URI.parse(str)
         #when %r{^/} then ::URI.parse('file://'+str+( ( str[-1,0] == '/' ) ? "" : "/"))
-        when %r{^/} then ::URI.parse('file://'+str)
+        when %r{^/} then ::URI.parse('file://'+RL.fs2url(str))
         else ::URI.parse(str)
         end
       end
