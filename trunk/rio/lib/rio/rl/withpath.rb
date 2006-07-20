@@ -125,16 +125,19 @@ module RIO
       def fspath=(fpth)
         self.urlpath = RL.fs2url(fpth)
       end
+      def is_root?(upth)
+        upth =~ %r%^/([a-zA-Z]:/)?%
+      end
 
       # The value of urlpath() with any trailing slash removed
       # returns a String
       def path_no_slash() 
         pth = self.urlpath
-        pth == '/' ? pth : pth.sub(/\/$/,'')
+        is_root?(pth) ? pth : pth.sub(/\/$/,'')
       end
       def pathdepth()
         pth = self.path_no_slash
-        (pth == '/' ? 0 : pth.count('/'))
+        is_root?(pth) ? 0 : pth.count('/')
       end
 
       def _uri(arg)
