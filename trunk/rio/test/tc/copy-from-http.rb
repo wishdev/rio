@@ -47,10 +47,13 @@ class TC_copy_from_http < Test::RIO::TestCase
     ario = rio('ud').delete!.mkdir
     url = 'http://localhost/riotest/hw.html'
     urio = rio(url)
+    #p "HERE1 urio=#{urio.rl.inspect}"
     #$trace_states = true
     ario < urio
     $trace_states = false
+    #p "HERE2 urio=#{urio.rl.inspect}"
     drio = rio(ario,urio.filename)
+    #p drio,urio,urio.filename
     assert(drio.file?)
     assert(urio.contents,drio.contents)
   end

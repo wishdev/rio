@@ -97,7 +97,7 @@ module RIO
         when ::String 
           uri_from_string_(arg) || ::URI.parse([RL.fs2url(::Dir.getwd+'/'),arg].join('/').squeeze('/'))
         else
-          raise(ArgumentError,"'#{arg} is not a valid base path")
+          raise(ArgumentError,"'#{arg}' is not a valid base path")
         end
       end
       def _get_opts_from_args(args)

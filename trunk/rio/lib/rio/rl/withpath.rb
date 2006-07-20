@@ -129,7 +129,7 @@ module RIO
       # The value of urlpath() with any trailing slash removed
       # returns a String
       def path_no_slash() 
-        pth = self.path
+        pth = self.urlpath
         pth == '/' ? pth : pth.sub(/\/$/,'')
       end
       def pathdepth()
@@ -147,7 +147,7 @@ module RIO
       def abs(thebase=nil) 
         thebase ||= self.base
         base_uri = _uri(thebase)
-        path_uri = self.uri
+        path_uri = self.uri.clone
         #p "abs: base_uri=#{base_uri.inspect}"
         #p "abs: path_uri=#{path_uri.inspect}"
         if path_uri.scheme == 'file' and base_uri.scheme != 'file'
@@ -222,10 +222,22 @@ module RIO
       # returns the tail portion of the path
       # returns a RL
       def filename() 
+        basename('')
+#        base_rl = self.abs
+#        base_rl.urlpath = fs.dirname(base_rl.path_no_slash)
+#        path_str = fs.basename(self.path_no_slash)
+#        _build(path_str,{:base => base_rl.to_s, :fs => self.fs})
+      end
+
+      # returns the tail portion of the path minus the extension
+      # returns a RL
+      def basename(ext)
+        #p callstr('basename',ext)
         base_rl = self.abs
-        base_rl.urlpath = fs.dirname(self.path_no_slash)
-        path_str = fs.filename(self.path_no_slash)
-        _build(path_str,{:base => base_rl.to_s, :fs => self.to_s})
+        base_rl.urlpath = fs.dirname(base_rl.path_no_slash)
+        path_str = fs.basename(self.path_no_slash,ext)
+        #p "BASENAME: path_str=#{path_str} path_no_slash=#{self.path_no_slash} self=#{self}"
+        _build(path_str,{:base => base_rl.to_s, :fs => self.fs})
       end
 
       # calls URI#merge
