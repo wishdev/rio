@@ -4,6 +4,7 @@ require 'tc/testcase'
 require 'tc/yaml'
 require 'tc/line_record_row'
 
+require 'tc/path_parts'
 require 'tc/abs'
 require 'tc/tonl'
 require 'tc/files_select'

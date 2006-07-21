@@ -193,90 +193,91 @@ class TC_RIO_noqae < Test::Unit::TestCase
   end
 
   def test_noqae_fs_de
-    @@tdir.abs.chdir
-    begin
+    @@tdir.abs.chdir do
       begin
-        ans = []
-        rio('d0').dirs.each { |el| 
-          assert(el.directory?)
-        }
-        rio('d0').skipdirs.each { |el| 
-          assert!(el.directory?)
-        }
-        rio('d0').skipdirs('*').each { |el| 
-          assert(el.directory?)
-        }
-        rio('d0').files.each { |el| 
-          assert(el.file?)
-        }
-        rio('d0').skipfiles.each { |el| 
-          assert!(el.file?)
-        }
-        rio('d0').skipfiles('*').each { |el| 
-          assert(el.file?)
-        }
-        return unless $supports_symlink
         begin
-          exp = all.select { |el| el =~ /[lnc]\d\Z/ }
           ans = []
-          rio('d0').entries(:symlink?).each { |el| 
-            assert(el.symlink?)
-            ans << el
-          }
-          assert_equal(exp.sort,smap(ans).sort)
-        end
-        begin
-          exp = all.select { |el| el =~ /[l]\d\Z/ }
-          ans = []
-          rio('d0').files(:symlink?).each { |el| 
-            assert(el.file?)
-            assert(el.symlink?)
-            ans << el
-          }
-          assert_equal(exp.sort,smap(ans).sort)
-        end
-        begin
-          exp = all.select { |el| el =~ /[c]\d\Z/ }
-          ans = []
-          rio('d0').dirs(:symlink?).each { |el| 
+          rio('d0').dirs.each { |el| 
             assert(el.directory?)
-            assert(el.symlink?)
-            ans << el
           }
-          assert_equal(exp.sort,smap(ans).sort)
-        end
-        begin
-          exp = all.select { |el| el =~ /[df]\d\Z/ }
-          ans = []
-          rio('d0').skipentries(:symlink?).each { |el| 
-            assert!(el.symlink?)
-            ans << el
+          rio('d0').skipdirs.each { |el| 
+            assert!(el.directory?)
           }
-          assert_equal(exp.sort,smap(ans).sort)
-        end
-        begin
-          exp = all.select { |el| el =~ /[d]\d\Z/ }
-          ans = []
-          rio('d0').skipdirs(:symlink?).each { |el| 
+          rio('d0').skipdirs('*').each { |el| 
             assert(el.directory?)
-            assert!(el.symlink?)
-            ans << el
           }
-          assert_equal(exp.sort,smap(ans).sort)
-        end
-        begin
-          exp = all.select { |el| el =~ /[f]\d\Z/ }
-          ans = []
-          rio('d0').skipfiles(:symlink?).each { |el| 
+          rio('d0').files.each { |el| 
             assert(el.file?)
-            assert!(el.symlink?)
-            ans << el
           }
-          assert_equal(exp.sort,smap(ans).sort)
+          rio('d0').skipfiles.each { |el| 
+            assert!(el.file?)
+          }
+          rio('d0').skipfiles('*').each { |el| 
+            assert(el.file?)
+          }
+          return unless $supports_symlink
+          begin
+            exp = all.select { |el| el =~ /[lnc]\d\Z/ }
+            ans = []
+            rio('d0').entries(:symlink?).each { |el| 
+              assert(el.symlink?)
+              ans << el
+            }
+            assert_equal(exp.sort,smap(ans).sort)
+          end
+          begin
+            exp = all.select { |el| el =~ /[l]\d\Z/ }
+            ans = []
+            rio('d0').files(:symlink?).each { |el| 
+              assert(el.file?)
+              assert(el.symlink?)
+              ans << el
+            }
+            assert_equal(exp.sort,smap(ans).sort)
+          end
+          begin
+            exp = all.select { |el| el =~ /[c]\d\Z/ }
+            ans = []
+            rio('d0').dirs(:symlink?).each { |el| 
+              assert(el.directory?)
+              assert(el.symlink?)
+              ans << el
+            }
+            assert_equal(exp.sort,smap(ans).sort)
+          end
+          begin
+            exp = all.select { |el| el =~ /[df]\d\Z/ }
+            ans = []
+            rio('d0').skipentries(:symlink?).each { |el| 
+              assert!(el.symlink?)
+              ans << el
+            }
+            assert_equal(exp.sort,smap(ans).sort)
+          end
+          begin
+            exp = all.select { |el| el =~ /[d]\d\Z/ }
+            ans = []
+            rio('d0').skipdirs(:symlink?).each { |el| 
+              assert(el.directory?)
+              assert!(el.symlink?)
+              ans << el
+            }
+            assert_equal(exp.sort,smap(ans).sort)
+          end
+          begin
+            exp = all.select { |el| el =~ /[f]\d\Z/ }
+            ans = []
+            rio('d0').skipfiles(:symlink?).each { |el| 
+              assert(el.file?)
+              assert!(el.symlink?)
+              ans << el
+            }
+            assert_equal(exp.sort,smap(ans).sort)
+          end
         end
       end
     end
-    #rio(wd).chdir
+      #rio(wd).chdir
   end
   def test_noqae_fs_re
     

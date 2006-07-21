@@ -123,16 +123,31 @@ module RIO
       end
 
       def fspath=(fpth)
-        self.urlpath = RL.fs2url(fpth)
+        #p "FSPATH= #{fpth} => #{RL.fs2url(fpth)}"
+        case fpth
+        when %r{^//(#{HOST})(/.*)?$}
+          self.host = $1
+          self.urlpath = RL.fs2url($2||'')
+        else
+          self.urlpath = RL.fs2url(fpth)
+        end
       end
       def is_root?(upth)
-        upth =~ %r%^/([a-zA-Z]:/)?%
+        upth =~ %r%^(/?[a-zA-Z]:)?/% or upth =~ %r%^//(#{HOST})%
       end
 
       # The value of urlpath() with any trailing slash removed
       # returns a String
       def path_no_slash() 
         pth = self.urlpath
+        #p "path_no_slash: #{is_root?(pth)} #{pth}"
+        is_root?(pth) ? pth : pth.sub(/\/$/,'')
+      end
+      # The value of urlpath() with any trailing slash removed
+      # returns a String
+      def fspath_no_slash() 
+        pth = self.fspath
+        #p "path_no_slash: #{is_root?(pth)} #{pth}"
         is_root?(pth) ? pth : pth.sub(/\/$/,'')
       end
       def pathdepth()
@@ -212,36 +227,35 @@ module RIO
         self
       end
       protected :join_
+
       # returns the directory portion of the path
       # like File#dirname
       # returns a RL
       def dirname() 
         new_rl = self.clone
-        #p self.path_no_slash
-        new_rl.path = fs.dirname(self.path_no_slash)
+        new_rl.fspath = fs.dirname(self.fspath_no_slash)
         new_rl
       end
         
-      # returns the tail portion of the path
-      # returns a RL
-      def filename() 
-        basename('')
-#        base_rl = self.abs
-#        base_rl.urlpath = fs.dirname(base_rl.path_no_slash)
-#        path_str = fs.basename(self.path_no_slash)
-#        _build(path_str,{:base => base_rl.to_s, :fs => self.fs})
-      end
-
       # returns the tail portion of the path minus the extension
       # returns a RL
       def basename(ext)
         #p callstr('basename',ext)
         base_rl = self.abs
-        base_rl.urlpath = fs.dirname(base_rl.path_no_slash)
-        path_str = fs.basename(self.path_no_slash,ext)
-        #p "BASENAME: path_str=#{path_str} path_no_slash=#{self.path_no_slash} self=#{self}"
-        _build(path_str,{:base => base_rl.to_s, :fs => self.fs})
+        base_rl.fspath = fs.dirname(base_rl.fspath_no_slash)
+        path_str = fs.basename(self.fspath_no_slash,ext)
+        _build(path_str,{:base => base_rl.uri, :fs => self.fs})
       end
+      def build_arg0_(path_str)
+        path_str
+      end
+
+      # returns the tail portion of the path
+      # returns a RL
+      def filename() 
+        basename('')
+      end
+
 
       # calls URI#merge
       # returns a RL

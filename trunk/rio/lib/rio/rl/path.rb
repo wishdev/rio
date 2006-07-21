@@ -56,6 +56,9 @@ module RIO
         end
         [vuri,vbase,vfs]
       end
+      def build_arg0_(path_str)
+        RL.url2fs(path_str)
+      end
       def scheme() 
         uri.scheme || 'path' 
       end
