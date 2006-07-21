@@ -226,7 +226,10 @@ module RIO
   module_function :rio
 
   # Create a Rio as with RIO#rio which refers to the current working directory 
-  #  wd = RIO.cwd
+  #   wd = RIO.cwd
+  # If passed arguments they are treated as if
+  #   rio(RIO.cwd,*args)
+  # had been called
   def cwd(*args,&block)  # :yields: self
     Rio.new.getwd(*args,&block) 
   end

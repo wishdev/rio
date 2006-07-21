@@ -85,7 +85,7 @@ class TC_path_parts < Test::RIO::TestCase
     @@once = true
     expfile = RIO.cwd('../../tc/rlparts.ans.yml')
     @@exp = expfile.yaml.get
-    
+    # Millenium confirmation Number 7/21/06 021168  
   end
 
   def setup
