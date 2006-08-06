@@ -9,6 +9,10 @@ require 'tc/testcase'
 
 class TC_empty < Test::RIO::TestCase
   @@once = false
+
+  require 'tc/programs_util'
+  include Test::RIO::Programs
+
   def self.once
     @@once = true
 
@@ -36,10 +40,10 @@ class TC_empty < Test::RIO::TestCase
     assert!(rio('f1').empty?)
   end
   def test_ps_empty
-    assert(rio(?-,'ls d0').empty?)
+    assert(rio(?-,PROG['list_dir'] + ' d0').empty?)
   end
   def test_ps_not_empty
-    assert!(rio(?-,'ls d1').empty?)
+    assert!(rio(?-,PROG['list_dir'] + ' d1').empty?)
   end
   def test_dev_null_empty
     assert(rio(nil).empty?)

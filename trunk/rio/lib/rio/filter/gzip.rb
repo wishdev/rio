@@ -43,11 +43,17 @@ module RIO
         self
       end
     end
+    module GZipWin32MissingEachLine
+      def each_line(*args,&block)
+        self.each(*args,&block)
+      end
+    end
     module GZipRead
       def self.extend_object(ioh_stream)
         super
         gz = Zlib::GzipReader.new(ioh_stream.ios)
         gz.extend Filter::GZipMissing
+        gz.extend Filter::GZipWin32MissingEachLine
         ioh_stream.iostack.push(gz)
       end
     end

@@ -149,8 +149,8 @@ end
 #task :gen_files => [:gen_changelog, :gen_version, :gen_installrb]
 #CLOBBER << "ChangeLog" << "VERSION" << "install.rb"
 
-#task :gen_files => [:gen_changelog, :gen_version]
-task :gen_files => [:gen_version]
+task :gen_files => [:gen_changelog, :gen_version]
+#task :gen_files => [:gen_version]
 CLOBBER << "ChangeLog" << "VERSION" 
 task :no_old_pkg do
 #  unless Dir["pkg/#{PKG::FULLNAME}*"].empty?

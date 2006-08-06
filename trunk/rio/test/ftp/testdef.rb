@@ -6,7 +6,8 @@ module Test
       module Const
         FTPUSER = 'ftp'
         
-        FSROOT = rio('/home/ftp')
+        DRV = $mswin32 ? 'x:' : ''
+        FSROOT = rio("#{DRV}/home/ftp")
         #FTPHOST = '192.168.1.101'
         FTPHOST = 'localhost'
         FTPROOT = rio("ftp://#{FTPHOST}/")
