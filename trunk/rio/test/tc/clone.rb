@@ -113,7 +113,7 @@ class TC_clone < Test::RIO::TestCase
 
   end
 
-  def ztest_clone_own_context
+  def test_clone_own_context
 
     assert(rio.closeoncopy?,"closeoncopy is on")
     assert!(rio.nocloseoncopy.closeoncopy?,"nocloseoncopy is off")
@@ -170,7 +170,7 @@ class TC_clone < Test::RIO::TestCase
 
   end
 
-  def ztest_clone_read_ruby
+  def test_clone_read_ruby
 
     #$trace_states = true
     afile = ::File.open('lines1')
@@ -182,9 +182,8 @@ class TC_clone < Test::RIO::TestCase
     #p "crec=#{crec} POS: a(#{afile.pos}) cfile(#{cfile.pos})"
     afile.close
   end
-  def ztest_clone_read
+  def test_clone_read
     #return unless $supports_symlink
-    #$trace_states = true
     ario = rio('lines1')
     arec = ario.getrec
     assert_equal(@lines[0],arec)
@@ -200,16 +199,9 @@ class TC_clone < Test::RIO::TestCase
 
     assert_equal(@chlines[2...@lines.size],cremaining)
     #p "#{crio.eof?} #{crio.closed?}"
+    #$trace_states = true
     assert(crio.eof?,"clone eof?") unless crio.closed?
     assert(crio.closed?,"clone closed?")
-
-    assert!(ario.eof?,"orignal eof?") unless ario.closed?
-    assert!(ario.closed?,"original closed?")
-
-    aremaining = ario.readlines
-    assert_equal(@lines[2...@lines.size],aremaining)
-    assert(ario.eof?,"orignal eof?") unless ario.closed?
-    assert(ario.closed?,"original closed?")
 
   end
 

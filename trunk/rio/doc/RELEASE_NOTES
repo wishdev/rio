@@ -1,8 +1,3 @@
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-Rio is pre-alpha software. 
-The documented interface and behaviour is subject to change without notice.
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 === Rio - Ruby I/O Comfort Class
 
 Rio is a convenience class wrapping much of the functionality of 
