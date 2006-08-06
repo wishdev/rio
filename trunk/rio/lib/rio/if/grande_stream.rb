@@ -533,10 +533,15 @@ module RIO
       def closeoncopy?() target.closeoncopy?() end
 
 
-      # Turns off both closeoneof and closeoncopy
-      # Equivelent to
-      #  ario.nocloseoneof.closeoneof
-      #  ario.nocloseoneof(&block) => ario
+      # Turns off both closeoneof and closeoncopy.
+      # Equivelent to:
+      #  ario.nocloseoneof.nocloseoncopy
+      # Returns the Rio
+      #  ario.noautoclose(&block) => ario
+      # If a block is given, acts as if 
+      #  ario.noautoclose.each(&block) 
+      # had been called.
+      #
       # See #nocloseoneof and #nocloseoncopy
       #
       def noautoclose(arg=false,&block) target.noautoclose(arg,&block); self end
@@ -636,6 +641,22 @@ module RIO
       #
       #
       #def inputmode?() target.inputmode?() end
+
+
+
+      # This causes String#split(arg) to be called on every line
+      # before it is returned. An array of the split lines is
+      # returned when iterating
+      #
+      #  rio('/etc/passwd').split(':').columns(0,2) { |ary|
+      #    username,uid = ary
+      #  }
+      #  
+      #  rio('/etc/passwd').split(':').columns(0,2).to_a #=> [[user1,uid1],[user2,uid2]]
+      #
+      # See also IF::Grande#split
+      #  
+      def splitlines(*args,&block) target.splitlines(*args,&block) end
 
 
 

@@ -286,11 +286,6 @@ module RIO
       def join(*args) target.join(*args) end
 
 
-      # IF::Path#split has two distinct behaviors depending on 
-      # whether is is called with an argument or not.
-      #
-      # ==== split-with-no-aruments:
-      #
       # Returns an array of Rios, one for each path element. 
       # (Note that this behavior differs from File#split.)
       #
@@ -308,20 +303,7 @@ module RIO
       #
       # See also IF::Path#join, IF::Path#/
       #
-      # ==== split-with-an-argument:
-      #
-      # This causes String#split(arg) to be called on every line
-      # before it is returned. An array of the split lines is
-      # returned when iterating
-      #
-      #  rio('/etc/passwd').split(':').columns(0,2) { |ary|
-      #    username,uid = ary
-      #  }
-      #  
-      #  rio('/etc/passwd').split(':').columns(0,2).to_a #=> [[user1,uid1],[user2,uid2]]
-      #
-      #  
-      def split(*args,&block) target.split(*args,&block) end
+      def splitpath() target.splitpath() end
 
 
       # Subdirectory operator.

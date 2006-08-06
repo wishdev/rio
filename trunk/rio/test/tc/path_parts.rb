@@ -102,7 +102,10 @@ class TC_path_parts < Test::RIO::TestCase
   def run_path_tests_native(paths,sym,*args)
     paths.each do |pstr|
       r = rio(pstr)
-      assert_equal(File.__send__(sym,pstr,*args),r.__send__(sym,*args).to_s,"rio('#{pstr}').#{sym} failed")
+      exp = File.__send__(sym,pstr,*args)
+      ans = r.__send__(sym,*args).to_s
+      #puts "#{sym}[#{r}]: #{exp} <=> #{ans}"
+      assert_equal(exp,ans,"rio('#{pstr}').#{sym} failed")
     end
   end
   def run_path_tests_native_fspath(paths,sym,*args)

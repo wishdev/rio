@@ -665,6 +665,44 @@ module RIO
       #
       def empty?() target.empty? end
 
+      # IF::Path#split has two distinct behaviors depending on 
+      # whether is is called with an argument or not.
+      #
+      # ==== split-with-no-aruments:
+      #
+      # Returns an array of Rios, one for each path element. 
+      # (Note that this behavior differs from File#split.)
+      #
+      #  rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
+      #
+      # The array returned is extended with a +to_rio+ method, 
+      # which will put the parts back together again.
+      #
+      #  ary = rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
+      #  ary.to_rio           #=> rio('a/b/c')
+      #
+      #  ary = rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
+      #  ary[1] = rio('d')
+      #  ary.to_rio           #=> rio('a/d/c')
+      #
+      # See also IF::Path#join, IF::Path#/, IF::Path#splitpath
+      #
+      # ==== split-with-an-argument:
+      #
+      # This causes String#split(arg) to be called on every line
+      # before it is returned. An array of the split lines is
+      # returned when iterating
+      #
+      #  rio('/etc/passwd').split(':').columns(0,2) { |ary|
+      #    username,uid = ary
+      #  }
+      #  
+      #  rio('/etc/passwd').split(':').columns(0,2).to_a #=> [[user1,uid1],[user2,uid2]]
+      #
+      #  
+      def split(*args,&block) target.split(*args,&block) end
+
+
     end
   end
 end
