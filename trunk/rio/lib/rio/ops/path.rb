@@ -145,33 +145,11 @@ module RIO
             self.ext(ex)
           end
           new_rio(rl.basename(self.ext?))
-          # p self.ext?.inspect
-          # fn = fs.basename(rl.path_no_slash,self.ext?)
-          # p "FN=#{fn} BASE=#{_calc_base()}"
-          # new_rio(fn,{:base => _calc_base(fn)})
         end
         def filename()
-          #p "FILENAME=#{rl.filename}"
           new_rio(rl.filename)
-          #fn = fs.basename(rl.path_no_slash)
-          #new_rio(fn,{:base => _calc_base(fn)})
         end
-        def _calc_base(fn)
-          abs_rio = self.abs
-          p "ABS_RIO=#{abs_rio.inspect}"
-          abs_rio.path.sub(/#{fn}$/,'')
-          #dn = fs.dirname(rl.path_no_slash)
-          #p "SELF=#{self} DN=#{dn} BASE=#{self.base}"
-          #if dn =~ /^#{::URI::REGEXP::ABS_FILE_PATH}/
-          #  dn
-          #else
-          #  self.base.to_url + dn + '/' #'
-          #end
-        end
-        private :_calc_base
-
         def dirname(*args)
-          #new_rio(fs.dirname(rl.path_no_slash,*args))
           new_rio(rl.dirname)
         end
 

@@ -74,8 +74,8 @@ module RIO
       #
       # This combines the record selection offered by IF::GrandeStream#records with
       # the conversion to an array provided by IF::Grande#to_a. The following two are equivelant:
-      # * ario[*args]
-      # * ario.records(*args).to_a
+      #  ario[*args]
+      #  ario.records(*args).to_a
       #
       # What constitutes an array element is determined by IF::GrandeStream#lines, IF::GrandeStream#bytes, 
       # or by an extension such as IF::CSV#csv. IF::GrandeStream#lines is the default.
@@ -110,13 +110,13 @@ module RIO
       # 
       # This combines the entry selection offered by IF::GrandeEntry#entries with
       # the conversion to an array provided by IF::Grande#to_a. The following two are equivelant:
-      # * ario[*args]
-      # * ario.entries(*args).to_a
+      #  ario[*args]
+      #  ario.entries(*args).to_a
       #
       # Arguments may consist of strings (treated as globs) or regular expressions. 
       # An empty argument list selects all entries
       # See ::Dir#glob and ::File::fnmatch? for more in information on _globs_. Be warned that using the '**' glob
-      # recurses into directories independently of IF::GrandeStream#all and using both is unsupported.
+      # recurses into directories independently of IF::GrandeEntry#all and using both is unsupported.
       # 
       #  ario = rio('adir')
       #  ario[] # returns an array containg all entries in _adir_
@@ -665,8 +665,8 @@ module RIO
       #
       def empty?() target.empty? end
 
-      # IF::Path#split has two distinct behaviors depending on 
-      # whether is is called with an argument or not.
+      # IF::Grande#split has two distinct behaviors depending on 
+      # whether or not it is called with an argument.
       #
       # ==== split-with-no-aruments:
       #

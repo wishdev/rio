@@ -45,36 +45,8 @@ require 'rio'
 
 SVN_REPOSITORY_URL = 'svn+ssh://rio4ruby@rubyforge.org//var/svn/trunk/rio'
  
+require 'doc/pkg_def'
 
-module PKG
-  NAME = "rio"
-  TITLE = RIO::TITLE
-  VERSION = RIO::VERSION
-  FULLNAME = PKG::NAME + "-" + PKG::VERSION
-  SUMMARY = RIO::SUMMARY
-  DESCRIPTION = RIO::DESCRIPTION
-  AUTHOR = "Christopher Kleckner"
-  EMAIL = "rio4ruby@rubyforge.org"
-  HOMEPAGE = "http://rio.rubyforge.org/"
-  RUBYFORGE_PROJECT = "rio"
-  RDOC_OPTIONS = ['--show-hash','--line-numbers','-mRIO::Doc::SYNOPSIS','-Tdoc/generators/template/html/rio.rb']
-
-  SRC_FILES = FileList['lib/**/*.rb']
-  DOC_FILES = FileList['README','lib/rio.rb','lib/rio/doc/*.rb',
-                       'lib/rio/if/*.rb','lib/rio/kernel.rb','lib/rio/constructor.rb']
-  XMP_FILES = FileList['ex/*']
-  D_FILES = FileList.new('doc/**/*') { |f| f.exclude('doc/rdoc') }
-  TST_FILES = FileList.new('test/**/*.rb') { |f| f.exclude('test/qp') }
-  MSC_FILES = FileList['setup.rb', 'build_doc.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION']
-  DIST_FILES =  FileList.new(SRC_FILES.to_a + DOC_FILES.to_a + XMP_FILES.to_a + 
-                                             D_FILES.to_a + TST_FILES.to_a + MSC_FILES.to_a
-                             ) do |fl|
-    fl.exclude( /\bsvn\b/ )
-    fl.exclude( 'doc/rdoc' )
-  end
-  OUT_DIR = 'pkg'
-  OUT_FILES = %w[.gem .tar.gz .zip].map { |ex| OUT_DIR + '/' + FULLNAME + ex }
-end
 ZIP_DIR = "/zip/ruby/rio"
 
 
@@ -113,7 +85,7 @@ rd = Rake::RDocTask.new do |rdoc|
   rdoc.title    = PKG::TITLE
   rdoc.options = PKG::RDOC_OPTIONS
   rdoc.main = 'RIO::Doc::SYNOPSIS'
-  PKG::DOC_FILES.to_a.each do |glb|
+  PKG::FILES::DOC.to_a.each do |glb|
     #next if glb =~ /yaml.rb$/
     rdoc.rdoc_files.include( glb )
   end
@@ -123,7 +95,7 @@ end
 desc "Build custom RDoc"
 task :rio_rdoc do 
   require 'rio/doc/SYNOPSIS'
-  ruby "-Idoc/patched_rdoc -Ilib doc/bin/rdoc --show-hash --op doc/rdoc --title #{PKG::TITLE} --line-numbers  --template doc/generators/template/html/rio.rb #{PKG::DOC_FILES} --main #{RIO::Doc::SYNOPSIS}" 
+  ruby "-Idoc/patched_rdoc -Ilib doc/bin/rdoc --show-hash --op doc/rdoc --title #{PKG::TITLE} --line-numbers  --template doc/generators/template/html/rio.rb #{PKG::FILES::DOC} --main #{RIO::Doc::SYNOPSIS}" 
 end
 CLOBBER << "test/rio.log" << "test/qp"
 task :test do |t|
@@ -168,7 +140,7 @@ task :package => [:no_old_pkg, :gen_files]
 Rake::PackageTask.new( PKG::NAME, PKG::VERSION ) do |p|
   p.need_tar_gz = true
   p.need_zip = true
-  p.package_files = PKG::DIST_FILES
+  p.package_files = PKG::FILES::DIST
 end
 
 Spec = Gem::Specification.new do |s|
@@ -181,7 +153,7 @@ Spec = Gem::Specification.new do |s|
 
   s.platform = Gem::Platform::RUBY
   s.summary = PKG::SUMMARY
-  s.files = PKG::DIST_FILES.map { |rf| rf.to_s }
+  s.files = PKG::FILES::DIST.map { |rf| rf.to_s }
 
   s.require_path = 'lib'
   s.autorequire = 'rio'
@@ -278,7 +250,7 @@ task :statistics do
   total_lines = 0
   total_code = 0
   show_line( "File Name", "Lines", "LOC" )
-  PKG::SRC_FILES.each do |fn|
+  PKG::FILES::SRC.each do |fn|
     lines, codelines = count_lines fn
     show_line( fn, lines, codelines )
     total_lines += lines

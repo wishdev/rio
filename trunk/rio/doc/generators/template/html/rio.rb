@@ -115,9 +115,12 @@ module Generators
       end
 
       if ref and ref.document_self
+        #print "#{name} =>"
         name.sub!(/^(RIO::)?IF::.+\#/,'Rio#')
         name.sub!(/^#/,'Rio#')
-        if %w[Rio Grande String].include?(name)
+        #puts " #{name}"
+        if %w[Rio Grande String].include?(name) or name =~ /^(Dir)/
+        #if %w[Rio Grande String].include?(name)
           name
         else
           "<a href=\"#{ref.as_href(@from_path)}\">#{name}</a>"

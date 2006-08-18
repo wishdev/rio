@@ -74,7 +74,8 @@ module RIO
       # Returns nil if the Rio URL has no path (i.e. stdin: or http: Rios)
       def urlpath() target.urlpath() end
 
-      # Proxy for File#expand_path
+      # Calls File#expand_path
+      #
       #
       # Converts a pathname to an absolute pathname. 
       # Relative paths are referenced from the current working directory of the process 
@@ -116,21 +117,25 @@ module RIO
 
       # Sets the string that the Rio considers an extension. The value will be used by
       # subsequent calls to IF::Path#basename. If called with no arguments resets its value
-      # to the value returned by File#extname. Returns the Rio
+      # to the value returned by File#extname. Returns the Rio.
+      #
       #  ario = rio('afile.txt')
       #  ario.ext('.txt').basename        #=> rio('afile')
       #  ario.ext('.zip').basename        #=> rio('afile.txt')
       #  ario.ext.basename                #=> rio('afile')
       #  ario.ext('').basename            #=> rio('afile.txt')
-      # See also IF::Path#ext,IF::Path#ext?,IF::Path#filename,
+      #
+      # See also IF::Path#ext?,IF::Path#noext,IF::Path#basename,
       #
       def ext(arg=nil) target.ext(arg); self end
 
 
       # Identical to IF::Path#ext('')
-      # See IF::Path#ext
+      #
       #  ario.basename                  #=> rio('afile')
       #  ario.noext.basename            #=> rio('afile.txt')
+      #
+      # See also IF::Path#ext
       #
       def noext() target.noext(); self end
 
@@ -156,17 +161,28 @@ module RIO
       def ext?() target.ext?() end
 
 
+      # Calls File#extname
+      #
+      # Returns a String containing the path's extension
+      #    rio('/tmp/zippy.txt').extname   #=> rio('.txt')
+      #
+      def extname(*args) target.extname(*args) end
+
+
       # Similar to File#basename
       #
       # Returns a Rio whose path is that returned by File#basename when passed the path
       # of a rio and the value returned by File#extname. This differs from the behaviour
       # of File#basename.
+      #
       #  File.basename('afile.txt')                           #=> 'afile.txt'
       #  File.basename('afile.txt',File.extname('afile.txt')) #=> 'afile'
       #  rio('afile.txt').basename                            #=> rio('afile')
       #  rio('afile.txt').basename('.txt')                    #=> same thing
       #  rio('afile.txt').ext('.txt').basename                #=> same thing
+      #
       # See also IF::Path#ext,IF::Path#ext?,IF::Path#filename,
+      #
       def basename(*args) target.basename(*args) end
 
 
@@ -176,14 +192,6 @@ module RIO
       #    rio('/tmp/zippy.txt').dirname   #=> rio('/tmp')
       #
       def dirname(*args) target.dirname(*args) end
-
-
-      # Calls File#extname
-      #
-      # Returns a String containing the path's extension
-      #    rio('/tmp/zippy.txt').extname   #=> rio('.txt')
-      #
-      def extname(*args) target.extname(*args) end
 
 
       # Returns a new Rio with all path information stripped away. This is similar to
@@ -204,7 +212,7 @@ module RIO
       #
       #   rio('adir/afile.txt').rename.extname  = '.rb'      # adir/afile.txt => adir/afile.rb
       #
-      # See IF::Path#extname, IF::FileOrDir#rename
+      # See aslo IF::Path#extname, IF::FileOrDir#rename
       #
       def extname=(arg) target.extname = arg end
 

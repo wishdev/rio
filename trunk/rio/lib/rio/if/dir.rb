@@ -63,7 +63,7 @@ module RIO
       #
       # Uses ::Find#find to find all entries recursively for a Rio that 
       # specifies a directory. Note that there are other ways to recurse through
-      # a directory structure using a Rio. See IF::Grande#each and IF::GrandeStream#all.
+      # a directory structure using a Rio. See IF::Grande#each and IF::GrandeEntry#all.
       #
       # Calls the block passing a Rio for each entry found. The Rio inherits
       # file attrubutes from the directory Rio.
@@ -80,7 +80,7 @@ module RIO
       def find(*args,&block) target.find_entries(*args,&block); self end
 
 
-      # Calls Dir#glob
+      # Calls ::Dir#glob
       #
       # Returns the filenames found by expanding the pattern given in string, 
       # either as an array or as parameters to the block. In both cases the filenames
@@ -92,7 +92,7 @@ module RIO
       def glob(string,*args,&block) target.glob(string,*args,&block) end
 
 
-      # Calls Dir#rmdir
+      # Calls ::Dir#rmdir
       #
       # Deletes the directory referenced by the Rio. 
       # Raises a subclass of SystemCallError if the directory isn’t empty.

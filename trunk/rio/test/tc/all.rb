@@ -2,6 +2,7 @@ require 'test/unit'
 require 'tc/testcase'
 
 require 'tc/yaml'
+require 'tc/truncate'
 require 'tc/line_record_row'
 require 'tc/path_parts'
 require 'tc/abs'

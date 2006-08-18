@@ -83,13 +83,14 @@ module RIO
 
       # If called with an argument calls FileUtils#rename.
       # If called without an argument puts the Rio in "rename mode". 
+      # 
       # Proxy for FileUtils#rename
       #  ario = rio('afile.cpp')
       #  ario.rename('afile.cxx') # renamed the file, but ario still references
       #                           # the old path
-      # Rename Mode
+      # ===== Rename Mode
       #
-      # In rename mode changes to a Rio's path with IF::Path#dirname=, IF::Path#filename=, 
+      # In rename mode, changes to a Rio's path using IF::Path#dirname=, IF::Path#filename=, 
       # IF::Path#basename=, and IF::Path#extname= also cause the object on the filesystem
       # to be renamed.
       #
@@ -216,7 +217,7 @@ module RIO
       # For directories calls Dir#pos
       #     ario.pos => integer
       #     ario.tell => integer
-      # Returns the current position in _dir_. See also +IF::FileOrDir#seek+.
+      # Returns the current position in _dir_. See also IF::FileOrDir#seek.
       #
       #     d = rio("testdir")
       #     d.pos   #=> 0

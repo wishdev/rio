@@ -28,26 +28,26 @@
 
 $:.unshift 'lib'
 require 'rio'
-
+require 'doc/pkg_def'
 
 module DFLT
   RDOC_DIR = rio('doc/rdoc')
 end
 
-puts "Rio interactive RDoc installer."
+#puts "Rio interactive RDoc installer."
 
 rdoc_dir = rio(?-).print!("Where shall I build the rdoc documentation[#{DFLT::RDOC_DIR}]: ").chomp.gets.strip
 rdoc_dir = DFLT::RDOC_DIR if rdoc_dir.empty?
 rdoc_dir = rio(rdoc_dir)
 
-puts "Building the Rio RDoc documentation in '#{rdoc_dir}'"
+#puts "Building the Rio RDoc documentation in '#{rdoc_dir}'"
 
-RDOC_OPTIONS = ['--show-hash', 
-                '--line-numbers', 
-                '-m RIO::Doc::SYNOPSIS',
-                "--op #{rdoc_dir}", 
-                "-T doc/generators/template/html/rio",
-]
+#RDOC_OPTIONS = ['--show-hash', 
+#                '--line-numbers', 
+#                '-m RIO::Doc::SYNOPSIS',
+#                "--op #{rdoc_dir}", 
+#                "-T doc/generators/template/html/rio",
+#]
 
 rdoc_files = [
   rio('README'), 
@@ -57,9 +57,11 @@ rdoc_files = [
   rio('lib/rio/if').files['*.rb'],
 ]
 
-cmd = sprintf("doc/bin/rdoc %s %s",RDOC_OPTIONS.join(' '),rdoc_files.join(' '))
+cmd = sprintf("rdoc --op %s %s %s",rdoc_dir,PKG::RDOC_OPTIONS.join(' '),PKG::FILES::DOC.join(' '))
+puts cmd
 
 rio(?-,cmd) > ?-
+#system(cmd)
 
 docindex = (rdoc_dir/'index.html').abs.to_url
 msg = "Please point your browser at '#{docindex}'" 

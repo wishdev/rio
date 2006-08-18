@@ -42,7 +42,7 @@ module RIO
       #
       # Deletes the referenced file, returning the Rio. Raises an exception on any error. 
       #
-      # See also IF::Grande#delete, IF::Grande#delete!, IF::GrandeStream#rmdir.
+      # See also IF::Grande#delete, IF::Grande#delete!, IF::Dir#rmdir.
       def rm() target.rm(); self end
       
       
