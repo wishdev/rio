@@ -28,6 +28,7 @@
 
 $:.unshift 'lib'
 require 'rio'
+require 'rio/prompt'
 require 'doc/pkg_def'
 
 module DFLT
@@ -36,26 +37,9 @@ end
 
 #puts "Rio interactive RDoc installer."
 
-rdoc_dir = rio(?-).print!("Where shall I build the rdoc documentation[#{DFLT::RDOC_DIR}]: ").chomp.gets.strip
+rdoc_dir = RIO.promptd('Where shall I build the rdoc documentation',DFLT::RDOC_DIR)
 rdoc_dir = DFLT::RDOC_DIR if rdoc_dir.empty?
 rdoc_dir = rio(rdoc_dir)
-
-#puts "Building the Rio RDoc documentation in '#{rdoc_dir}'"
-
-#RDOC_OPTIONS = ['--show-hash', 
-#                '--line-numbers', 
-#                '-m RIO::Doc::SYNOPSIS',
-#                "--op #{rdoc_dir}", 
-#                "-T doc/generators/template/html/rio",
-#]
-
-rdoc_files = [
-  rio('README'), 
-  rio('lib/rio.rb'),
-  rio('lib/rio/')['kernel.rb','constructor.rb'],
-  rio('lib/rio/doc')['*.rb'],
-  rio('lib/rio/if').files['*.rb'],
-]
 
 argv = []
 argv << '--op' << rdoc_dir.to_s
