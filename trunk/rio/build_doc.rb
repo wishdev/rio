@@ -64,11 +64,6 @@ puts lin
 puts "> " + msg + " >"
 puts lin
 __END__
-cmd = sprintf("rdoc --op %s %s %s",rdoc_dir,PKG::RDOC_OPTIONS.join(' '),PKG::FILES::DOC.join(' '))
-puts cmd
-
-rio(?-,cmd) > ?-
-#system(cmd)
 
 
 
