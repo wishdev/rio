@@ -57,11 +57,19 @@ rdoc_files = [
   rio('lib/rio/if').files['*.rb'],
 ]
 
-cmd = sprintf("rdoc --op %s %s %s",rdoc_dir,PKG::RDOC_OPTIONS.join(' '),PKG::FILES::DOC.join(' '))
-puts cmd
+argv = []
+argv << '--op' << rdoc_dir.to_s
+argv += PKG::RDOC_OPTIONS
+argv += PKG::FILES::DOC
 
-rio(?-,cmd) > ?-
-#system(cmd)
+require 'rdoc/rdoc'
+begin
+  r = RDoc::RDoc.new
+  r.document(argv)
+rescue RDoc::RDocError => e
+  $stderr.puts e.message
+  exit(1)
+end
 
 docindex = (rdoc_dir/'index.html').abs.to_url
 msg = "Please point your browser at '#{docindex}'" 
@@ -71,5 +79,12 @@ puts
 puts lin
 puts "> " + msg + " >"
 puts lin
+__END__
+cmd = sprintf("rdoc --op %s %s %s",rdoc_dir,PKG::RDOC_OPTIONS.join(' '),PKG::FILES::DOC.join(' '))
+puts cmd
+
+rio(?-,cmd) > ?-
+#system(cmd)
+
 
 

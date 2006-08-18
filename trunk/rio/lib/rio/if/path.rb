@@ -119,6 +119,12 @@ module RIO
       # subsequent calls to IF::Path#basename. If called with no arguments resets its value
       # to the value returned by File#extname. Returns the Rio.
       #
+      #  ario = rio('afile.tar.gz')
+      #  ario.ext?                        #=> '.ext'
+      #  ario.basename                    #=> rio('afile.tar')
+      #  ario.ext('.tar.gz').basename     #=> rio('afile')
+      #  ario.ext?                        #=> '.tar.gz'
+      #
       #  ario = rio('afile.txt')
       #  ario.ext('.txt').basename        #=> rio('afile')
       #  ario.ext('.zip').basename        #=> rio('afile.txt')
@@ -164,7 +170,7 @@ module RIO
       # Calls File#extname
       #
       # Returns a String containing the path's extension
-      #    rio('/tmp/zippy.txt').extname   #=> rio('.txt')
+      #    rio('/tmp/zippy.txt').extname   #=> '.txt'
       #
       def extname(*args) target.extname(*args) end
 

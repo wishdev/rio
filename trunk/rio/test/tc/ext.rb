@@ -6,26 +6,30 @@ end
 
 require 'rio'
 require 'tc/testcase'
-class TC_ext < Test::Unit::TestCase
+class TC_ext < Test::RIO::TestCase
   @@once = false
-  include RIO_TestCase
-  def setup()
+  def self.once
+    @@once = true
+
+  end
+
+  def setup
     super
-    unless @@once
-      @@once = true
-    end
+    self.class.once unless @@once
+
   end
-  def test_mvdir
-    rio('a').rmtree.mkpath
-    rio('a/b').mkpath
-    rio('a/c').mkpath
-    rio('a/b/f').touch
-    rio('a/b/f').rename('a/c')
-    rio('a/b/d').mkdir
-    rio('a/b/d').rename('a/c')
-    assert(rio('a/c/f').exist?)
-    assert(rio('a/c/d').exist?)
-  end
+
+#  def test_mvdir
+#    rio('a').rmtree.mkpath
+#    rio('a/b').mkpath
+#    rio('a/c').mkpath
+#    rio('a/b/f').touch
+#    rio('a/b/f').rename('a/c')
+#    rio('a/b/d').mkdir
+#    rio('a/b/d').rename('a/c')
+#    assert(rio('a/c/f').exist?)
+#    assert(rio('a/c/d').exist?)
+#  end
   def test_change_ext_in_dir
     rio('ch').rmtree.mkpath
     rio('ch/0.a').touch
@@ -66,7 +70,7 @@ class TC_ext < Test::Unit::TestCase
     assert(rio('tgz/z.tgz').exist?)
   end
   def test_ext
-    ario = mkafile('afile.tar.gz')
+    ario = rio('afile.tar.gz').touch
     $trace_states = false
     ario.rename!('cfile.tgz')
 #    ario.ext('.tar.gz').basename = 'bfile'
@@ -108,5 +112,25 @@ class TC_ext < Test::Unit::TestCase
     assert_equal(abs0,abs1.to_s)
     abs2 = rio(RIO.cwd,path.dirname,path.basename(path.extname).to_s+path.extname).to_s
     assert_equal(abs0,abs2.to_s)
+  end
+  def test_documented_example
+    ario = rio('afile.txt')
+    assert_equal('.txt',ario.ext?)
+    assert_equal('afile',ario.ext('.txt').basename)
+    assert_equal('.txt',ario.ext?)
+    assert_equal('afile.txt',ario.ext('.zip').basename)
+    assert_equal('.zip',ario.ext?)
+    assert_equal('afile.txt',ario.basename('.tar'))
+    assert_equal('.tar',ario.ext?)
+    assert_equal('afile',ario.ext.basename)
+    assert_equal('.txt',ario.ext?)
+    assert_equal('afile.txt',ario.noext.basename)
+    assert_equal('',ario.ext?)
+
+    ario = rio('afile.tar.gz')
+    assert_equal('.gz',ario.ext?)
+    assert_equal('afile.tar',ario.basename)
+    assert_equal('afile',ario.ext('.tar.gz').basename)
+    assert_equal('.tar.gz',ario.ext?)
   end
 end
