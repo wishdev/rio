@@ -794,7 +794,7 @@ x:/r1/d1/f 1:
 //h/: 
   :basename: /
   :urlpath: /
-  :dirname: //h
+  :dirname: //h/
   :scheme: file
   :filename: /
   :path: //h/

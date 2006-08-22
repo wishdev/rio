@@ -65,10 +65,15 @@ module RIO
             return Factory.instance.riorl_class('path').new(*a)
           end
         when RIO::Rio
-          a[0] = a[0].to_rl
+          a[0] = a[0].rl
+          return build(*a)
         when RL::Base
+          #p "HERE a=#{a.inspect}"
           a0 = a.shift.clone
-          return (a.empty? ? a0 : a0.join(*a))
+          cl = Factory.instance.riorl_class(a0.scheme)
+          o = cl.new(a0,*a) unless cl.nil?
+          return o
+          #          return (a.empty? ? a0 : a0.join(*a))
         when ::URI
           a0 = a.shift
           cl = Factory.instance.riorl_class(a0.scheme)

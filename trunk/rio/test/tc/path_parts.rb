@@ -130,10 +130,10 @@ class TC_path_parts < Test::RIO::TestCase
   def test_fs_dirname
     run_path_tests_native(@@gen.fs_basic_paths,:dirname)
     run_path_tests_native(@@gen.fs_drive_paths,:dirname)
-    run_path_tests_native(@@gen.fs_unc_paths,:dirname)
+    run_path_tests_exp(@@gen.fs_unc_paths,:dirname)
   end
   def test_fs_url_dirname
-    run_path_tests_native_fspath(@@gen.fs_url_paths,:dirname)
+    run_path_tests_exp(@@gen.fs_url_paths,:dirname)
   end
   def test_fs_url_basename
     run_path_tests_native_fspath(@@gen.fs_url_paths,:basename,'')

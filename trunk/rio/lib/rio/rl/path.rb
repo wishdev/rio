@@ -44,6 +44,7 @@ module RIO
       RESET_STATE = 'Path::Reset'
 
       def arg0_info_(arg0,*args)
+        #p "arg0_info_(#{arg0.inspect},#{args.inspect})"
         #p callstr('init_from_args_',arg0.inspect,args)
         vuri,vbase,vfs = nil,nil,nil
         case arg0
@@ -96,6 +97,7 @@ module RIO
       end
       def self.splitrl(s)
         sch,opq,whole = split_riorl(s)
+        #p sch,opq,whole
         case sch
         when 'file' then [whole]
         else [opq]

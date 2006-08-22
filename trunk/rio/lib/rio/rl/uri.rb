@@ -60,6 +60,7 @@ module RIO
         @uri.path = '/' if @uri.absolute? and @uri.path == ''
       end
       def arg0_info_(arg0,*args)
+        #p "arg0_info_(#{arg0.inspect},#{args.inspect})"
         vuri,vbase,vfs = nil,nil,nil
         case arg0
         when RIO::Rio
@@ -76,6 +77,7 @@ module RIO
         [vuri,vbase,vfs]
       end
       def init_from_args_(arg0,*args)
+        #p "init_from_args_(#{arg0.inspect})"
         #p callstr('init_from_args_',arg0.inspect,args)
         vuri,vbase,vfs = self.arg0_info_(arg0,*args)
         #p vuri
