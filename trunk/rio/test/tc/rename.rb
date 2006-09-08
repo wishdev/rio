@@ -33,10 +33,9 @@ class TC_rename < Test::RIO::TestCase
   def test_rename_filename
     indir = rio('tdir').delete!.mkpath < rio(@d[1]).to_a
     oldf = indir.files[].map { |f| f.to_s }
-    expf = oldf.map { |f| f.sub(/f/,'q') + '.txt' }
-
+    expf = oldf.map { |f| f.sub(/f/,'q') }
     indir.rename.files do |ent|
-      nname = ent.filename.to_s.sub(/f/,'q') + '.txt'
+      nname = ent.filename.to_s.sub(/f/,'q')
       ent.filename = nname
     end
     assert_array_equal(expf,rio('tdir').files[])
@@ -45,10 +44,10 @@ class TC_rename < Test::RIO::TestCase
   def test_rename_filename_sub
     indir = rio('tdir').delete!.mkpath < rio(@d[1]).to_a
     oldf = indir.files[].map { |f| f.to_s }
-    expf = oldf.map { |f| f.sub(/f/,'q') + '.txt' }
+    expf = oldf.map { |f| f.sub(/f/,'q') }
 
     indir.rename.files do |ent|
-      ent.filename = ent.filename.sub(/f/,'q') + '.txt'
+      ent.filename = ent.filename.sub(/f/,'q')
     end
     assert_array_equal(expf,rio('tdir').files[])
 

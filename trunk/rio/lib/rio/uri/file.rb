@@ -133,6 +133,7 @@ RFC 1738            Uniform Resource Locators (URL)        December 1994
     private :check_path
 
     def path=(v)
+      #p "self=#{self} v=#{v}"
       check_path(v)
       set_path(v)
       v

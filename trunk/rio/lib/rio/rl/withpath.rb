@@ -233,7 +233,13 @@ module RIO
       # returns a RL
       def dirname() 
         new_rl = self.clone
-        new_rl.fspath = fs.dirname(self.fspath_no_slash)
+        #p "dirname: fspath_no_slash(#{self.fspath_no_slash} dn(#{fs.dirname(self.fspath_no_slash)})"
+        pth = self.fspath_no_slash
+        if pth =~ %r{^//(#{HOST})(/.*)}
+          new_rl.fspath = "//#{$1}#{fs.dirname($2)}"
+        else
+          new_rl.fspath = fs.dirname(pth)
+        end
         new_rl
       end
         

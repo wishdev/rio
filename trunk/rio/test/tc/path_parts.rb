@@ -35,10 +35,14 @@ class PathGenerator
     build_paths(tops,ROOTS,DIRS,FILES)
   end
   def self.fs_url_paths()
-    tops = %w{file:/// file:///x:/ file://h/}
+    #tops = %w{file:/// file:///x:/ file://h/}
+    # tops = %w{file:/// file:///x:/ file://h/}
+    tops = %w{file:/// file://h/}
+    tops << 'file:///x:/' if $mswin32 
     build_paths(tops,ROOTS,DIRS,FILES)
   end
   def self.fs_drive_paths()
+    return [] unless $mswin32
     tops = %w{x:/}
     build_paths(tops,ROOTS,DIRS,FILES)
   end
@@ -94,6 +98,7 @@ class TC_path_parts < Test::RIO::TestCase
 
   def run_path_tests_exp(paths,sym)
     paths.each do |pstr|
+      #p pstr
       r = rio(pstr)
       assert_equal(@@exp[r.to_s][sym],r.__send__(sym).to_s,"rio('#{pstr}').#{sym} failed")
     end

@@ -72,6 +72,7 @@ module RIO
           else
             rtn_reset { 
               dst = ensure_rio(args.shift)
+              #p "rename: #{self} => #{dst}"
               fs.mv(self,dst,*args) 
               dst.reset
             } 
@@ -83,7 +84,8 @@ module RIO
           else
             rtn_reset { 
               dst = ensure_rio(args.shift)
-              fs.mv(self,dst,*args) 
+              #p "rename!: #{self} => #{dst}"
+              fs.mv(self,dst,*args) unless self == dst 
               dst.reset
               self.rl = dst.rl.clone
             } 

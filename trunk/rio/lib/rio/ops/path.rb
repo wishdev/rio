@@ -144,7 +144,7 @@ module RIO
             ex = args[0] || self.extname
             self.ext(ex)
           end
-          new_rio(rl.basename(self.ext?))
+           new_rio(rl.basename(self.ext?))
         end
         def filename()
           new_rio(rl.filename)

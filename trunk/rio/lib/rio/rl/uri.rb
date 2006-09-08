@@ -135,7 +135,10 @@ module RIO
         self.url
       end
       def urlpath() uri.path end
-      def urlpath=(arg) uri.path = arg end
+      def urlpath=(arg) 
+        #p uri,arg
+        uri.path = arg 
+      end
       def path()
         case scheme
         when 'file','path' then fspath()
