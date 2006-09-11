@@ -286,8 +286,8 @@ discussed in the section on Renaming and Moving.
 
 ==== Splitting a Rio
 
-IF::Path#split returns an array of Rios, one for each path element. (Note
-that this behavior differs from File#split.)
+IF::Grande#split (or IF::Path#splitpath) returns an array of Rios, one 
+for each path element. (Note that this behavior differs from File#split.)
 
    rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
 
@@ -314,7 +314,7 @@ IF::Path#join and IF::Path#/ do the same thing, but the operator version
    c = a.join(b)    #=> rio('a/b')
    c = a/b          #=> rio('a/b')
 
-The arguments to +join+ and <tt>/</tt> do not need to be Rios, of course
+The arguments to IF::Path#join and IF::Path#/ do not need to be Rios, of course
    ario = rio('adir')
    ario/'afile.rb'           #=> rio('adir/afile.rb')
    ario.join('b','c','d')    #=> rio('adir/b/c/d')
@@ -334,7 +334,7 @@ forwarding the method to the String returned by Rio#to_s.
 ==== Creating a Rio based on its relationship to another
 
 IF::Path#abs creates a new rio whose path is the absolute path of a Rio.
-If provided with an argument, it uses that as the base path, otherwise
+If called with an argument, it uses it as the base path, otherwise
 it uses an internal base path (usually the current working directory
 when it was created).
 
@@ -496,7 +496,7 @@ object. The result produced by the method is returned, and the object
 is closed.
 
 In some cases the result is modified before being returned, as when a
-Rio is configured with +chomp+.
+Rio is configured with IF::GrandeStream#chomp.
 
 In all cases, if the result returned by the underlying object, could
 itself be used for further I/O operations it is returned as a Rio. For

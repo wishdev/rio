@@ -312,7 +312,7 @@ pre.method-description
   margin: 0.3em 0 0.3em 0;  
   background: #fff8dc;
   /* background: #ffffff; */
-  border-left: 2px solid #8b6508; 
+  border-left: 3px solid #8b6508; 
   border-bottom: 1px solid #8b6508;
   border-top: 1px solid #8b6508;
 }
@@ -322,7 +322,10 @@ pre.method-description
   padding: 0.2em 0 0.2em 0; 
   margin: 0.3em 0 0.3em 0;  
   background: #fff8dc;
-  border-left: 2px solid #8b6508; 
+  /* background: #ffffff; */
+  border-left: 3px solid #8b6508; 
+  border-bottom: 1px solid #8b6508;
+  border-top: 1px solid #8b6508;
 }
 
 
@@ -388,7 +391,7 @@ pre.method-description
 .method-description tt { 
   margin: 0.5em 0 0.2em 0;
   font-weight: bold;                     
-  color: navy;                       
+  color: #000044;                       
   }
 .method-description ul { 
   margin: 0.2em 0 0.5em 0;

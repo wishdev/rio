@@ -50,12 +50,15 @@ module RIO
       #  rio('afile').lines[1][0]   #=> "line 1\n"
       def line(*args,&block) target.line(*args,&block); self end
 
+
       # See #line.
       def record(*args,&block) target.record(*args,&block); self end
+
 
       # See #line.
       def row(*args,&block) target.row(*args,&block); self end
       
+
       # Sets the rio to read lines and returns the Rio
       # 
       # If called with a block behaves as if <tt>lines(*args).each(&block)</tt> had been called
@@ -111,6 +114,7 @@ module RIO
       #
       def bytes(n=1,*args,&block) target.bytes(n,*args,&block); self end
 
+
       # Specifies which records will be iterated through by IF::Grande#each or returned by IF::Grande#getrec
       # 
       # If called with a block behaves as if <tt>records(*args).each(&block)</tt> had been called
@@ -152,6 +156,7 @@ module RIO
       #
       def records(*args,&block) target.records(*args,&block); self end
 
+
       # Specifies records which should *not* be iterated through by IF::Grande#each or returned by IF::Grande#getrec
       # 
       # If called with a block behaves as if <tt>skiprecords(*args).each(&block)</tt>
@@ -183,6 +188,7 @@ module RIO
       #
       def skiprecords(*args,&block) target.skiprecords(*args,&block); self end
 
+
       # Sets the Rio to read lines and specifies lines which should *not* be iterated through by IF::Grande#each or 
       # returned by IF::Grande#getrec
       # 
@@ -210,12 +216,12 @@ module RIO
       def skiplines(*args,&block) target.skiplines(*args,&block); self end
 
 
-      
       # Sets the Rio to read rows and specifies rows which should be iterated through 
       # by IF::Grande#each or returned by IF::Grande#getrec.
       # #rows is intended for use by extensions, where the concept of a row is reasonable. 
       # In the absensence of an extension behaves like #records.
       def rows(*args,&block) target.rows(*args,&block); self end
+
 
       # Sets the Rio to read rows and specifies lines which should *not* be iterated 
       # through by IF::Grande#each or returned by IF::Grande#getrec
@@ -223,17 +229,20 @@ module RIO
       # reasonable. In the absence of an extension behaves like #skiprecords
       def skiprows(*args,&block) target.skiprows(*args,&block); self end
 
+
       # Temporarily set the Rio to read records, and call IF::Grande#get
       #
       # See also IF::GrandeStream#records, IF::GrandeStream#lines, IF::Grande#each, IF::Grande#[]
       #
       def getrec() target.getrec() end
 
+
       # Temporarily set the Rio to read rows, and call IF::Grande#get
       #
       # See also IF::GrandeStream#rows, IF::GrandeStream#lines, IF::Grande#each, IF::Grande#[]
       #
       def getrow() target.getrow() end
+
 
       # Temporarily set the Rio to read lines, and call IF::Grande#get
       #
@@ -281,6 +290,7 @@ module RIO
       # See also #+@
       def a() target.a(); self end
 
+
       # Unary Plus. Alternate form of #a
       #  rio('f1') > rio('f2')     # copy f1 to f2
       #  rio('f1') > rio('f2').a   # append f1 to f2
@@ -291,6 +301,7 @@ module RIO
         RIO::no_warn { +target }
         self
       end
+
 
       # Sets the implicit output mode to 'a+'. 
       # 
@@ -337,7 +348,7 @@ module RIO
       # See the discussion for #a. 
       #
       # Since 'w' is the implicit output mode used by default, this method
-      # is uneeded, is considered experimental and may be removed at any time.
+      # is uneeded, but is provided for completeness..
       #
       def w() target.w(); self end
 
@@ -358,8 +369,8 @@ module RIO
       #  ario.closeoneof(&block) => ario
       #
       # +closeoneof+ causes a Rio to be closed automatically whenever the end of
-      # file is reached. This affects
-      # all methods that read from a rio (IF::RubyIO#readlines, #to_a, IF::Grande#each IF::RubyIO#gets etc.)
+      # file is reached. This affects# all methods that read from 
+      # a rio (IF::RubyIO#readlines, #to_a, IF::Grande#each IF::RubyIO#gets etc.)
       # Because +closeoneof+ must be on for many of Rio's most useful idioms,
       # it is on by default. +closeoneof+ can be turned off using #nocloseoneof.
       # 
@@ -550,13 +561,12 @@ module RIO
       # Queries the Rio's chomp-mode.
       # See #chomp.
       #
-      #
       def chomp?() target.chomp?() end
 
 
       # Sets the Rio to chomp lines and returns the Rio
       # 
-      # When called with a block, behaves as if chomp.each(&block) had been called
+      # When called with a block, behaves as if <tt>chomp.each(&block)</tt> had been called
       #
       # chomp causes lines returned by each, to_a, readlines, readline, gets, each_line etc.
       # to be chomped before iterated over or assigned
@@ -581,10 +591,15 @@ module RIO
       #
       #  # fill an array with all the 'require' lines in all the .rb files (recursively) in adir
       #  # chomping each line
+      #
       #  an_array = []
       #  rio('adir').chomp.all.files("*.rb") { |file| 
-      #    an_array << file.lines(/^\s*require/)
+      #    an_array += file.lines[/^\s*require/]
       #  }
+      #
+      #  or simply
+      #
+      #  an_array = rio('adir').chomp.all.files("*.rb").lines[/^\s*require/]
       #
       def chomp(arg=true,&block) target.chomp(arg,&block); self end
 

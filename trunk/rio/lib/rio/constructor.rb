@@ -219,7 +219,7 @@ module RIO
   # <tt>rio(:cmdpipe, ario, ...)</tt>
   #
   #
-  # See also Rio#|
+  # See also IF::Grande#|
   #
   #
   def rio(*args,&block)  # :yields: self
