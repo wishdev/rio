@@ -92,30 +92,6 @@ module RIO
       #  }
       #  rio('afile.yaml').yaml.dump(anobject)
       #
-      # The YAML extension changes the way the grande copy operators interpret
-      # their argument. IF::Grande#< (copy-from) and IF::Grande#<< (append-from) treat an
-      # array as an array of objects which are converted using their #to_yaml
-      # method before writing.
-      #
-      #  rio('afile.yaml').yaml < [obj1, obj2, obj3]
-      #
-      # Because of this, copying an ::Array must be done like this:
-      #
-      #  rio('afile.yaml').yaml < [anarray]
-      #
-      # If their argument is a Rio or ::IO it is iterate through as normal,
-      # with each record converted using its to_yaml method.
-      #
-      # For all other objects, the result of their +to_yaml+ operator is
-      # simply written.
-      #
-      #  rio('afile.yaml').yaml < anobject
-      #
-      # IF::Grande#> (copy-to) and IF::Grande#>> (append-to) will fill an array with with
-      # all selected YAML documents in the Rio. For non-arrays, the yaml text
-      # is copied. (This may change if a useful reasonable alternative can be
-      # found) rio('afile.yaml').yaml > anarray # load all YAML documents from
-      # 'afile.yaml'
       #
       # Single objects can be written using IF::Grande#putrec (aliased to IF::YAML#putobj
       # and IF::YAML#dump)
@@ -127,18 +103,17 @@ module RIO
       #
       #  anobject = rio('afile.yaml').yaml.getobj
       #
-      # Note that other than this redefinition of what a record is and how the
-      # copy operators interpret their argument, a Rio in yaml-mode is just
+      # A Rio in yaml-mode is just
       # like any other Rio. And all the things you can do with any Rio come
-      # for free.  They can be iterated over using #each and read into an
-      # array using #[] just like any other Rio. All the selection criteria
+      # for free.  They can be iterated over using IF::Grande#each and read into an
+      # array using IF::Grande#[] just like any other Rio. All the selection criteria
       # are identical also.
       #
       # Get the first three objects into an array:
       #
       #  array_of_objects = rio('afile.yaml').yaml[0..2]
       #
-      # Iterate over only YAML documents that are a kind_of ::Hash use:
+      # Iterate over only YAML documents that are a kind_of ::Hash:
       #
       #  rio('afile.yaml').yaml(::Hash) {|ahash| ...} 
       #
