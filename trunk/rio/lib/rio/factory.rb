@@ -256,9 +256,6 @@ module RIO
       @ss_class = {}
     end
 
-    def state2class(state_name,rio_handle=nil)
-      StateMapper.instance.state2class(state_name,rio_handle)
-    end
     def subscheme_module(sch)
       @ss_module[sch] ||= case sch
                           when 'file','path'

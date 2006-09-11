@@ -260,7 +260,6 @@ class TC_dir_iter < Test::RIO::TestCase
       assert_equal(expa,ans)
     end
 
-    return
     #  $trace_states = true
 
     # iterate twice using #get (no auto close)

@@ -143,7 +143,7 @@ module RIO
         #p "path_no_slash: #{is_root?(pth)} #{pth}"
         is_root?(pth) ? pth : pth.sub(/\/$/,'')
       end
-      # The value of urlpath() with any trailing slash removed
+      # The value of fspath() with any trailing slash removed
       # returns a String
       def fspath_no_slash() 
         pth = self.fspath

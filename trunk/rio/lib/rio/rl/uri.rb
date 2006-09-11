@@ -51,6 +51,7 @@ module RIO
         # u should be a ::URI or something that can be parsed to one
         #p callstr('initialize',u,*args)
         @base = nil
+        @fs = nil
         args = _get_opts_from_args(args)
         init_from_args_(u,*args)
         super

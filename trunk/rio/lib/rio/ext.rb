@@ -88,7 +88,7 @@ module RIO
   module Ext #:nodoc: all
     class Extensions
       def initialize()
-        @ext
+        #@ext
         @inc = { 
           'cx' => mod+'::Cx',
           'input' => mod+'::Input',
