@@ -30,7 +30,7 @@ module RDoc
 
     FONTS = "Verdana,Arial,Helvetica,sans-serif"
 
-    STYLE = rio('doc/generators/template/html/rio.css').contents
+    STYLE = IO.read('doc/generators/template/html/rio.css')
 
 
 #####################################################################

@@ -681,7 +681,6 @@ module RIO
       #def outputmode?() target.outputmode?() end
 
 
-
     end
   end
 end
