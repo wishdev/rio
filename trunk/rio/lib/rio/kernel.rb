@@ -42,7 +42,6 @@ module Kernel
     RIO::Rio.rio(*args,&block)
   end
   module_function :rio
-  alias :io :rio
 end
 
 module RIO 

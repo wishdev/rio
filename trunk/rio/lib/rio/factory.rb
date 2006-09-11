@@ -282,7 +282,7 @@ module RIO
                           when 'tempdir'
                             require 'rio/scheme/temp'
                             Temp::Dir
-                          when 'strio'
+                          when 'strio','stringio','string'
                             require 'rio/scheme/strio'
                             StrIO
                           when 'cmdpipe'

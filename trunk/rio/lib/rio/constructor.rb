@@ -135,10 +135,12 @@ module RIO
   #
   # <tt>rio(?")</tt> (mnemonic: '"' surrounds strings)
   #
+  # <tt>rio(:string)</tt>
+  #
   # <tt>rio(:strio)</tt>
   #
-  # Alpha note: Should :strio be changed to :stringio, or even :string.
-  # Should more than one be allowed? I am leaning toward :string
+  # <tt>rio(:stringio)</tt>
+  #
   #
   # * create a Rio that refers to a string that it creates
   #    rio(?")

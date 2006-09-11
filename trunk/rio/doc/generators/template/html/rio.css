@@ -304,17 +304,28 @@ pre.method-description
 { 
   padding: 0 0.5em 0 0.5em; 
   color: #ee2222;
-                    
 }
+
 #description pre
 { 
   padding: 0.2em 0 0.2em 0; 
   margin: 0.3em 0 0.3em 0;  
   background: #fff8dc;
+  /* background: #ffffff; */
   border-left: 2px solid #8b6508; 
-  /* border-bottom: 1px solid #8b6508; */
-  /*  border-top: 1px solid #8b6508; */
+  border-bottom: 1px solid #8b6508;
+  border-top: 1px solid #8b6508;
 }
+
+.method-description pre
+{ 
+  padding: 0.2em 0 0.2em 0; 
+  margin: 0.3em 0 0.3em 0;  
+  background: #fff8dc;
+  border-left: 2px solid #8b6508; 
+}
+
+
 #description h1 { 
    color: #8b4500; 
   margin: 0.5em 0 0.2em 0;
@@ -357,14 +368,6 @@ pre.method-description
     text-decoration: none; 
 }
 .method-description a:hover {     text-decoration: underline;  }
-
-.method-description pre
-{ 
-  padding: 0.2em 0 0.2em 0; 
-  margin: 0.3em 0 0.3em 0;  
-  background: #fff8dc;
-  border-left: 2px solid #8b6508; 
-}
 
 .method-description table
 { 

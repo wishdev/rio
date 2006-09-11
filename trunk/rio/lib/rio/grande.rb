@@ -49,20 +49,26 @@ module RIO
       end
       _ss_returns_first? ? _ss_return_first(rtn) : rtn
     end
+
     private
+
     def _ss_return_first(ary)
       _ss_clear_single_return()
       ary[0] 
     end
+
     SINGLE_RETURN_KEYS = %[line record row]
+
     def _ss_clear_single_return
-      cx.delete('line')
-      cx.delete('record')
-      cx.delete('row')
+      SINGLE_RETURN_KEYS.each do |key|
+        cx.delete(key)
+      end
     end
+
     def _ss_returns_first?
       cx['line'] || cx['record'] || cx['row']
     end
+
     def fixnumss(*args)
 
       #p args[0].class,ss_type?(_ss_keys())

@@ -427,7 +427,7 @@ module RIO
       # Calls URI#route_to
       #
       # Returns a new rio representing the path to _other_ from the perspective of this Rio.
-      # URI#route_to requires that absolute URIs be used. IF::GrandeStream#route_to does not.
+      # URI#route_to requires that absolute URIs be used. IF::Path#route_to does not.
       #
       def route_to(other) target.route_to(other)  end
 
