@@ -150,10 +150,12 @@ class TC_riorl < Test::RIO::TestCase
   end
 
   def mkrios_open()
+    require 'tempfile'
+    stdlib_temppath = ::Tempfile.new('rio').path
+    fnre = "#{@tmppath}(\\.)?\\d+\\.\\d+"
     rinfo = {
       ?- => ['stdout',/^$/,nil,nil,/^stdout:$/,/^stdout:$/],
-      ?? => ['file',%r|//#{@tmppath}\.\d+\.\d+|,%r|#{@tmppath}\.\d+\.\d+|,%r|#{@tmppath}\.\d+\.\d+|,
-             /#{@tmppath}\.\d+\.\d+/,/#{@tmppath}\.\d+\.\d+/],
+      ?? => ['file',%r|//#{fnre}|,%r|#{fnre}|,%r|#{fnre}|,/#{fnre}/,/#{fnre}/],
     }
     siopq = sprintf("0x%08x",$stdout.object_id)
     rios = {
