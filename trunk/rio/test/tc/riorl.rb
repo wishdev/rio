@@ -152,8 +152,8 @@ class TC_riorl < Test::RIO::TestCase
   def mkrios_open()
     rinfo = {
       ?- => ['stdout',/^$/,nil,nil,/^stdout:$/,/^stdout:$/],
-      ?? => ['file',%r|//#{@tmppath}\d+\.\d+|,%r|#{@tmppath}\d+\.\d+|,%r|#{@tmppath}\d+\.\d+|,
-             /#{@tmppath}\d+\.\d+/,/#{@tmppath}\d+\.\d+/],
+      ?? => ['file',%r|//#{@tmppath}\.\d+\.\d+|,%r|#{@tmppath}\.\d+\.\d+|,%r|#{@tmppath}\.\d+\.\d+|,
+             /#{@tmppath}\.\d+\.\d+/,/#{@tmppath}\.\d+\.\d+/],
     }
     siopq = sprintf("0x%08x",$stdout.object_id)
     rios = {
@@ -169,11 +169,11 @@ class TC_riorl < Test::RIO::TestCase
     rios.each do |k,r|
       #pinfo(fmt,pathinfo(r))
       assert_equal(rinfo[k][0],r.scheme)
-      assert(r.opaque =~ rinfo[k][1])
-      assert(r.to_s =~ rinfo[k][4])
-      assert(r.to_url =~ rinfo[k][5])
+      assert_match(rinfo[k][1],r.opaque)
+      assert_match(rinfo[k][4],r.to_s)
+      assert_match(rinfo[k][5],r.to_url)
     end
-    assert(rinfo[??][2] =~ rios[??].path)
-    assert(rinfo[??][3] =~ rios[??].fspath)
+    assert_match(rinfo[??][2],rios[??].path)
+    assert_match(rinfo[??][3],rios[??].fspath)
   end
 end
