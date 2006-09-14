@@ -46,7 +46,7 @@ module RIO
       end
       require 'open-uri'
       def open(*args)
-        self.uri.open
+        IOH::Stream.new(self.uri.open)
       end
     end
 
