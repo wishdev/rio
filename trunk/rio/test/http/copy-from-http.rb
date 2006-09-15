@@ -19,12 +19,13 @@ class TC_copy_from_http < Test::RIO::TestCase
     
   end
   RTHOST = 'localhost'
+  RTPORT = 8088
   RTDIR = 'riotest'
   HWFILENAME = 'hw.html'
   GZFILENAME = 'lines.txt.gz'
-  HWURL = "http://#{RTHOST}/#{RTDIR}/#{HWFILENAME}"
-  GZURL = "http://#{RTHOST}/#{RTDIR}/#{GZFILENAME}"
-  LOCALRTDIR = rio('../../http/htdocs',RTDIR)
+  HWURL = "http://#{RTHOST}:#{RTPORT}/#{RTDIR}/#{HWFILENAME}"
+  GZURL = "http://#{RTHOST}:#{RTPORT}/#{RTDIR}/#{GZFILENAME}"
+  LOCALRTDIR = rio('../../srv/www/htdocs',RTDIR)
   HWFILE = LOCALRTDIR/HWFILENAME
   GZFILE = LOCALRTDIR/GZFILENAME
 
