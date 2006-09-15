@@ -97,7 +97,7 @@ task :rio_rdoc do
   require 'rio/doc/SYNOPSIS'
   ruby "-Idoc/patched_rdoc -Ilib doc/bin/rdoc --show-hash --op doc/rdoc --title #{PKG::TITLE} --line-numbers  --template doc/generators/template/html/rio.rb #{PKG::FILES::DOC} --main #{RIO::Doc::SYNOPSIS}" 
 end
-CLOBBER << "test/rio.log" << "test/qp"
+CLOBBER << "test/log" << "test/qp"
 task :test do |t|
     sh "cd test;ruby -I../lib -I. runtests.rb"
 end
