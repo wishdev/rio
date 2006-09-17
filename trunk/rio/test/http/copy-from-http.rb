@@ -16,18 +16,19 @@ class TC_copy_from_http < Test::RIO::TestCase
   def setup
     super
     self.class.once unless @@once
-    
   end
-  RTHOST = 'localhost'
-  RTPORT = 8088
+  RTHOST = ENV['RIO_TEST_HOST'] ||= 'localhost'
+  RTPORT = ENV['RIO_TEST_PORT'] || 80
+  RTHOSTPORT = "#{RTHOST}:#{RTPORT}"
   RTDIR = 'riotest'
   HWFILENAME = 'hw.html'
   GZFILENAME = 'lines.txt.gz'
-  HWURL = "http://#{RTHOST}:#{RTPORT}/#{RTDIR}/#{HWFILENAME}"
-  GZURL = "http://#{RTHOST}:#{RTPORT}/#{RTDIR}/#{GZFILENAME}"
+  HWURL = "http://#{RTHOSTPORT}/#{RTDIR}/#{HWFILENAME}"
+  GZURL = "http://#{RTHOSTPORT}/#{RTDIR}/#{GZFILENAME}"
   LOCALRTDIR = rio('../../srv/www/htdocs',RTDIR)
   HWFILE = LOCALRTDIR/HWFILENAME
   GZFILE = LOCALRTDIR/GZFILENAME
+
 
   def cptest(src)
     dst = rio('dst').delete!.mkpath
