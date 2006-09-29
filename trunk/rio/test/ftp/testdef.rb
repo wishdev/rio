@@ -7,9 +7,9 @@ module Test
         FTPUSER = 'ftp'
         
         DRV = $mswin32 ? 'x:' : ''
-        FSROOT = rio("#{DRV}/home/ftp")
-        #FTPHOST = '192.168.1.101'
-        FTPHOST = 'localhost'
+        FSROOT = rio("#{DRV}/srv/ftp")
+        FTPHOST = '192.168.1.101'
+        #FTPHOST = 'localhost'
         FTPROOT = rio("ftp://#{FTPHOST}/")
 
         TESTDIR = rio('riotest')
@@ -21,7 +21,7 @@ module Test
         FS_RWROOT = FSROOT/TESTDIR/RWDIR
         FS_ROROOT = FSROOT/TESTDIR/RODIR
         unless $mswin32
-          PASSWDFILE = FSROOT/'etc/passwd'
+          PASSWDFILE = '/etc/passwd'
           UID,GID = rio(PASSWDFILE).lines[/^#{FTPUSER}/][0].split(':')[2..3].map{|strid| strid.to_i}
         end
       end
