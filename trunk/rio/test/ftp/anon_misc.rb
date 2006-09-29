@@ -13,13 +13,21 @@ class TC_ftp_anon_misc < Test::RIO::TestCase
   @@once = false
   include Test::RIO::FTP::Const
 
+  ALLENTS = [FTP_RWROOT/'f0',d0=FTP_RWROOT/'d0',d0/'f1',d1=d0/'d1',d1/'f2']
   def self.once
     @@once = true
   end
   def setup
     super
     self.class.once unless @@once
-    FS_RWROOT.entries { |ent| ent.delete! }
+    ALLENTS.reverse.each do |ent|
+      if ent.filename =~ /f/
+        ent.rm
+      else
+        ent.rmdir
+      end
+    end
+    #FS_RWROOT.entries { |ent| ent.delete! }
   end
 
   def test_dir
@@ -33,6 +41,8 @@ class TC_ftp_anon_misc < Test::RIO::TestCase
   end
   def test_mkdir
     rwdir = rio(FTP_RWROOT)
+    rio(rwdir,'dir1').rmdir
+    rio(rwdir,'dir0').rmdir
     rwdir.chdir
     assert_equal(FTP_RWROOT.to_s,rwdir.cwd.to_s)
     rio(rwdir,'dir0').mkdir
@@ -40,6 +50,8 @@ class TC_ftp_anon_misc < Test::RIO::TestCase
   end
   def test_rmdir
     rwdir = rio(FTP_RWROOT)
+    rio(rwdir,'dir1').rmdir
+    rio(rwdir,'dir0').rmdir
     rio(rwdir,'dir1').mkdir
     assert_equal(smap([FTP_RWROOT/'dir1']),smap(FTP_RWROOT.entries[/^dir/]))
     rio(rwdir,'dir1').rmdir

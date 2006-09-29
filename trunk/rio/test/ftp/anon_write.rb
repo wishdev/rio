@@ -27,7 +27,14 @@ class TC_ftp_anon_write < Test::RIO::TestCase
   def setup
     super
     self.class.once unless @@once
-    FS_RWROOT.entries { |ent| ent.delete! }
+    ALLENTS.reverse.each do |ent|
+      if ent.filename =~ /f/
+        ent.rm
+      else
+        ent.rmdir
+      end
+    end
+    #FS_RWROOT.entries { |ent| ent.delete! }
   end
   def test_cp_file_to_dir
     fname = 'f0'
