@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 === Rio - Ruby I/O Comfort Class
 
-Rio is a convenience class wrapping much of the functionality of 
-IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
+Rio wraps much of the functionality of IO, File, Dir, Pathname, FileUtils,
+Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 ==== Building the documentation
 
@@ -31,9 +31,6 @@ from the distribution directory.
 
 Then point your browser at the 'doc/rdoc' directory.
 
-If you have rake (http://rake.rubyforge.org), the command 
-  rake rdoc
-will also build the documentation.
 
 The RDoc template file included with the distribution contains some RDoc hacks
 that overcomes some of RDoc's weaknesses and makes the documentation *much* more
@@ -41,6 +38,7 @@ usable. It is unadvisable to build the RDoc documentation without these.
 
 
 ===== Suggested Reading
+
 * RIO::Doc::SYNOPSIS
 * RIO::Doc::INTRO
 * RIO::Doc::HOWTO
@@ -49,7 +47,7 @@ usable. It is unadvisable to build the RDoc documentation without these.
 
 ==== Installation
 
-To install Rio: from the distribution directory type
+To install Rio from the distribution directory type
   ruby setup.rb
 
 Rio is also available as a gem. If you have rubygems installed use:
