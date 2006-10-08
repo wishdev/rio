@@ -452,6 +452,7 @@ module RIO
       # collector.
       #
       def close() target.close(); self end
+      def close_write() target.close_write(); self end
 
       # Calls IO#fcntl
       #      ario.fcntl(integer_cmd, arg)    => integer

@@ -798,7 +798,7 @@ Rio closes files automatically in three instances.
 When reading from an IO it is closed when the end of file is
 reached. While this is a reasonable thing to do in many cases,
 sometimes this is not desired.  To turn Rio's automatic closing on end
-of file use IF::GrandStream#nocloseoneof (it can be turned back on via
+of file use IF::GrandeStream#nocloseoneof (it can be turned back on via
 IF::GrandeStream#closeoneof)
 
  ario = rio('afile').nocloseoneof
@@ -854,7 +854,7 @@ A Rio is typically not explicitly opened. It opens a file
 automatically when an input or output methed is called. For output
 methods Rio opens a file with mode 'w', and otherwise opens a file
 with mode 'r'. This behavior can be modified using the tersely named
-methods IF::RubyIO#a, IF::RubyIO#a!, IF::RubyIO#r, IF::RubyIO#r!, IF::RubyIO#w, and IF::RubyIO#w!, which cause
+methods IF::GrandeStream#a, IF::GrandeStream#a!, IF::GrandeStream#r, IF::GrandeStream#r!, IF::GrandeStream#w, and IF::GrandeStream#w!, which cause
 the Rio to use modes 'a','a+','r','r+','w',and 'w+' respectively.
 
 One way to append a string to a file and close it in one line is
@@ -866,7 +866,7 @@ Run a cmd that must be opened for read and write
  ans = rio(?-,'cat').w!.puts!("Hello Kitty").readlines
 
 The automatic selection of mode can be bypassed entirely using
-IF::RubyIO#mode and IF::RubyIO#open.
+IF::RubyIO#mode and IF::FileOrDir#open.
 
 If a mode is specified using +mode+, the file will still be opened
 automatically, but the mode specified in the +mode+ method will be
@@ -975,7 +975,7 @@ while +records+ only selects and does not specify the record-type,
 +lines+ is the default. 
 
 The YAML extension distingishes between items selected using
-IF::GrandeStreamrecords, IF::GrandeStreamrows and IF::GrandeStreamlines. Rio returns objects
+IF::GrandeStream#records, IF::GrandeStream#rows and IF::GrandeStream#lines. Rio returns objects
 loaded via YAML#load when +records+ is used; returns the YAML text
 as a String when +rows+ is used; and
 returns lines as Strings as normal when +lines+ is used.  
