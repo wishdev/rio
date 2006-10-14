@@ -34,7 +34,6 @@
 #
 
 
-# cell phone number: 954-6752.
 require 'rio/state'
 require 'rio/ops/path'
 require 'rio/ops/symlink'
@@ -48,22 +47,28 @@ module RIO
     class Empty < State::Base
       include Ops::Path::Empty
       def check?() fspath.nil? or fspath.empty? end
-      def [](*args)
+
+      private
+
+      def _assume_cwd()
         self.rl = Path::RL.new('.')
-        softreset[*args]
+        self.softreset
       end
-      def each(&block)
-        self.rl = Path::RL.new('.')
-        softreset.each(&block)
+      def _assume_stdio()
+        require 'rio/scheme/stdio'
+        self.rl = RIO::StdIO::RL.new
+        self.softreset
       end
-      def read(*args)
-        self.rl = Path::RL.new('.')
-        softreset.read(*args)
-      end
-      def get(*args)
-        self.rl = Path::RL.new('.')
-        softreset.get(*args)
-      end
+
+      public
+
+      def [](*args)    _assume_cwd[*args] end
+      def each(&block) _assume_cwd.each(&block) end
+      def read(*args)  _assume_cwd.read(*args) end
+      def get(*args)   _assume_cwd.get(*args)  end
+
+      def gets(*args)  _assume_stdio.chomp.gets(*args) end
+
       def when_missing(sym,*args) gofigure(sym,*args) end
     end 
 

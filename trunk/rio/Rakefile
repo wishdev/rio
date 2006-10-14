@@ -146,8 +146,8 @@ end
 Spec = Gem::Specification.new do |s|
   s.name = PKG::NAME
   s.version = PKG::VERSION
-  s.author = "Christopher Kleckner"
-  s.email = "rio4ruby@rubyforge.org"
+  s.author = PKG::AUTHOR
+  s.email = PKG::EMAIL
   s.homepage = "http://rio.rubyforge.org/"
   s.rubyforge_project = "rio"
 
