@@ -15,6 +15,10 @@ Suggested Reading
 * RIO::Doc::HOWTO
 * RIO::Rio
 
+== New for version 0.3.9
+* Bug fixes, code cleanup, 
+
+
 == New for version 0.3.8
 * Enhanced support for FTP file-systems. All of Rio's most powerful
   idioms are now supported seamlessly on FTP servers.

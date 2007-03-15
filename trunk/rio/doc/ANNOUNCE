@@ -1,4 +1,4 @@
-Rio 0.3.8
+Rio 0.3.9
 
 == Overview
 
@@ -10,36 +10,7 @@ interfaces provided by IO, File, and Dir to an appropriate object, Rio
 provides a "grande" interface that allows many common application
 level I/O and file-system tasks to be expressed succinctly.
 
-== New
-
-Enhanced support for FTP file-systems. All of Rio's most powerful
-idioms are now supported seamlessly on FTP servers.
-
- # copy a file from or to an FTP server
- rio('ftp://ahost/adir/afile') > rio('localfile') # server -> local file
- rio('ftp://ahost/adir/afile') < rio('localfile') # local file -> server
-
- # copy an entire directory structure from or to an FTP server
- rio('ftp://ahost/adir') > rio('localdir') # server -> local directory
- rio('ftp://ahost/adir') < rio('localdir') # local directory -> server
-
-All of Rio's grande selection and filtering options are available for
-files and directories on FTP servers.
-
- # create a gzipped copy of a web page on an ftp server
- rio('ftp://ftphost/f.html.gz').gzip < rio('http://httphost/f.html')
-
- # dump the first 10 lines of a gzipped log file on an FTP server to stdout
- rio('ftp://ftphost/logfile.txt').lines(0...10) > ?-
-
- # iterate through the entries of a directory on an FTP server
- rio('ftp://ftphost/adir').entries { |entrio| ... }
-
- # get an array of all .rb files on an ftp server
- rb_files = rio('ftp://ftphost/').all.files['*.rb']
-
-
-== SYNOPSIS
+= SYNOPSIS
 
 For the following assume:
  astring = ""
