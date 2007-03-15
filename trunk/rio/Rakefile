@@ -168,6 +168,7 @@ Rake::GemPackageTask.new(Spec) do |p| end
 desc "Build the Gem spec file for the rio package"
 task :gemspec => "pkg/rio.gemspec"
 file "pkg/rio.gemspec" => ["pkg", "Rakefile"] do |t|
+  puts PKG::FILES::DIST
   open(t.name, "w") do |f| f.puts Spec.to_yaml end
 end
 

@@ -40,12 +40,12 @@ module PKG
   RUBYFORGE_PROJECT = "rio"
   RDOC_OPTIONS = ['--show-hash','--line-numbers','-mRIO::Doc::SYNOPSIS','-Tdoc/generators/template/html/rio.rb']
   module FILES
-    SRC = rio('lib').files['*.rb']
+    SRC = rio('lib').norecurse('.svn').files['*.rb']
     DOC = rio['README'] + rio('lib')['rio.rb'] + rio('lib/rio/doc/')['*.rb'] +
                         rio('lib/rio/if/')['*.rb'] + rio('lib/rio')['kernel.rb','constructor.rb']
     XMP = rio('ex').entries[]
-    D2 = rio('doc').all.files.skip.dirs['rdoc']
-    TST = rio('test').all.files('*.rb').skip.dirs['qp']
+    D2 = rio('doc').norecurse('.svn').all.files.skip.dirs['rdoc','.svn']
+    TST = rio('test').norecurse('.svn').all.files('*.rb').skip.dirs['qp','.svn']
     MSC = rio.files['setup.rb', 'build_doc.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION']
     
     #                              ) do |fl|
