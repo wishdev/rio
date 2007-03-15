@@ -20,7 +20,7 @@
 #
 
 # Modified by Christopher Kleckner
-# Copyright (c) 2005,2006. Some rights reserved.
+# Copyright (c) 2005,2006,2007. Some rights reserved.
 # Licensed under the same terms as the original.
 
 require 'doc/generators/template/html/ugly.rb'
@@ -100,7 +100,7 @@ CONTEXT_CONTENT = %{
 #####################################################################
 FOOTER = %{
 <div id="validator-badges">
-   <p><small>Copyright &copy; 2005, 2006 Christopher Kleckner.  <a href="http://www.gnu.org/licenses/gpl.html">All rights reserved</a>.</small></p>
+   <p><small>Copyright &copy; 2005,2006,2007 Christopher Kleckner.  <a href="http://www.gnu.org/licenses/gpl.html">All rights reserved</a>.</small></p>
 </div>
 
 </body>

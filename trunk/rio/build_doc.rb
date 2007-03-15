@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #--
 # =============================================================================== 
-# Copyright (c) 2005, 2006 Christopher Kleckner
+# Copyright (c) 2005,2006,2007 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
