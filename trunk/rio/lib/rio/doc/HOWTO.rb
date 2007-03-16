@@ -468,9 +468,9 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Count the lines of code in a directory tree of ruby source files
    # method 1
-   cnt = ario.all.files('*.rb').chomp.skiplines(/^\s*#/,/^\s*$/).inject(0) { |sum,l|  sum += 1 }
+   cnt = ario.all.files('*.rb').skiplines[/^\s*#/,/^\s*$/].size
    # method 2
-   cnt = ario.all.files('*.rb').chomp.skiplines[/^\s*#/,/^\s*$/].size
+   cnt = ario.all.files('*.rb').skiplines(/^\s*#/,/^\s*$/).inject(0) { |sum,l|  sum += 1 }
 
 * Concatanate the contents of all .txt files in a directory into an array
    # method 1
@@ -560,19 +560,21 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Dump a file to stdout
    # method 1
-   rio(?-) << rio('afile')
+   rio('afile') > ?-
    # method 2
-   rio('afile') >> rio(?-)
-   # method 3
    rio('afile') > rio(?-)
+   # method 3
+   rio(?-) << rio('afile')
    # method 4
-   rio(?-) < rio('afile')
+   rio('afile') >> ?-
    # method 5
+   rio(?-) < rio('afile')
+   # method 6
    rio(?-).print(rio('afile').contents)
 
 * Emulate a simplified unix 'head' command which reads from stdin and writes the first 10 lines to stdout
    # method 1
-   rio(?-).lines(0..9) > rio(?-)
+   rio(?-).lines(0..9) > ?-
 
 ---
 
@@ -688,7 +690,6 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    ap = ap.join('subdirectory')
    # method 3
    ap = rio(ap,'subdirectory')
-   # method 4
 
 * Create a Rio from an array of subdirectories
    dirs = ['adir','subdir1','subdir2']
