@@ -233,13 +233,13 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 3
    ario.lines(0..9,99) > array
   
-* Put lines one thru ten,line 100 and lines starting with 'zippy' into an array
+* Put lines one thru ten,line 100 and lines starting with 'rio4ruby' into an array
    # method 1
-   array = ario[0..9,99,/^zippy/]
+   array = ario[0..9,99,/^rio4ruby/]
    # method 2
-   array = ario.lines[0..9,99,/^zippy/]
+   array = ario.lines[0..9,99,/^rio4ruby/]
    # method 3
-   ario.lines(0..9,99,/^zippy/) > array
+   ario.lines(0..9,99,/^rio4ruby/) > array
   
 * Put lines that are longer than 128 bytes into an array
    # method 1
@@ -251,19 +251,19 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 4
    array = ario.skip.lines[proc{ |l| l.length <= 128}]
   
-* Copy all lines that do not start with 'zippy' into another file
+* Copy all lines that do not start with 'rio4ruby' into another file
    # method 1
-   ario.skiplines(/^zippy/) > rio('another_file')
+   ario.skiplines(/^rio4ruby/) > rio('another_file')
    # method 2
-   ario.lines.skiplines(/^zippy/) > rio('another_file')
+   ario.lines.skiplines(/^rio4ruby/) > rio('another_file')
    # method 3
-   rio('another_file') < ario.skiplines(/^zippy/)
+   rio('another_file') < ario.skiplines(/^rio4ruby/)
   
-* Copy the first 10 lines and lines starting with 'zippy', but exclude any lines longer than 128 bytes
+* Copy the first 10 lines and lines starting with 'rio4ruby', but exclude any lines longer than 128 bytes
    # method 1
-   ario.lines(0...10,/^zippy/).skiplines(proc{ |l| l.length > 128}] > rio('another_file')
+   ario.lines(0...10,/^rio4ruby/).skiplines(proc{ |l| l.length > 128}] > rio('another_file')
    # method 2
-   rio('another_file') < ario.lines(0...10,/^zippy/).skiplines(proc{ |l| l.length > 128})
+   rio('another_file') < ario.lines(0...10,/^rio4ruby/).skiplines(proc{ |l| l.length > 128})
   
 
 
@@ -639,9 +639,9 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    ario.rename.extname = '.html'
 
-* Change a files basename to 'zippy' without changing its extension
+* Change a files basename to 'rio4ruby' without changing its extension
    # method 1
-   ario.rename.basename = 'zippy'
+   ario.rename.basename = 'rio4ruby'
 
 * Change a file ending with '.tar.gz' to end with '.tgz'
    # method 1
