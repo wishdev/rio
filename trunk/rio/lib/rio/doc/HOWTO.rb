@@ -96,14 +96,18 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 * Append the first 10 lines of a file into an array, with each line chomped
    # method 1
-   array += ario.chomp.lines[0...10]
+   array += ario.chomp[0...10]
    # method 2
+   array += ario.chomp.lines[0...10]
+   # method 3
    ario.chomp.lines(0...10) >> array
 
 * Read all lines starting with 'require' into an array, with each line chomped
    # method 1
-   array = ario.chomp.lines[/^\s*require/]
+   array = ario.chomp[/^\s*require/]
    # method 2
+   array = ario.chomp.lines[/^\s*require/]
+   # method 3
    ario.chomp.lines(/^\s*require/) > array
 
 * Read a gzipped file into a string
@@ -141,21 +145,25 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    rio('afile.rb.gz').gzip.lines(0,/^\s*#/) { |line| ... }
 
 * Iterate through the lines of a ruby file that are neither empty nor comments, with all lines chomped
-   rio('afile.rb.gz').chomp.skiplines(/^\s*#/,:empty?) { |line| ... }
+   rio('afile.rb').chomp.skiplines(/^\s*#/,:empty?) { |line| ... }
 
 * Read all the comment lines from a ruby file into an array with all lines chomped
    # method 1
-   array = rio('afile.rb').chomp.lines[/^\s*#/]
+   array = rio('afile.rb').chomp[/^\s*#/]
    # method 2
+   array = rio('afile.rb').chomp.lines[/^\s*#/]
+   # method 3
    rio('afile.rb').chomp.lines(/^\s*#/) > array
   
 
 * Read lines of a file into an array, with each line chomped, skipping any lines longer than 1024 chars
    # method 1
-   ario.chomp.lines(proc{ |line| line.length <= 1024}) > array
+   array = ario.chomp[proc{ |line| line.length <= 1024}]
    # method 2
-   array = ario.chomp.skiplines[proc{ |line| line.length > 1024}]
+   ario.chomp.lines(proc{ |line| line.length <= 1024}) > array
    # method 3
+   array = ario.chomp.skiplines[proc{ |line| line.length > 1024}]
+   # method 4
    array = ario.chomp.lines(proc{ |line| line.length <= 1024}).to_a
 
 ---
@@ -221,17 +229,17 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    # method 1
    array = ario[0..9,99]
    # method 2
-   array = ario[0...10,99..99]
+   array = ario.lines[0..9,99]
    # method 3
-   ario(0..9,99) > array
+   ario.lines(0..9,99) > array
   
 * Put lines one thru ten,line 100 and lines starting with 'zippy' into an array
    # method 1
    array = ario[0..9,99,/^zippy/]
    # method 2
-   array = ario[0...10,99..99,/^zippy/]
+   array = ario.lines[0..9,99,/^zippy/]
    # method 3
-   ario(0..9,99,/^zippy/) > array
+   ario.lines(0..9,99,/^zippy/) > array
   
 * Put lines that are longer than 128 bytes into an array
    # method 1
@@ -240,6 +248,8 @@ IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
    array = ario.lines[proc{ |l| l.length > 128}]
    # method 3
    array = ario.skiplines[proc{ |l| l.length <= 128}]
+   # method 4
+   array = ario.skip.lines[proc{ |l| l.length <= 128}]
   
 * Copy all lines that do not start with 'zippy' into another file
    # method 1

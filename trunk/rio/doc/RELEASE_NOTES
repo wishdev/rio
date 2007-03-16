@@ -1,6 +1,6 @@
 === Rio - Ruby I/O Comfort Class
 
-Rio is a convenience class wrapping much of the functionality of 
+Rio is a class wrapping much of the functionality of 
 IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
 
 To create the documentation for Rio run the command

@@ -120,7 +120,7 @@ module RIO
       # to the value returned by File#extname. Returns the Rio.
       #
       #  ario = rio('afile.tar.gz')
-      #  ario.ext?                        #=> '.ext'
+      #  ario.ext?                        #=> '.gz'
       #  ario.basename                    #=> rio('afile.tar')
       #  ario.ext('.tar.gz').basename     #=> rio('afile')
       #  ario.ext?                        #=> '.tar.gz'

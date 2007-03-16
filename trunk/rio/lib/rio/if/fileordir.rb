@@ -109,7 +109,7 @@ module RIO
       def rename(*args,&block) target.rename(*args,&block); self end
       
 
-      # Behaves like IF::GrandeStream#rename, but also changes the calling Rio to 
+      # Behaves like IF::FileOrDir#rename, but also changes the calling Rio to 
       # refer to the renamed path
       def rename!(*args,&block) target.rename!(*args,&block); self end
       
