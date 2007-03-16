@@ -137,16 +137,16 @@ Iterate over the first 10 chomped lines of a file
  rio('afile').chomp.lines(0..9) { |line| ... }
 
 Put the first 10 chomped lines of a file into an array
- anarray = rio('afile').chomp.lines[0..9]
+ anarray = rio('afile').chomp[0..9]
 
 Copy the first 10 lines of a file into another file
  rio('afile').lines(0..9) > rio('another_file')
 
 Copy the first 10 lines of a file to stdout
- rio('afile').lines(0..9) > rio(?-)
+ rio('afile').lines(0..9) > ?-
 
 Copy the first 10 lines of a gzipped file on an ftp server to stdout
- rio('ftp://host/afile.gz').gzip.lines(0..9) > rio(?-)
+ rio('ftp://host/afile.gz').gzip.lines(0..9) > ?-
 
 Put the first 100 chomped lines of a gzipped file into an array
  anarray =  rio('afile.gz').chomp.gzip[0...100] 
