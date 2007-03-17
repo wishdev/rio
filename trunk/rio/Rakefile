@@ -182,9 +182,6 @@ task :svn_version do
   repo_root = rio(SVN_REPOSITORY_ROOT)
   proju = rio(repo_root,'trunk',PKG::NAME) 
   relu  = rio(repo_root,'tags',"release-#{PKG::VERSION}")
-  p repo_root
-  p proju
-  p relu
   relo =`svn list #{relu.to_url}`
   if relo.size > 0
     $stderr.puts "Release #{relu.to_url} exists!"
@@ -192,8 +189,7 @@ task :svn_version do
   end
   msg = "Release #{PKG::VERSION} of #{PKG::NAME}"
   cmd = sprintf('svn copy %s %s -m "%s"',proju.to_url, relu.to_url, msg)
-  p cmd
-  #sh cmd
+  sh cmd
 end
 
 desc "Commit the current code to svn"
