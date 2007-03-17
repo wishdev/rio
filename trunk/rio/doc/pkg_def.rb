@@ -36,8 +36,9 @@ module PKG
   DESCRIPTION = RIO::DESCRIPTION
   AUTHOR = "Christopher Kleckner"
   EMAIL = "rio4ruby@rubyforge.org"
-  HOMEPAGE = "http://rio.rubyforge.org/"
-  RUBYFORGE_PROJECT = "rio"
+  RUBYFORGE_PROJECT = PKG::NAME
+  HOMEPAGE = "http://#{PKG::RUBYFORGE_PROJECT}.rubyforge.org/"
+  RUBYFORGE_URL = "http://rubyforge.org/projects/#{PKG::RUBYFORGE_PROJECT}"
   RDOC_OPTIONS = ['--show-hash','--line-numbers','-mRIO::Doc::SYNOPSIS','-Tdoc/generators/template/html/rio.rb']
   module FILES
     SRC = rio('lib').norecurse('.svn').files['*.rb']
