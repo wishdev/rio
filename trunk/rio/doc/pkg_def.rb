@@ -49,19 +49,12 @@ module PKG
     TST = rio('test').norecurse('.svn').all.files('*.rb').skip.dirs['qp','.svn']
     MSC = rio.files['setup.rb', 'build_doc.rb', 'COPYING', 'Rakefile', 'ChangeLog', 'VERSION']
     
-    #                              ) do |fl|
-#     fl.exclude( /\bsvn\b/ )
-#     fl.exclude( 'doc/rdoc' )
-#   end
     [SRC,DOC,XMP,D2,TST,MSC].each do |fary|
       fary.map! { |f| f.to_s }
     end
     DIST  =  SRC + DOC + XMP + D2 + TST + MSC
   end
 
-#   SRC_FILES = FileList['lib/**/*.rb']
-#   DOC_FILES = FileList['README','lib/rio.rb','lib/rio/doc/*.rb',
-#                        'lib/rio/if/*.rb','lib/rio/kernel.rb','lib/rio/constructor.rb']
   OUT_DIR = 'pkg'
-  OUT_FILES = %w[.gem .tar.gz .zip].map { |ex| OUT_DIR + '/' + FULLNAME + ex }
+  OUT_FILES = %w[.gem .tar.gz .zip].map { |ex| PKG::OUT_DIR + '/' + FULLNAME + ex }
 end

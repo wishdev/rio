@@ -43,7 +43,8 @@ require 'rio/version'
 require 'rio/doc'
 require 'rio'
 
-SVN_REPOSITORY_URL = 'svn+ssh://rio4ruby@rubyforge.org//var/svn/trunk/rio'
+SVN_REPOSITORY_ROOT = 'svn+ssh://rio4ruby@rubyforge.org//var/svn/rio'
+SVN_REPOSITORY_URL = [SVN_REPOSITORY_ROOT,'trunk/rio'].join('/')
  
 require 'doc/pkg_def'
 
@@ -118,9 +119,6 @@ task :gen_version do
 end
 
 
-#task :gen_files => [:gen_changelog, :gen_version, :gen_installrb]
-#CLOBBER << "ChangeLog" << "VERSION" << "install.rb"
-
 task :gen_files => [:gen_changelog, :gen_version]
 #task :gen_files => [:gen_version]
 CLOBBER << "ChangeLog" << "VERSION" 
@@ -148,8 +146,8 @@ Spec = Gem::Specification.new do |s|
   s.version = PKG::VERSION
   s.author = PKG::AUTHOR
   s.email = PKG::EMAIL
-  s.homepage = "http://rio.rubyforge.org/"
-  s.rubyforge_project = "rio"
+  s.homepage = PKG::HOMEPAGE
+  s.rubyforge_project = PKG::RUBYFORGE_PROJECT
 
   s.platform = Gem::Platform::RUBY
   s.summary = PKG::SUMMARY
@@ -181,8 +179,12 @@ desc "Save the current code as a new svn version"
 task :svn_version do
   require 'rio'
   repos = rio(SVN_REPOSITORY_URL)
-  proju = rio(repos,PKG::NAME,'trunk') 
-  relu  = rio(repos,PKG::NAME,'tags','release-') + PKG::VERSION 
+  repo_root = rio(SVN_REPOSITORY_ROOT)
+  proju = rio(repo_root,'trunk',PKG::NAME) 
+  relu  = rio(repo_root,'tags',"release-#{PKG::VERSION}")
+  p repo_root
+  p proju
+  p relu
   relo =`svn list #{relu.to_url}`
   if relo.size > 0
     $stderr.puts "Release #{relu.to_url} exists!"
@@ -190,7 +192,8 @@ task :svn_version do
   end
   msg = "Release #{PKG::VERSION} of #{PKG::NAME}"
   cmd = sprintf('svn copy %s %s -m "%s"',proju.to_url, relu.to_url, msg)
-  sh cmd
+  p cmd
+  #sh cmd
 end
 
 desc "Commit the current code to svn"
