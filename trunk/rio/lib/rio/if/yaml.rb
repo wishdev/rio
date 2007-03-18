@@ -142,7 +142,7 @@ module RIO
       def objects(*selectors,&block) target.objects(*selectors,&block); self end
 
 
-      # Reject objects from a YAML file. See #yaml and RIO::Doc::INTRO
+      # Reject objects from a YAML file. Calls IF::GrandeStream#skiprecords. See #yaml and RIO::Doc::INTRO
       def skipobjects(*selectors,&block) target.skipobjects(*selectors,&block); self end
 
 
@@ -150,7 +150,7 @@ module RIO
       def documents(*selectors,&block) target.documents(*selectors,&block); self end
 
 
-      # Reject documents from a YAML file. Calls #skiprows. See #yaml and RIO::Doc::INTRO
+      # Reject documents from a YAML file. Calls IF::GrandeStream#skiprows. See #yaml and RIO::Doc::INTRO
       def skipdocuments(*selectors,&block) target.skipdocuments(*selectors,&block); self end
 
       # Select a single object. See #objects, IF::GrandeStream#line and #yaml.
