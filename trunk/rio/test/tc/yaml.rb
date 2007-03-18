@@ -47,6 +47,63 @@ class TC_yaml < Test::RIO::TestCase
     rio(?",ostring = "").yaml < yout
     assert_equal(rio(TRIO).contents,ostring)
   end
+  def test_select
+    ans = rio(TRIO).yaml.records[]
+    assert_equal(TOBJS,ans)
+    ans = rio(TRIO).yaml.objects[]
+    assert_equal(TOBJS,ans)
+
+    ans = rio(TRIO).yaml.rows[]
+    assert_equal(TOBJS,ans.map{|obj| ::YAML.load(obj)})
+    ans = rio(TRIO).yaml.documents[]
+    assert_equal(TOBJS,ans.map{|obj| ::YAML.load(obj)})
+
+    exp = [TOBJS[1]]
+    ans = rio(TRIO).yaml.records[1]
+    assert_equal(exp,ans)
+    ans = rio(TRIO).yaml.objects[1]
+    assert_equal(exp,ans)
+
+    ans = rio(TRIO).yaml.rows[1]
+    assert_equal(exp,ans.map{|obj| ::YAML.load(obj)})
+    ans = rio(TRIO).yaml.documents[1]
+    assert_equal(exp,ans.map{|obj| ::YAML.load(obj)})
+
+    exp = [TOBJS[0],TOBJS[2]]
+    ans = rio(TRIO).yaml.skiprecords[1]
+    assert_equal(exp,ans)
+    ans = rio(TRIO).yaml.skipobjects[1]
+    assert_equal(exp,ans)
+
+    ans = rio(TRIO).yaml.skiprows[1]
+    assert_equal(exp,ans.map{|obj| ::YAML.load(obj)})
+    ans = rio(TRIO).yaml.skipdocuments[1]
+    assert_equal(exp,ans.map{|obj| ::YAML.load(obj)})
+
+    exp = [TOBJS[1]]
+    ans = rio(TRIO).yaml.records[::Hash]
+    assert_equal(exp,ans)
+    ans = rio(TRIO).yaml.objects[::Hash]
+    assert_equal(exp,ans)
+
+    exp = [TOBJS[0],TOBJS[2]]
+    ans = rio(TRIO).yaml.skiprecords[::Hash]
+    assert_equal(exp,ans)
+    ans = rio(TRIO).yaml.skipobjects[::Hash]
+    assert_equal(exp,ans)
+
+  end
+  def test_single
+    exp = TOBJS[1]
+    ans = rio(TRIO).yaml.record[1]
+    assert_equal(exp,ans)
+    ans = rio(TRIO).yaml.row[1]
+    assert_equal(exp,::YAML.load(ans))
+    ans = rio(TRIO).yaml.object[1]
+    assert_equal(exp,ans)
+    ans = rio(TRIO).yaml.document[1]
+    assert_equal(exp,::YAML.load(ans))
+  end
   def test_copytypes
     ofile = 'out.yml'
     [1,"1",{'one'=>1},[1]].each do |obj|

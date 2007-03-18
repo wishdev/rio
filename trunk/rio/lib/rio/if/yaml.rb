@@ -98,7 +98,7 @@ module RIO
       #
       #  rio('afile.yaml').yaml.putobj(anobject)
       #
-      # Single objects can be loaded using IF::GrandeStream#getrec (aliased to IF::GrandeStream#getobj
+      # Single objects can be loaded using IF::GrandeStream#getrec (aliased to IF::YAML#getobj
       # and IF::YAML#load)
       #
       #  anobject = rio('afile.yaml').yaml.getobj
@@ -153,6 +153,14 @@ module RIO
 
       # Reject documents from a YAML file. Calls #skiprows. See #yaml and RIO::Doc::INTRO
       def skipdocuments(*selectors,&block) target.skipdocuments(*selectors,&block); self end
+
+      # Select a single object. See #objects, #IF::GrandeStream#line.
+      def object(*args,&block) target.record(*args,&block); self end
+
+
+      # Select a single yaml document. See #documents, #IF::GrandeStream#line.
+      def document(*args,&block) target.row(*args,&block); self end
+      
 
       # Calls YAML.load.
       #

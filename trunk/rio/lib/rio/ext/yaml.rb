@@ -54,6 +54,8 @@ module RIO
         protected :yaml_
         def objects(*args) records(*args) end
         def documents(*args) rows(*args) end
+        def object(*args) record(*args) end
+        def document(*args) row(*args) end
         def skipobjects(*args) skiprecords(*args) end
         def skipdocuments(*args) skiprows(*args) end
       end
