@@ -154,12 +154,12 @@ module RIO
       # Reject documents from a YAML file. Calls #skiprows. See #yaml and RIO::Doc::INTRO
       def skipdocuments(*selectors,&block) target.skipdocuments(*selectors,&block); self end
 
-      # Select a single object. See #objects, #IF::GrandeStream#line.
-      def object(*args,&block) target.record(*args,&block); self end
+      # Select a single object. See #objects, #IF::GrandeStream#line and #yaml.
+      def object(*args,&block) target.object(*args,&block); self end
 
 
-      # Select a single yaml document. See #documents, #IF::GrandeStream#line.
-      def document(*args,&block) target.row(*args,&block); self end
+      # Select a single yaml document. See #documents, #IF::GrandeStream#line and #yaml.
+      def document(*args,&block) target.document(*args,&block); self end
       
 
       # Calls YAML.load.
@@ -172,7 +172,14 @@ module RIO
       #
       def getobj() target.getobj() end
 
-      # Alias for #getobj
+      # Calls YAML.load.
+      #
+      # Loads a single YAML object from the stream referenced by the Rio
+      #
+      #   rio('database.yml').yaml.load
+      #
+      # See #yaml and RIO::Doc::INTRO
+      #
       def load() target.load() end
 
       # Alias for #getrec
