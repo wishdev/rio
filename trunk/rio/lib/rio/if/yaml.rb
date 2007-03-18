@@ -50,14 +50,13 @@ module RIO
       # +lines+ is the default.
       #
       # The YAML extension distingishes between items selected using
-      # IF::GrandeStream#records, IF::GrandeStream#rows and IF::GrandeStream#lines. Rio returns objects loaded via
-      # YAML#load when +records+ is used; returns the YAML text as a String
-      # when +rows+ is used; and returns lines as Strings as normal when
-      # +lines+ is used.  +records+ is the default. In yaml-mode,
-      # <tt>(skip)records</tt> can be called as <tt>(skip)objects</tt> and
-      # <tt>(skip)rows</tt> can be called as <tt>(skip)documents</tt>
+      # IF::GrandeStream#records, IF::GrandeStream#rows and IF::GrandeStream#lines. 
+      # Rio returns objects loaded via
+      # YAML#load when +records+ or #objects is used; returns the YAML text as a String
+      # when +rows+ or #documents is used; and returns lines as Strings as normal when
+      # +lines+ is used.  +records+ is the default. 
       #
-      # To read a single YAML document, Rio provides #getobj and #load For
+      # To read a single YAML document, Rio provides #getobj and #load. For
       # example, consider the following partial 'database.yml' from the rails
       # distribution:
       #
@@ -154,11 +153,11 @@ module RIO
       # Reject documents from a YAML file. Calls #skiprows. See #yaml and RIO::Doc::INTRO
       def skipdocuments(*selectors,&block) target.skipdocuments(*selectors,&block); self end
 
-      # Select a single object. See #objects, #IF::GrandeStream#line and #yaml.
+      # Select a single object. See #objects, IF::GrandeStream#line and #yaml.
       def object(*args,&block) target.object(*args,&block); self end
 
 
-      # Select a single yaml document. See #documents, #IF::GrandeStream#line and #yaml.
+      # Select a single yaml document. See #documents, IF::GrandeStream#line and #yaml.
       def document(*args,&block) target.document(*args,&block); self end
       
 
