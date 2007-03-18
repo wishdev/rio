@@ -93,12 +93,12 @@ module RIO
       #  rio('afile.yaml').yaml.dump(anobject)
       #
       #
-      # Single objects can be written using IF::Grande#putrec (aliased to IF::YAML#putobj
+      # Single objects can be written using IF::GrandeStream#putrec (aliased to IF::YAML#putobj
       # and IF::YAML#dump)
       #
       #  rio('afile.yaml').yaml.putobj(anobject)
       #
-      # Single objects can be loaded using IF::Grande#getrec (aliase to IF::Grande#getobj
+      # Single objects can be loaded using IF::GrandeStream#getrec (aliased to IF::GrandeStream#getobj
       # and IF::YAML#load)
       #
       #  anobject = rio('afile.yaml').yaml.getobj

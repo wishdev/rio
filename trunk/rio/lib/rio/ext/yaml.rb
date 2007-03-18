@@ -85,16 +85,6 @@ module RIO
             YAML.dump(recs,ioarg)
           end
         end
-        def cpto_obj_(arg)
-          self.each { |obj|
-            
-          }
-        end
-        def cpto_array_(array)
-          self.each { |el|
-            array << el
-          }
-        end
         def cpto_string_(string)
           string << ::YAML.dump_stream(self.contents)
         end
@@ -122,21 +112,6 @@ module RIO
           getrec()
         end
 
-        def add_filters
-          cx['yaml_close_eof'],cx['closeoneof'] = cx['closeoneof'],false
-          super
-        end
-        def each_(&block)
-          #old_close_eof,cx['closeoneof'] = cx['closeoneof'],false
-          super
-          cx['closeoneof'] = cx.delete('yaml_close_eof') 
-          
-          if closeoneof?
-            add_filter(Filter::CloseOnEOF)
-            ioh.oncloseproc = proc { self.on_closeoneof }
-          end
-          closeoneof? ? ioh.close_on_eof_(self) : self
-        end
       end
     end
 

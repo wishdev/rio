@@ -116,6 +116,7 @@ module RIO
         Ext::Input.add_extensions(self)
       end
       def add_filters
+        #p "IN stream#add_filters"
         add_filter(Filter::GZipRead) if gzip?
         #add_filter(Filter::YAML) if yaml?
         add_line_filters()

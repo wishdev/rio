@@ -34,7 +34,6 @@
 #
 
 
-# T-Mobile HotSpot 1.877.822.SPOT
 require 'rio/matchrecord'
 require 'rio/arycopy'
 require 'rio/grande'

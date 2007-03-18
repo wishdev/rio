@@ -41,12 +41,29 @@ class TC_yaml < Test::RIO::TestCase
   def test_copyop
     objs = rio(TRIO).yaml[]
     assert_equal(TOBJS,objs)
-    out = rio('out.yaml').delete
-    yout = rio(out).yaml
-    yout < objs
+    ofile = 'out.yml'
+    yout = rio(ofile).yaml.delete << objs[0] << objs[1] << objs[2]
+    assert_equal(rio(TRIO)[],rio(ofile)[])
     rio(?",ostring = "").yaml < yout
+    assert_equal(rio(TRIO).contents,ostring)
   end
-  def test_read
+  def test_copytypes
+    ofile = 'out.yml'
+    [1,"1",{'one'=>1},[1]].each do |obj|
+      rio(ofile).yaml < obj
+      assert_equal(obj,rio(ofile).yaml.load)
+    end
+  end
+  def test_copytoary
+    ofile = 'out.yml'
+    in_ary = [1,"1",{'one'=>1},[1]]
+    ary = []
+    in_ary.each do |obj|
+      rio(ofile).yaml < obj
+      assert_equal(obj,rio(ofile).yaml.load)
+      rio(ofile).yaml >> ary
+    end
+    assert_equal(in_ary,ary)
   end
   def test_get
     exp = TOBJS[0]
@@ -62,6 +79,65 @@ class TC_yaml < Test::RIO::TestCase
     obj = rio(TRIO).yaml.lines.get
     assert_instance_of(::String,obj)
     assert_equal(rio(TRIO).lines[0],[obj])
+
+    exp = ::YAML.dump(exp)
+    obj = rio(TRIO).yaml.rows.get
+    assert_instance_of(::String,obj)
+    assert_equal(exp,obj)
+
+  end
+  def test_each
+    exp = TOBJS
+
+    ans = []
+    rio(TRIO).yaml do |obj|
+      ans << obj
+    end
+    (0...exp.size).each do |i|
+      assert_equal(exp[i],ans[i])
+    end
+
+    ans = []
+    rio(TRIO).yaml.records do |obj|
+      ans << obj
+    end
+    (0...exp.size).each do |i|
+      assert_equal(exp[i],ans[i])
+    end
+
+    ans = []
+    rio(TRIO).yaml.rows do |obj|
+      ans << ::YAML.load(obj)
+    end
+    (0...exp.size).each do |i|
+      assert_equal(exp[i],ans[i])
+    end
+
+    exp = rio(TRIO).lines[]
+    ans = []
+    rio(TRIO).yaml.lines do |obj|
+      ans << obj
+    end
+    (0...exp.size).each do |i|
+      assert_equal(exp[i],ans[i])
+    end
+
+  end
+  def test_array
+    exp = TOBJS
+
+    ans = rio(TRIO).yaml[]
+    assert_equal(exp,ans)
+
+    ans = rio(TRIO).yaml.records[]
+    assert_equal(exp,ans)
+
+    ans = rio(TRIO).yaml.rows[]
+    assert_equal(exp,ans.map{|obj| ::YAML.load(obj)})
+
+    exp = rio(TRIO).lines[]
+    ans = rio(TRIO).yaml.lines[]
+    assert_equal(exp,ans)
 
   end
   def test_getrec
