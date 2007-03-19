@@ -208,7 +208,11 @@ module RIO
               fields.csv_rec_to_s = _rec_to_s_proc(fs,rs)
             end
           end
-          fields
+#          p "csv#fields: #{fields}"
+#          fields.each do |f|
+#            p f
+#          end
+          fields.map{ |f| f.to_s }
         end
         def cnames(num)
           @cnames ||= trim((0...num).map { |n| "Col#{n}" })

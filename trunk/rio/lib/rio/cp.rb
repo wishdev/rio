@@ -187,18 +187,19 @@ module RIO
         protected
 
         def cpfrom_(arg)
-            case arg
-            when ::Array then cpfrom_array_(arg)
-            when ::IO then cpfrom_obj_(arg)
-            when ::String then 
-              self.put_(arg)
-            else cpfrom_rio_(arg)
-            end
-            self
+          case arg
+          when ::Array then cpfrom_array_(arg)
+          when ::IO then cpfrom_obj_(arg)
+          when ::String then 
+            self.put_(arg)
+          else cpfrom_rio_(arg)
+          end
+          self
         end
         def cpfrom_rio_(arg)
           ario = ensure_rio(arg)
           #p ario.cx
+
           ario.copying(self).each { |el|
             self << el
           }.copying_done(self)

@@ -47,6 +47,19 @@ class TC_yaml < Test::RIO::TestCase
     rio(?",ostring = "").yaml < yout
     assert_equal(rio(TRIO).contents,ostring)
   end
+  def test_yaml2csv
+    data = [["h0","h1","h2"],["d0","d1","d2"]]
+    csvfile = 'y2c.csv'
+    ymlfile = 'y2c.yml'
+    dat = data.map{|d| d.join(',')}
+    rio(csvfile).puts!(dat)
+    val = rio(csvfile).contents
+    assert_equal(dat.join($/)+$/,val)
+    rio(ymlfile).yaml < rio(csvfile).csv
+    ans = rio(ymlfile).yaml[]
+    assert_equal(data,ans)
+    #puts rio(ymlfile).contents
+  end
   def test_select
     ans = rio(TRIO).yaml.records[]
     assert_equal(TOBJS,ans)
