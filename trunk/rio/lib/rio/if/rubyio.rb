@@ -68,7 +68,7 @@ module RIO
       # The Rio will be opened for reading if not already.
       # lineno counts the number of times gets is called, rather than the number of newlines encountered --
       # so lineno will only be accurate if the file is read exclusively with line-oriented methods 
-      # (IF::RubyIO#readline, IF::Grande#each_line, IF::RubyIO#gets etc.)
+      # (IF::RubyIO#readline, IF::GrandeStream#each_line, IF::RubyIO#gets etc.)
       # 
       # See also the $. variable and IF::RubyIO#recno
       #  f = rio("testfile")
@@ -199,9 +199,9 @@ module RIO
       # blocks only when no data immediately available. This means that it
       # blocks only when following all conditions hold.
       #
-      #     * the buffer in the IO object is empty.
-      #     * the content of the stream is empty.
-      #     * the stream is not reached to EOF.
+      # * the buffer in the IO object is empty.
+      # * the content of the stream is empty.
+      # * the stream is not reached to EOF.
       #
       # When readpartial blocks, it waits data or EOF on the stream. If some
       # data is reached, readpartial returns with the data. If EOF is reached,

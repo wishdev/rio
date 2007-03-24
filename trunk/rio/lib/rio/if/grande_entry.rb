@@ -62,6 +62,12 @@ module RIO
       #  rio('adir').dirs[/^\./] # return an array of dot directories
       #  rio('adir').dirs[:symlink?] # an array of symlinks to directories
       #
+      # Given the directory structure 'adir/a/b/c/d'
+      #
+      #  rio('adir').all.dirs[2]          #=> 'adir/a/b'
+      #  rio('adir').all.dirs[0..2]       #=> 'adir/a','adir/a/b'
+      #  rio('adir').all.skipdirs[0..2]   #=> 'adir/a/b/c','adir/a/b/c/d'
+      #
       def dirs(*args,&block) target.dirs(*args,&block); self end
       
       # Grande Directory Exclude Method 

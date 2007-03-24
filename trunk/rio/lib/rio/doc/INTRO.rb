@@ -863,7 +863,7 @@ One way to append a string to a file and close it in one line is
 
 Run a cmd that must be opened for read and write
 
- ans = rio(?-,'cat').w!.puts!("Hello Kitty").readlines
+ ans = rio(?-,'cat').w!.puts!("Hello Kitty").readline
 
 The automatic selection of mode can be bypassed entirely using
 IF::RubyIO#mode and IF::FileOrDir#open.
@@ -872,7 +872,7 @@ If a mode is specified using +mode+, the file will still be opened
 automatically, but the mode specified in the +mode+ method will be
 used regardless of whether it makes sense.
 
-A Rio can also be opened explicitly using IF::RubyIO#open. +open+ takes one
+A Rio can also be opened explicitly using IF::FileOrDir#open. +open+ takes one
 parameter, a mode.  This also will override all of Rio's automatic
 mode selection.
 

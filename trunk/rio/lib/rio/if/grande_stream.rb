@@ -91,7 +91,7 @@ module RIO
 
       # Sets the rio to read bytes and returns the rio
       #
-      # _n_ specifies the number of bytes to be returned on each iteration of IF::Grande#each or by IF::Grande#getrec. If _args_
+      # _n_ specifies the number of bytes to be returned on each iteration of IF::Grande#each or by IF::GrandeStream#getrec. If _args_
       # are provided, they are treated as record selectors as if <tt>ario.bytes(n).records(*args)</tt> had been
       # called. See also #records, #lines, IF::Grande#each, IF::Grande#[]
       # 
@@ -115,7 +115,7 @@ module RIO
       def bytes(n=1,*args,&block) target.bytes(n,*args,&block); self end
 
 
-      # Specifies which records will be iterated through by IF::Grande#each or returned by IF::Grande#getrec
+      # Specifies which records will be iterated through by IF::Grande#each or returned by IF::GrandeStream#getrec
       # 
       # If called with a block behaves as if <tt>records(*args).each(&block)</tt> had been called
       # 
@@ -126,8 +126,8 @@ module RIO
       # and extensions such as IF::CSV#csv and IF::YAML#yaml.
       #
       # If args are provided they may be one or more of the following:
-      # Regexp::  any matching record will be iterated over by IF::Grande#each or returned by IF::Grande#getrec
-      # Integer:: specifies a record-number (zero-based) to be iterated over by IF::Grande#each or returned by IF::Grande#getrec
+      # Regexp::  any matching record will be iterated over by IF::Grande#each or returned by IF::GrandeStream#getrec
+      # Integer:: specifies a record-number (zero-based) to be iterated over by IF::Grande#each or returned by IF::GrandeStream#getrec
       # Range::   specifies a range of records (zero-based) to included in the iteration
       # Proc::    a proc which will be called for each record, records are included unless nil or false is returned
       # Symbol::  a symbol which will _sent_ to each record, records are included unless nil or false is returned
@@ -157,7 +157,7 @@ module RIO
       def records(*args,&block) target.records(*args,&block); self end
 
 
-      # Specifies records which should *not* be iterated through by IF::Grande#each or returned by IF::Grande#getrec
+      # Specifies records which should *not* be iterated through by IF::Grande#each or returned by IF::GrandeStream#getrec
       # 
       # If called with a block behaves as if <tt>skiprecords(*args).each(&block)</tt>
       # had been called
@@ -190,7 +190,7 @@ module RIO
 
 
       # Sets the Rio to read lines and specifies lines which should *not* be iterated through by IF::Grande#each or 
-      # returned by IF::Grande#getrec
+      # returned by IF::GrandeStream#getrec
       # 
       # If called with a block behaves as if <tt>skiplines(*args).each(&block)</tt> had been called
       # 
@@ -217,14 +217,14 @@ module RIO
 
 
       # Sets the Rio to read rows and specifies rows which should be iterated through 
-      # by IF::Grande#each or returned by IF::Grande#getrec.
+      # by IF::Grande#each or returned by IF::GrandeStream#getrec.
       # #rows is intended for use by extensions, where the concept of a row is reasonable. 
       # In the absensence of an extension behaves like #records.
       def rows(*args,&block) target.rows(*args,&block); self end
 
 
       # Sets the Rio to read rows and specifies lines which should *not* be iterated 
-      # through by IF::Grande#each or returned by IF::Grande#getrec
+      # through by IF::Grande#each or returned by IF::GrandeStream#getrec
       # #skiprows is intended for use by extensions, where the concept of a row is 
       # reasonable. In the absence of an extension behaves like #skiprecords
       def skiprows(*args,&block) target.skiprows(*args,&block); self end
@@ -358,6 +358,8 @@ module RIO
       # The implicit output mode is the mode Rio will use for output when no mode is specified.
       #
       # Returns the Rio
+      #
+      #  rio(?-,'cat').w!.puts!("Hello Kitty").readline #=> "Hello Kitty"
       #
       # See the discussion for #a. 
       #
