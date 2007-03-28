@@ -49,15 +49,15 @@ module RIO
 module Doc #:doc:
 =begin rdoc
 
-= Rio - Ruby I/O Comfort Class
+= Rio - Ruby I/O Facilitator
 
-Rio is a convenience class wrapping much of the functionality of IO,
-File, Dir, Pathname, FileUtils, Tempfile, StringIO, and OpenURI and
-uses Zlib, and CSV to extend that functionality using a simple
-consistent interface.  Most of the instance methods of IO, File and
-Dir are simply forwarded to the appropriate handle to provide
-identical functionality. Rio also provides a "grande" interface that
-allows many application level IO tasks to be expressed succinctly.
+fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
+
+Rio is a facade for most of the standard ruby classes that deal with I/O;
+providing a simple, intuitive, succinct interface to the functionality
+provided by IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI
+and others. Rio also provides an application level interface which allows many
+common I/O idioms to be expressed succinctly.
 
 
 == SYNOPSIS
@@ -65,6 +65,21 @@ allows many application level IO tasks to be expressed succinctly.
 For the following assume:
  astring = ""
  anarray = []
+
+Iterate over the .rb files in a directory.
+ rio('adir').files('*.rb') { |entrio| ... }
+
+Return an array of the .rb files in a directory.
+ rio('adir').files['*.rb']
+
+Copy the .rb files in a directory.to another directory.
+ rio('adir').files('*.rb') > rio('another_directory')
+
+Iterate over the .rb files in a directory and its subdirectories.
+ rio('adir').all.files('*.rb') { |entrio| ... }
+
+Return an array of the .rb files in a directory and its subdirectories.
+ rio('adir').all.files['*.rb']
 
 Copy or append a file to a string
  rio('afile') > astring      # copy
@@ -85,17 +100,38 @@ Copy or append a file to another file
 Copy a file to a directory
  rio('adir') << rio('afile')
 
-Copy a directory structure to another directory
+Copy a directory to another directory
  rio('adir') >> rio('another_directory')
 
 Copy a web-page to a file
  rio('http://rubydoc.org/') > rio('afile')
+
+Read a web-page into a string
+ astring = rio('http://rubydoc.org/').read
 
 Ways to get the chomped lines of a file into an array
  anarray = rio('afile').chomp[]         # subscript operator
  rio('afile').chomp > anarray           # copy-to operator
  anarray = rio('afile').chomp.to_a      # to_a
  anarray = rio('afile').chomp.readlines # IO#readlines
+ 
+Iterate over selected lines of a file
+ rio('adir').lines(0..3) { |aline| ... }       # a range of lines
+ rio('adir').lines(/re/) { |aline| ... }       # by regular expression
+ rio('adir').lines(0..3,/re/) { |aline| ... }  # or both
+ 
+Return selected lines of a file as an array
+ rio('adir').lines[0..3]       # a range of lines
+ rio('adir').lines[/re/]       # by regular expression
+ rio('adir').lines[0..3,/re/]  # or both
+ 
+Iterate over selected chomped lines of a file
+ rio('adir').chomp.lines(0..3) { |aline| ... }       # a range of lines
+ rio('adir').chomp.lines(/re/) { |aline| ... }       # by regular expression
+
+Return selected chomped lines of a file as an array
+ rio('adir').chomp[0..3]  # a range of lines
+ rio('adir').chomp[/re/]  # by regular expression
  
 Copy a gzipped file un-gzipping it
  rio('afile.gz').gzip > rio('afile')
@@ -106,56 +142,20 @@ Copy a plain file, gzipping it
 Copy a file from a ftp server into a local file un-gzipping it
  rio('ftp://host/afile.gz').gzip > rio('afile')
 
-Iterate over the entries in a directory
- rio('adir').entries { |entrio| ... }
+Return an array of .rb files excluding symlinks to .rb files
+ rio('adir').files('*.rb').skip[:symlink?]
 
-Iterate over only the files in a directory
- rio('adir').files { |entrio| ... }
+Put the first 10 chomped lines of a gzipped file into an array
+ anarray =  rio('afile.gz').chomp.gzip[0...10] 
 
-Iterate over only the .rb files in a directory
- rio('adir').files('*.rb') { |entrio| ... }
+Copy lines 0 and 3 thru 5 of a gzipped file on an ftp server to stdout
+ rio('ftp://host/afile.gz').gzip.lines(0,3..5) > ?-
 
-Iterate over only the _dot_ files in a directory
- rio('adir').files(/^\./) { |entrio| ... }
-
-Iterate over the files in a directory and its subdirectories, skipping '.svn' and 'CVS' directories 
- rio('adir').norecurse(/^\.svn$/,'CVS').files { |entrio| ... }
-
-Create an array of the .rb entries in a directory
- anarray = rio('adir')['*.rb']
-
-Create an array of the .rb entries in a directory and its subdirectories
- anarray = rio('adir').all['*.rb']
-
-Iterate over the .rb files in a directory and its subdirectories
- rio('adir').all.files('*.rb') { |entrio| ... }
-
-Copy an entire directory structure and the .rb files within it
- rio('adir').dirs.files('*.rb') > rio('another_directory')
-
-Iterate over the first 10 chomped lines of a file
- rio('afile').chomp.lines(0..9) { |line| ... }
-
-Put the first 10 chomped lines of a file into an array
- anarray = rio('afile').chomp[0..9]
-
-Copy the first 10 lines of a file into another file
- rio('afile').lines(0..9) > rio('another_file')
-
-Copy the first 10 lines of a file to stdout
- rio('afile').lines(0..9) > ?-
-
-Copy the first 10 lines of a gzipped file on an ftp server to stdout
- rio('ftp://host/afile.gz').gzip.lines(0..9) > ?-
-
-Put the first 100 chomped lines of a gzipped file into an array
- anarray =  rio('afile.gz').chomp.gzip[0...100] 
-
-Put chomped lines that start with 'Rio' into an array
- anarray = rio('afile').chomp[/^Rio/]
+Return an array of files in a directory and its subdirectories, without descending into .svn directories. 
+ rio('adir').norecurse(/^\.svn$/).files[]
 
 Iterate over the non-empty, non-comment chomped lines of a file
- rio('afile').chomp.skiplines(:empty?,/^\s*#/) { |line| ... }
+ rio('afile').chomp.skip(:empty?,/^\s*#/) { |line| ... }
 
 Copy the output of th ps command into an array, skipping the header line and the ps command entry
  rio(?-,'ps -a').skiplines(0,/ps$/) > anarray 
@@ -167,9 +167,6 @@ Change the extension of all .htm files in a directory and its subdirectories to 
  rio('adir').rename.all.files('*.htm') do |htmfile|
    htmfile.extname = '.html'
  end
-
-Create a symbolic link 'asymlink' in 'adir' which refers to 'adir/afile'
- rio('adir/afile').symlink('adir/asymlink')
 
 === SUGGESTED READING
 

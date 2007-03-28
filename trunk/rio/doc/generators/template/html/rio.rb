@@ -496,14 +496,12 @@ INDEX = %{<?xml version="1.0" encoding="%charset%"?>
 <head>
   <title>%title%</title>
   <meta http-equiv="Content-Type" content="text/html; charset=%charset%" />
-  <meta name="Description" content="Rio is a Ruby I/O convenience class wrapping 
-much of the functionality
-of IO, File and Dir. Rio also uses FileUtils, Tempfile, StringIO,
-OpenURI, Net::FTP, Zlib, and CSV to provide similar functionality
-using a simple consistent interface. In addition to forwarding the
-interfaces provided by IO, File, and Dir to an appropriate object, Rio
-provides a 'grande' interface that allows many common application
-level I/O and file-system tasks to be expressed succinctly."/>
+  <meta name="Description" content="Ruby I/O Facilitator. Rio is a facade for 
+most of the standard ruby classes that deal with I/O;
+providing a simple, intuitive, succinct interface to the functionality
+provided by IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI
+and others. Rio also provides an application level interface which allows many
+common I/O idioms to be expressed succinctly."/>
 </head>
 <frameset rows="20%, 80%">
     <frameset cols="25%,35%,45%">

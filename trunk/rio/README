@@ -18,10 +18,15 @@ along with Rio; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-=== Rio - Ruby I/O Comfort Class
+= Rio - Ruby I/O Facilitator
 
-Rio wraps much of the functionality of IO, File, Dir, Pathname, FileUtils,
-Tempfile, StringIO, OpenURI, Zlib, and CSV.
+fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
+
+Rio is a facade for most of the standard ruby classes that deal with I/O;
+providing a simple, intuitive, succinct interface to the functionality
+provided by IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI
+and others. Rio also provides an application level interface which allows many
+common I/O idioms to be expressed succinctly.
 
 ==== Building the documentation
 
@@ -31,12 +36,13 @@ from the distribution directory.
 
 Then point your browser at the 'doc/rdoc' directory.
 
-The RDoc template file included with the distribution contains some RDoc hacks
+The RDoc template file included with this distribution contains some RDoc hacks
 that overcomes some of RDoc's weaknesses and makes the documentation *much* more
-usable. It is unadvisable to build the RDoc documentation without these.
+usable. It is inadvisable to build the RDoc documentation without these.
 
 
 ===== Suggested Reading
+
 * RIO::Doc::SYNOPSIS
 * RIO::Doc::INTRO
 * RIO::Doc::HOWTO
@@ -62,9 +68,9 @@ To read the documentation without running rdoc, read the files:
 * lib/rio/if/*.rb
 
 
-Project:: http://rubyforge.org/projects/rio/
+Project::       http://rubyforge.org/projects/rio/
 Documentation:: http://rio.rubyforge.org/
-Bugs:: http://rubyforge.org/tracker/?group_id=821
-Email:: rio4ruby@rubyforge.org
+Bugs::          http://rubyforge.org/tracker/?group_id=821
+Email::         rio4ruby@rubyforge.org
 
 

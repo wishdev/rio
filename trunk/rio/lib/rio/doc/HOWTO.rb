@@ -38,10 +38,13 @@ module RIO
 module Doc #:doc:
 =begin rdoc
 
-= Rio - Ruby I/O Comfort Class
+= Rio - Ruby I/O Facilitator
 
-Rio is a convenience class wrapping much of the functionality of 
-IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
+Rio is a facade for most of the standard ruby classes that deal with I/O;
+providing a simple, intuitive, succinct interface to the functionality
+provided by IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI
+and others. Rio also provides an application level interface which allows many
+common I/O idioms to be expressed succinctly.
 
 == HOWTO...
 
