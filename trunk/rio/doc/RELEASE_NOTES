@@ -1,13 +1,12 @@
 === Rio - Ruby I/O Facilitator
 
-fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
-
 Rio is a facade for most of the standard ruby classes that deal with I/O;
 providing a simple, intuitive, succinct interface to the functionality
 provided by IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI
 and others. Rio also provides an application level interface which allows many
 common I/O idioms to be expressed succinctly.
 
+fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
 
 To create the documentation for Rio run the command
   ruby build_doc.rb
@@ -20,6 +19,10 @@ Suggested Reading
 * RIO::Doc::INTRO
 * RIO::Doc::HOWTO
 * RIO::Rio
+
+== New for version 0.4.0
+* Alpha. 
+
 
 == New for version 0.3.9
 * Bug fixes, code cleanup, 

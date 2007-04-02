@@ -4,8 +4,6 @@ Rio 0.4.0
 
 == Overview
 
-fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
-
 Rio is a facade for most of the standard ruby classes that deal with I/O;
 providing a simple, intuitive, succinct interface to the functionality
 provided by IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI
@@ -14,6 +12,8 @@ common I/O idioms to be expressed succinctly.
 
 
 == SYNOPSIS
+
+fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
 
 For the following assume:
  astring = ""
