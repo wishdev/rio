@@ -46,9 +46,9 @@ class TC_copy_from_http < Test::RIO::TestCase
     ario = rio('out.txt').delete! < rio(GZURL).gzip
     ans = rio(ario).contents
     exp = rio(GZFILE).gzip.contents
-    
     assert_equal(exp,ans)
   end
+
   def test_uri_rio_to_file
     ario = rio('outf').delete!.touch
     url = HWURL
@@ -58,6 +58,7 @@ class TC_copy_from_http < Test::RIO::TestCase
     assert_equal(exp,ario.contents)
     assert_equal(rio(HWFILE).contents,rio('outf').contents)
   end
+
   def test_uri_rio_to_file2
     ario = rio('outf2').delete!.touch
     url = HWURL

@@ -2,18 +2,19 @@ Rio 0.4.0
 
 = Rio - Ruby I/O Facilitator
 
+fa-cil-i-tate: To make easy or easier [http://thefreedictionary.com]
+
 == Overview
 
-Rio is a facade for most of the standard ruby classes that deal with I/O;
-providing a simple, intuitive, succinct interface to the functionality
-provided by IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI
-and others. Rio also provides an application level interface which allows many
-common I/O idioms to be expressed succinctly.
+Rio is a facade for most of the standard ruby classes that deal with
+I/O; providing a simple, intuitive, succinct interface to the
+functionality provided by IO, File, Dir, Pathname, FileUtils,
+Tempfile, StringIO, OpenURI and others. Rio also provides an
+application level interface which allows many common I/O idioms to be
+expressed succinctly.
 
 
 == SYNOPSIS
-
-fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
 
 For the following assume:
  astring = ""
@@ -23,7 +24,7 @@ Iterate over the .rb files in a directory.
  rio('adir').files('*.rb') { |entrio| ... }
 
 Return an array of the .rb files in a directory.
- rio('adir').files['*.rb']
+ anarray = rio('adir').files['*.rb']
 
 Copy the .rb files in a directory.to another directory.
  rio('adir').files('*.rb') > rio('another_directory')
@@ -31,8 +32,9 @@ Copy the .rb files in a directory.to another directory.
 Iterate over the .rb files in a directory and its subdirectories.
  rio('adir').all.files('*.rb') { |entrio| ... }
 
-Return an array of the .rb files in a directory and its subdirectories.
- rio('adir').all.files['*.rb']
+Return an array of the .rb files in a directory and its
+subdirectories.
+ anarray = rio('adir').all.files['*.rb']
 
 Copy or append a file to a string
  rio('afile') > astring      # copy
@@ -79,8 +81,8 @@ Return selected lines of a file as an array
  rio('adir').lines[0..3,/re/]  # or both
  
 Iterate over selected chomped lines of a file
- rio('adir').chomp.lines(0..3) { |aline| ... }       # a range of lines
- rio('adir').chomp.lines(/re/) { |aline| ... }       # by regular expression
+ rio('adir').chomp.lines(0..3) { |aline| ... } # a range of lines
+ rio('adir').chomp.lines(/re/) { |aline| ... } # by regular expression
 
 Return selected chomped lines of a file as an array
  rio('adir').chomp[0..3]  # a range of lines
@@ -104,19 +106,22 @@ Put the first 10 chomped lines of a gzipped file into an array
 Copy lines 0 and 3 thru 5 of a gzipped file on an ftp server to stdout
  rio('ftp://host/afile.gz').gzip.lines(0,3..5) > ?-
 
-Return an array of files in a directory and its subdirectories, without descending into .svn directories. 
+Return an array of files in a directory and its subdirectories,
+without descending into .svn directories.
  rio('adir').norecurse(/^\.svn$/).files[]
 
 Iterate over the non-empty, non-comment chomped lines of a file
  rio('afile').chomp.skip(:empty?,/^\s*#/) { |line| ... }
 
-Copy the output of th ps command into an array, skipping the header line and the ps command entry
+Copy the output of th ps command into an array, skipping the header
+line and the ps command entry
  rio(?-,'ps -a').skiplines(0,/ps$/) > anarray 
 
 Prompt for input and return what was typed
  ans = rio(?-).print("Type Something: ").chomp.gets 
 
-Change the extension of all .htm files in a directory and its subdirectories to .html
+Change the extension of all .htm files in a directory and its
+subdirectories to .html
  rio('adir').rename.all.files('*.htm') do |htmfile|
    htmfile.extname = '.html'
  end

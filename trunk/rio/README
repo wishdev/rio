@@ -22,11 +22,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
 
-Rio is a facade for most of the standard ruby classes that deal with I/O;
-providing a simple, intuitive, succinct interface to the functionality
-provided by IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI
-and others. Rio also provides an application level interface which allows many
-common I/O idioms to be expressed succinctly.
+Rio is a facade for most of the standard ruby classes that deal with
+I/O; providing a simple, intuitive, succinct interface to the
+functionality provided by IO, File, Dir, Pathname, FileUtils,
+Tempfile, StringIO, OpenURI and others. Rio also provides an
+application level interface which allows many common I/O idioms to be
+expressed succinctly.
 
 ==== Building the documentation
 
@@ -36,9 +37,10 @@ from the distribution directory.
 
 Then point your browser at the 'doc/rdoc' directory.
 
-The RDoc template file included with this distribution contains some RDoc hacks
-that overcomes some of RDoc's weaknesses and makes the documentation *much* more
-usable. It is inadvisable to build the RDoc documentation without these.
+The RDoc template file included with this distribution contains some
+RDoc hacks that overcomes some of RDoc's weaknesses and makes the
+documentation *much* more usable. It is inadvisable to build the RDoc
+documentation without these.
 
 
 ===== Suggested Reading
