@@ -83,6 +83,8 @@ module RIO
         vuri,vbase,vfs = self.arg0_info_(arg0,*args)
         #p vuri
         @uri = vuri
+        #p 'HERE'
+        #p vuri
         #p args unless args.nil? || args.empty?
         self.join(*args)
         @base = vbase unless @base or vbase.nil?

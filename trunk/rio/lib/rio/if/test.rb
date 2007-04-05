@@ -236,7 +236,7 @@ module RIO
       def zero?(*args) target.zero?(*args) end
 
 
-      # Returns true if the rio represents and absolute path or URI. Alias for IF::Test#absolute?
+      # Returns true if the rio represents an absolute path or URI. Alias for IF::Test#absolute?
       #
       #  rio('/tmp').abs?                     # >> true
       #  rio('.ssh').abs?                     # >> false

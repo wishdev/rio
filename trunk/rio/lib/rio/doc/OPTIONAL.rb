@@ -52,7 +52,7 @@ Please read the following first:
 * RIO::Doc::HOWTO
 * RIO::Rio
 
-= Rio Optional Componants
+= Rio Optional Components
 
 This document describes various optional Rio components, that must be
 explicitly 'required' to be available. These are not included in

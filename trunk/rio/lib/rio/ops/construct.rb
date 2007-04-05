@@ -35,18 +35,19 @@
 
 module RIO
   CONSTRUCTOR_SYMS = [
-      :strio,
-      :stdio,
-      :stderr,
-      :temp,
-      :tempfile,
-      :tempdir,
-      :tcp,
-      :cmdio,
-      :cmdpipe,
-      :sysio,
-      :fd,
-    ]
+                      :strio,
+                      :stdio,
+                      :stderr,
+                      :temp,
+                      :tempfile,
+                      :tempdir,
+                      :tcp,
+                      :cmdio,
+                      :cmdpipe,
+                      :sysio,
+                      :fd,
+                      :ftp,
+                     ]
 end
 
 module RIO

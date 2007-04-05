@@ -79,7 +79,7 @@ module RIO
         wduri.to_s
       end
       def remote_path(url)
-        self.remote_root+URI(url).path
+        self.remote_root+RIO::RL.url2fs(URI(url).path)
       end
       def chdir(url,&block)
         if block_given?
@@ -119,6 +119,7 @@ module RIO
 
       def get_ftype(url)
         pth = remote_path(url)
+        #p url,pth
         ftype = nil
         begin
           conn.mdtm(pth)

@@ -49,13 +49,56 @@ module RIO
     require 'rio/rl/uri'
 
     class RL < RIO::RL::URIBase
-      def initialize(*args)
+      def initialize(arg0,*args)
+        #p callstr('initialize',arg0,*args)
+#         if arg0 == 'ftp:'
+#           hn = args.shift || 'localhost'
+#           us = args.shift 
+#           pw = args.shift
+#           pt = args.shift || ''
+#           ph = args.shift || '/'
+#           tc = args.shift || ''
+#           uinfo = [us,pw].join(':')
+#           bargs = [us,pw,hn,pt,ph,tc]
+#           u = URI::FTP.new2(*bargs)
+#           super u
+#         else
+#           super(arg0,*args)
+#         end
         super
         @ftype = nil
         @names = nil
       end
-      def self.splitrl(s) 
+#       def arg0_info_(arg0,*args)
+#         #p "arg0_info_(#{arg0.inspect},#{args.inspect})"
+#         vuri,vbase,vfs = nil,nil,nil
+#         case arg0
+#         when RIO::Rio
+#           return _init_from_arg(arg0.rl)
+#         when RIO::RL::URIBase,RIO::FTP::RL
+#           vuri,vbase,vfs = arg0.uri,arg0.base,arg0.fs
+#         when ::URI 
+#           vuri = arg0
+#         when ::String 
+#           vuri = uri_from_string_(arg0) || ::URI.parse(arg0)
+#         else
+#           raise(ArgumentError,"'#{arg0}'[#{arg0.class}] can not be used to create a Rio")
+#         end
+#         [vuri,vbase,vfs]
+#       end
+#       def build_arg0_(path_str)
+#         path_str
+#       end
+      def join(*args)
+        return self if args.empty?
+        join_(args.map{ |arg| RIO::RL.fs2url(arg.to_s)})
+      end
+
+
+      def self.splitrl(s)
+        #p "splitrl(#{s})"
         sub,opq,whole = split_riorl(s)
+        #p sub,opq,whole
         [whole] 
       end
       def openfs_

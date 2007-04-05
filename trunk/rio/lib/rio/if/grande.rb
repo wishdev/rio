@@ -115,7 +115,8 @@ module RIO
       #
       # Arguments may consist of strings (treated as globs) or regular expressions. 
       # An empty argument list selects all entries
-      # See ::Dir#glob and ::File::fnmatch? for more in information on _globs_. Be warned that using the '**' glob
+      # See ::Dir#glob and ::File::fnmatch? for more in information on _globs_. 
+      # Be warned that using the '**' glob
       # recurses into directories independently of IF::GrandeEntry#all and using both is unsupported.
       # 
       #  ario = rio('adir')
@@ -143,7 +144,8 @@ module RIO
       # IF::GrandeStream#records, and IF::GrandeStream#rows
       #
       # Using IF::GrandeStream#lines and related methods with a Rio referencing a directory 
-      # imples IF::GrandeEntry#files and will cause an array of the lines or bytes in the files to be returned. As above,
+      # imples IF::GrandeEntry#files and will cause an array of the lines or bytes in the 
+      # files to be returned. As above,
       # the arguments to the subscript operator will be applied to the closest.
       #  rio('adir').lines[] # array of all lines in the files in 'adir'
       #  rio('adir').files.lines[] # same thing
@@ -219,7 +221,8 @@ module RIO
       # IF::Grande#each
       #
       # For Rios that refer to files, the item passed to the block is a String containing
-      # the line or block as selected by IF::GrandeStream#lines, or IF::GrandeStream#bytes. +lines+ is the default.
+      # the line or block as selected by IF::GrandeStream#lines, or IF::GrandeStream#bytes. 
+      # +lines+ is the default.
       #  rio('afile').lines.each { |line| ...}
       # 
       # The block passed to +each+ will also accept an optional second parameter which will contain
@@ -521,10 +524,13 @@ module RIO
       # That is to say, it iterates through its argument, calling the copy-from operator
       # again for each element. While it is not implemented like this, and the above code would
       # not give the same results, This generalized description is convenient.
+      #
       # For example the code:
-      #    dst < src
-      #    # is like
-      #    src.each { |line| dst << line }
+      #
+      #  destination < source
+      #  # is like
+      #  source.each { |element| destination << element }
+      #
       # for any of the following definitions of src and dst
       # * copying files
       #    src = rio('afile')
@@ -679,11 +685,11 @@ module RIO
       # which will put the parts back together again.
       #
       #  ary = rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
-      #  ary.to_rio           #=> rio('a/b/c')
+      #  ary.to_rio                 #=> rio('a/b/c')
       #
       #  ary = rio('a/b/c').split   #=> [rio('a'),rio('b'),rio('c')]
       #  ary[1] = rio('d')
-      #  ary.to_rio           #=> rio('a/d/c')
+      #  ary.to_rio                 #=> rio('a/d/c')
       #
       # See also IF::Path#join, IF::Path#/, IF::Path#splitpath
       #

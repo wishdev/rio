@@ -257,6 +257,7 @@ module RIO
     end
 
     def subscheme_module(sch)
+      #p "subscheme_module(#{sch})"
       @ss_module[sch] ||= case sch
                           when 'file','path'
                             require 'rio/scheme/path'
