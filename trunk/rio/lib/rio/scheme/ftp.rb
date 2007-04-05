@@ -51,21 +51,21 @@ module RIO
     class RL < RIO::RL::URIBase
       def initialize(arg0,*args)
         #p callstr('initialize',arg0,*args)
-#         if arg0 == 'ftp:'
-#           hn = args.shift || 'localhost'
-#           us = args.shift 
-#           pw = args.shift
-#           pt = args.shift || ''
-#           ph = args.shift || '/'
-#           tc = args.shift || ''
-#           uinfo = [us,pw].join(':')
-#           bargs = [us,pw,hn,pt,ph,tc]
-#           u = URI::FTP.new2(*bargs)
-#           super u
-#         else
-#           super(arg0,*args)
-#         end
-        super
+        if arg0 == 'ftp:'
+          hn = args.shift || 'localhost'
+          us = args.shift 
+          pw = args.shift
+          pt = args.shift || ''
+          ph = args.shift || '/'
+          tc = args.shift || ''
+          uinfo = [us,pw].join(':')
+          bargs = [us,pw,hn,pt,ph,tc]
+          u = URI::FTP.new2(*bargs)
+          super u
+        else
+          super(arg0,*args)
+        end
+#        super
         @ftype = nil
         @names = nil
       end
