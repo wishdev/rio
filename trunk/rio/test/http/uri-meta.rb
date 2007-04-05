@@ -52,6 +52,7 @@ class TC_uri_meta < Test::RIO::TestCase
       check_meta(rio(url).open('r'))
     end
   end
+
   def test_meta_read()
     URLS.each do |url|
       r = rio(url)

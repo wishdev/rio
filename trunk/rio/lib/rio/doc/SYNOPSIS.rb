@@ -51,7 +51,7 @@ module Doc #:doc:
 
 = Rio - Ruby I/O Facilitator
 
-fa-cil-i-tate:  To make easy or easier [http://www.thefreedictionary.com/facilitate]
+fa-cil-i-tate:  To make easy or easier.
 
 Rio is a facade for most of the standard ruby classes that deal with I/O;
 providing a simple, intuitive, succinct interface to the functionality
