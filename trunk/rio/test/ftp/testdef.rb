@@ -9,7 +9,8 @@ module Test
         DRV = $mswin32 ? 'x:' : ''
         FSROOT = rio("#{DRV}/srv/ftp")
         #FSROOT = rio("../../srv/ftp")
-        FTPHOST = '192.168.1.101'
+        #FTPHOST = '192.168.1.101'
+        FTPHOST = 'riotest.hopto.org'
         #FTPHOST = 'localhost'
         FTPROOT = rio("ftp://#{FTPHOST}/")
 

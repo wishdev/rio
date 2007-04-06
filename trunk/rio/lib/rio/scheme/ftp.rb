@@ -51,6 +51,11 @@ module RIO
     class RL < RIO::RL::URIBase
       def initialize(arg0,*args)
         #p callstr('initialize',arg0,*args)
+        super(*_sup_args(arg0,*args))
+        @ftype = nil
+        @names = nil
+      end
+      def _sup_args(arg0,*args)
         if arg0 == 'ftp:'
           hn = args.shift || 'localhost'
           us = args.shift 
@@ -58,16 +63,11 @@ module RIO
           pt = args.shift || ''
           ph = args.shift || '/'
           tc = args.shift || ''
-          uinfo = [us,pw].join(':')
-          bargs = [us,pw,hn,pt,ph,tc]
-          u = URI::FTP.new2(*bargs)
-          super u
+          u = URI::FTP.new2(us,pw,hn,pt,ph,tc)
+          return [u]
         else
-          super(arg0,*args)
+          return [arg0] + args
         end
-#        super
-        @ftype = nil
-        @names = nil
       end
 #       def arg0_info_(arg0,*args)
 #         #p "arg0_info_(#{arg0.inspect},#{args.inspect})"
