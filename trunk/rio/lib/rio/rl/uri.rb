@@ -75,12 +75,14 @@ module RIO
         else
           raise(ArgumentError,"'#{arg0}'[#{arg0.class}] can not be used to create a Rio")
         end
+        #puts "uri.rb arg0_info_: vuri=#{vuri}"
         [vuri,vbase,vfs]
       end
       def init_from_args_(arg0,*args)
         #p "init_from_args_(#{arg0.inspect})"
         #p callstr('init_from_args_',arg0.inspect,args)
         vuri,vbase,vfs = self.arg0_info_(arg0,*args)
+        #p vuri,vbase
         #p vuri
         @uri = vuri
         #p 'HERE'

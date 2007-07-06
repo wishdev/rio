@@ -55,6 +55,7 @@ module RIO
         else
           raise(ArgumentError,"'#{arg0}'[#{arg0.class}] can not be used to create a Rio")
         end
+        #puts "path.rb arg0_info_: vuri=#{vuri}"
         [vuri,vbase,vfs]
       end
       def build_arg0_(path_str)

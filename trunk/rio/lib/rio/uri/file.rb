@@ -87,14 +87,24 @@ RFC 1738            Uniform Resource Locators (URL)        December 1994
   module REGEXP
     module PATTERN
       DRIVE_SPEC = "[A-Za-z]:"
-      ABS_FILE_PATH = "(?:/#{DRIVE_SPEC})?/#{PATH_SEGMENTS}"
+      FILE_ESCAPED = ESCAPED
+      FILE_UNRESERVED = "-_.!~*'()#{ALNUM}"
+      FILE_PCHAR = "(?:[#{FILE_UNRESERVED}:@?&=+$,]|#{FILE_ESCAPED})"
+      FILE_SEGMENT = "#{FILE_PCHAR}*(?:;#{PARAM})*"
+      FILE_PATH_SEGMENTS = "#{FILE_SEGMENT}(?:/#{FILE_SEGMENT})*"
+      FILE_ABS_PATH = "(?:/#{DRIVE_SPEC})?/#{FILE_PATH_SEGMENTS}"
+
+      FILE_REL_SEGMENT = "(?:[#{FILE_UNRESERVED};@?&=+$,]|#{FILE_ESCAPED})+"
+      FILE_REL_PATH = "#{FILE_REL_SEGMENT}(?:#{FILE_ABS_PATH})?"
+
+      #FILE_ABS_PATH = "(?:/#{DRIVE_SPEC})?/#{FILE_PATH_SEGMENTS}(?:\\?#{QUERY})?"
     end
     EMPTYHOST = Regexp.new("^$", false, 'N').freeze #"
-    ABS_FILE_PATH = Regexp.new("^#{PATTERN::ABS_FILE_PATH}$", false, 'N').freeze
+    FILE_ABS_PATH = Regexp.new("^#{PATTERN::FILE_ABS_PATH}$", false, 'N').freeze
   end # module REGEXP
 
   class FILE < Generic
-    #ABS_FILE_PATH = REGEXP::ABS_FILE_PATH
+    #FILE_ABS_PATH = REGEXP::FILE_ABS_PATH
     COMPONENT = [
       :scheme, 
       :host,
@@ -111,18 +121,19 @@ RFC 1738            Uniform Resource Locators (URL)        December 1994
       # raise if both hier and opaque are not nil, because:
       # absoluteURI   = scheme ":" ( hier_part | opaque_part )
       # hier_part     = ( net_path | abs_path ) [ "?" query ]
+      #p "URI::FILE self=#{self} v=#{v}"
       if v && @opaque
         raise InvalidURIError, 
           "path conflicts with opaque"
       end
 
       if @scheme
-        if v && v != '' && ABS_FILE_PATH !~ v
+        if v && v != '' && FILE_ABS_PATH !~ v
           raise InvalidComponentError, 
             "bad component(expected absolute path component): #{v}"
         end
       else
-        if v && v != '' && ABS_FILE_PATH !~ v && REL_PATH !~ v
+        if v && v != '' && FILE_ABS_PATH !~ v && FILE_REL_PATH !~ v
           raise InvalidComponentError, 
             "bad component(expected relative path component): #{v}"
         end
@@ -133,7 +144,6 @@ RFC 1738            Uniform Resource Locators (URL)        December 1994
     private :check_path
 
     def path=(v)
-      #p "self=#{self} v=#{v}"
       check_path(v)
       set_path(v)
       v

@@ -52,9 +52,9 @@ module RIO
     def fs2urls(*args)
       args.map{ |pth| fs2url(pth) }
     end
-    def fs2url(pth)
+    def fs2url(pth, esc=ESCAPE)
       #pth.sub!(/^[a-zA-Z]:/,'')
-      pth = URI.escape(pth,ESCAPE)
+      pth = URI.escape(pth,esc)
       pth = '/' + pth if pth =~ /^[a-zA-Z]:/
       pth
       #      (Local::SEPARATOR == '/' ? pth : pth.gsub(Local::SEPARATOR,%r|/|))

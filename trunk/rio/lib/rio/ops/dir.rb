@@ -230,7 +230,7 @@ module RIO
           self.skipentries(*args)
         end
         def ent_to_rio_(ent,indir)
-          #p "ent_to_rio: #{ent.inspect},#{ent.fs.class} indir=#{indir}"
+          #p "ent_to_rio: ent=#{ent.inspect} indir=#{indir}"
           if ent.kind_of?(RIO::Rio)
             oldpath = ent.to_s
             ent.rl.urlpath = indir.to_s
@@ -238,6 +238,7 @@ module RIO
             ent.cx = self.cx.bequeath(ent.cx)
             ent
           else
+            # KIT: should this be RL.fs2url(ent) ???
             if indir
               new_rio_cx(indir.rl,ent)
             else

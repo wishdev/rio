@@ -278,6 +278,7 @@ module RIO
       def _build(*args) RIO::RL::Builder.build(*args) end
 
       def uri_from_string_(str)
+        #p "uri_from_string(#{str})"
         case str
         when %r%^file://(#{HOST})?(/.*)?$% then ::URI.parse(str)
         when %r/^[a-zA-Z]:/ then 
