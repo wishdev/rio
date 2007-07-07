@@ -383,7 +383,7 @@ module RIO
       #  rio('src.txt.gz').gzip > rio('dst.txt')
       #
       # Copying to an array
-      #  rio('afile') > ary # each line of the file becomes and element of the ary
+      #  rio('afile') > ary # each line of the file becomes an element of the ary
       #  rio('afile').chomp > ary # same thing with lines chomped
       #  rio('afile.gz').gzip.chomp > ary # same thing from a gzipped file
       #
@@ -409,7 +409,7 @@ module RIO
       #
       # Copy the first and 8th through 10th columns of the first ten rows of a gzipped csv 
       # file on a web site into a local gzipped csv file that uses semi-colons as separators
-      #  rio('http://domain/file.csv.gz').columns(0,7..9).gzip.csv[0..9] > rio('localfile.csv.gz').csv(';').gzip
+      #  rio('http://host/file.csv.gz').columns(0,7..9).gzip.csv[0..9] > rio('localfile.csv.gz').csv(';').gzip
       #
       # See also IF::Grande#>>, IF::Grande#|
       #

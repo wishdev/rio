@@ -6,6 +6,6 @@ require 'rio'
 require 'lib/temp_server'
 
 
-TempServer.new.run('runhttptests.rb')
+TempServer.run('runhttptests.rb')
 
 #threads.each { |aThread|  aThread.join }

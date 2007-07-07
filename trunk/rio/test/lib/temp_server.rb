@@ -14,7 +14,9 @@ class TempServer
     ENV['RIO_TEST_PORT'] = @config[:Port]
     @server = create_server(@config)
   end
-
+  def self.run(*args)
+    new.run(*args)
+  end
   def create_server(config = {})
     server = WEBrick::HTTPServer.new(config)
     yield server if block_given?
