@@ -205,8 +205,8 @@ or an actual IO operation. When an IO operation is called the Range
 will be used to limit processing to the first ten records. For
 example:
 
- rio('afile').lines(0...10).each { |line| ... } # block will be called for the first 10 records
- rio('afile').lines(0...10).to_a                # the first 10 records will be returned in an array
+ rio('afile').lines(0...10) { |line| ... }      # block will be called for the first 10 records
+ rio('afile').lines[0...10]                     # the first 10 records will be returned in an array
  rio('afile').lines(0...10) > rio('acopy')      # the first 10 records will be copied to 'acopy'
 
 "But wait", you say, "In our original example the range was an
