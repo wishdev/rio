@@ -1,8 +1,8 @@
-Rio 0.4.0
+Rio 0.4.1
 
 = Rio - Ruby I/O Facilitator
 
-fa-cil-i-tate: To make easy or easier [http://thefreedictionary.com]
+fa-cil-i-tate: To make easy or easier.
 
 == Overview
 
@@ -145,6 +145,7 @@ Project:: http://rubyforge.org/projects/rio/
 Documentation:: http://rio.rubyforge.org/
 Bugs:: http://rubyforge.org/tracker/?group_id=821
 Email:: rio4ruby@rubyforge.org
+Blog:: http://rio4ruby.blogspot.com
 
 == Copyright
 Copyright (c) 2005,2006,2007 Christopher Kleckner. All rights reserved

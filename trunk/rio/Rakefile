@@ -48,7 +48,7 @@ SVN_REPOSITORY_URL = [SVN_REPOSITORY_ROOT,'trunk/rio'].join('/')
  
 require 'doc/pkg_def'
 
-ZIP_DIR = "/zip/ruby/rio"
+ZIP_DIR = "/loc/zip/ruby/rio"
 
 
 # The default task is run if rake is given no explicit arguments.

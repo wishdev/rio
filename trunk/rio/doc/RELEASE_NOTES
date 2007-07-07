@@ -7,7 +7,7 @@ Tempfile, StringIO, OpenURI and others. Rio also provides an
 application level interface which allows many common I/O idioms to be
 expressed succinctly.
 
-fa-cil-i-tate:  To make easy or easier [http://thefreedictionary.com]
+fa-cil-i-tate:  To make easy or easier.
 
 To create the documentation for Rio run the command
   ruby build_doc.rb
@@ -21,12 +21,17 @@ Suggested Reading
 * RIO::Doc::HOWTO
 * RIO::Rio
 
+== New for version 0.4.1
+* Bug fixes to better handle file system paths with URI special
+  characters.
+* Other bug fixes.
+
 == New for version 0.4.0
 * Alpha. 
 
 
 == New for version 0.3.9
-* Bug fixes, code cleanup, 
+* Bug fixes, code cleanup. 
 * See Rio#split
 
 
