@@ -128,11 +128,11 @@ module RIO
       # * Files and directories are returned as Rios
       # * The types of entries is also affected by IF::GrandeEntry#files and IF::GrandeEntry#dirs.
       #    rio('adir').files['*.txt'] # array of all .txt files
-      #    rio('adir').dirs(/^\./) # array of all dot directories
+      #    rio('adir').dirs[/^\./] # array of all dot directories
       # * Recursion is enabled using IF::GrandeEntry#all
       #    rio('adir').all.files['*.[ch]'] # array of c source files in adir and its subdirecories
       #    rio('adir').all.dirs[/^\.svn/]  # array of subversion directories in adir and subdirectories
-      # * IF::GrandeEntry#files and IF::GrandeEntry#dirs act independetly of each other. 
+      # * IF::GrandeEntry#files and IF::GrandeEntry#dirs act independently of each other. 
       #   Specifying both will cause both to be returned. 
       #   The argument list to IF::Grande#[] will be applied to the closest.
       #    rio('adir').files('*.rb').dirs['ruby*'] # array of .rb files and 
