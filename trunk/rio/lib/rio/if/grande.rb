@@ -330,8 +330,8 @@ module RIO
       def delete() target.delete(); self end
 
       # For a file IF::Grande#delete! calls FileUtils#rm. 
-      # For a directory IF::Grande#delete! calls FileUtils#rmtree
-      # Returns the Rio. If the rio does not exist, simply return itself.
+      # For a directory IF::Grande#delete! calls FileUtils#rmtree.
+      # Returns the Rio. If the rio does not exist, simply returns itself.
       #
       #  rio('afile,txt').delete! # delete f.txt
       #  rio('adir').delete! # delete adir
@@ -346,7 +346,7 @@ module RIO
       # * To delete anything except a populated directory use IF::Grande#delete
       # * To delete anything use IF::Grande#delete!
       #
-      # In all cases, deleting something that does not exist is considered successful
+      # In all cases, deleting something that does not exist is considered successful.
       #
       def delete!() target.delete!(); self end
 

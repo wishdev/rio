@@ -206,10 +206,7 @@ module RIO
       end
       def new_rio_cx(*args)
         n = new_rio(*args)
-        #p "new_rio_cx 1: #{n.cx.inspect}"
         n.cx = self.cx.bequeath(n.cx)
-        #p "new_rio_cx 2: #{n.cx.inspect}"
-        #n.fs = self.fs
         n
       end
       def clone_rio()
@@ -217,7 +214,6 @@ module RIO
         cp.cx = self.cx.clone
         cp.ioh = self.ioh.clone unless self.ioh.nil?
         cp.rl = self.rl.clone
-        #cp.fs = self.fs
         cp
       end
       
