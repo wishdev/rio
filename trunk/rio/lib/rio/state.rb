@@ -199,10 +199,7 @@ module RIO
       # gives states the ability to create new rio objects
       # (should this be here???)
       def new_rio(arg0,*args,&block)
-        #return arg0 if arg0.nil? # watch out for dir.read! if you remove this line
-        nrio = Rio.rio(arg0,*args,&block)
-        #nrio.fs = self.fs
-        nrio
+        Rio.rio(arg0,*args,&block)
       end
       def new_rio_cx(*args)
         n = new_rio(*args)

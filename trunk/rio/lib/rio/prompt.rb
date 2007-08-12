@@ -47,7 +47,11 @@ module RIO
     ans = prompt(pstr)
     ans.empty? ? default : ans
   end
-  module_function :prompt,:promptd
+  def promptr(str="",default=nil)
+    ans = promptd(str,default)
+    rio(ans)
+  end
+  module_function :prompt,:promptd,:promptr
 end
 
 if $0 == __FILE__

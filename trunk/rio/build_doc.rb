@@ -36,10 +36,35 @@ module DFLT
 end
 
 #puts "Rio interactive RDoc installer."
+def doc_dir?(d)
+  have_dirs = ['classes','files'].inject(true) {|isdir,f| isdir and rio(d,f).dir?}
+  have_files = ['created.rid','fr_class_index.html',
+                'fr_file_index.html','fr_method_index.html',
+                'index.html','rdoc-style.css'].inject(true) { |isfile,f| isfile && rio(d,f).file? }
+  have_dirs && have_files
+end
 
-rdoc_dir = RIO.promptd('Where shall I build the rdoc documentation',DFLT::RDOC_DIR)
-rdoc_dir = DFLT::RDOC_DIR if rdoc_dir.empty?
+rdoc_dir = RIO.promptr('Where shall I build the rdoc documentation',DFLT::RDOC_DIR)
+
+if rdoc_dir.exist?
+  delit = 'y'
+  if rdoc_dir.dir?
+    unless doc_dir?(rdoc_dir)
+      delit = RIO.promptd("Directory '#{rdoc_dir}' exists. Would you like to delete it? ", 'n' )
+    end
+  else
+    delit = RIO.promptd("Non directory '#{rdoc_dir}' exists. Would you like to delete it? ", 'n' )
+  end
+  if delit =~ /^[yY]/
+    rio(rdoc_dir).delete!
+  else
+    exit(-1)
+  end
+end
+
+
 rdoc_dir = rio(rdoc_dir)
+
 
 argv = []
 argv << '--op' << rdoc_dir.to_s

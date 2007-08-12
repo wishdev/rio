@@ -426,8 +426,9 @@ module RIO
 
       # Grande Pipe Operator
       # 
-      # The Rio pipe operator is actually an alternative syntax for calling the copy-to operator, designed to 
-      # allow several copy operation to be performed in one line of code, with behaviour that mimics
+      # The Rio pipe operator is actually an alternative syntax for calling the IF::Grande#> (copy-to) 
+      # operator, designed to 
+      # allow several copy operation to be performed in one line of code, with behavior that mimics
       # the pipe operator commonly available in shells.
       #
       # If +destination+ is a +cmdio+, a <tt>cmdpipe</tt> Rio is returned, and none of the commands are run.
@@ -630,6 +631,9 @@ module RIO
       # 
       # +skip+ can be used in two ways.
       #
+      #
+      # ==== skip with no arguments
+      #
       # If called with no arguments it reverses the polarity of the
       # next non-skip grande selection method that is called. That is,
       # it turns +lines+, +records+, +rows+, +files+, +dirs+ and +entries+
@@ -642,6 +646,8 @@ module RIO
       # Note that it only affects the next selection method seen -- and may be
       # used more than once. If no grande selection method is seen, +skip+ is
       # ignored.
+      #
+      # ==== skip with arguments
       #
       # When called with arguments it acts like IF::GrandeEntry#skipentries for directory 
       # Rios and like IF::GrandeStream#skiprecords for stream Rios.
@@ -674,7 +680,7 @@ module RIO
       # IF::Grande#split has two distinct behaviors depending on 
       # whether or not it is called with an argument.
       #
-      # ==== split-with-no-aruments:
+      # ==== split with no aruments:
       #
       # Returns an array of Rios, one for each path element. 
       # (Note that this behavior differs from File#split.)
@@ -693,7 +699,7 @@ module RIO
       #
       # See also IF::Path#join, IF::Path#/, IF::Path#splitpath
       #
-      # ==== split-with-an-argument:
+      # ==== split with an argument:
       #
       # This causes String#split(arg) to be called on every line
       # before it is returned. An array of the split lines is
