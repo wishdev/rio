@@ -37,8 +37,9 @@
 require 'rio'
 module RIO
   TITLE = "Rio"
-  SUMMARY = "Rio - Ruby I/O Comfort Class"
+  SUMMARY = "Rio - Ruby I/O Facilitator"
   DESCRIPTION = "Rio is a Ruby class wrapping much of the functionality of " +
-                "IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, OpenURI, Zlib, and CSV.
-"
+                "IO, File, Dir, Pathname, FileUtils, Tempfile, StringIO, " +
+                "OpenURI, Zlib, and CSV."
+
 end
