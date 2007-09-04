@@ -41,8 +41,8 @@ class TC_RIO_symlink0 < Test::Unit::TestCase
     assert_equal(exp.ftype,ans.ftype)
     assert_equal(exp.readlink.to_s,ans.readlink.to_s)
   end
-  def test_delete
-    rio('delete').delete!.mkpath.chdir
+  def test_delete_file
+    rio('delete_file').delete!.mkpath.chdir
 
     file = mkafile('f0')
     link = rio('l0')
@@ -76,9 +76,60 @@ class TC_RIO_symlink0 < Test::Unit::TestCase
     assert!(link.exist?,"file deleted, link.exist? returns false")
     assert(link.symlink?,"file deleted, link is a symlink")
 
+#    link.mkdir
+#    assert(file.exist?,"link.mkdir creates a directory")
+#    assert(file.directory?,"link.mkdir creates a directory")
+    
+
+    rio('..').chdir
+  end
+  def test_delete_dir
+    rio('delete_dir').delete!.mkpath.chdir
+
+    dir = rio('d0').mkdir
+    link = rio('l0')
+    dir.symlink(link)
+
+    assert(dir.exist?)
+    assert(link.exist?)
+    assert(link.symlink?)
+
+    dir.delete
+    assert!(dir.exist?,"dir deleted")
+    assert!(link.exist?,"dir deleted, link.exist? returns false")
+    assert(link.symlink?,"dir deleted, link is a symlink")
+
     link.mkdir
-    assert(file.exist?,"link.touch creates a directory")
-    assert(file.directory?,"link.touch creates a directory")
+    assert(dir.exist?,"link.mkdir creates a directory")
+    assert(dir.directory?,"link.mkdir creates a directory")
+    assert(link.exist?,"link.mkdir, link.exist? returns false")
+    assert(link.symlink?,"link.mkdir, link is a symlink")
+
+#    link.delete
+    File.delete(link.to_s)
+    assert!(link.exist?,"link.delete deletes link")
+    assert(dir.exist?,"link.delete deletes link, directory still exists")
+    assert(dir.directory?,"link.delete deletes link, not directory")
+
+#     link.delete
+#     assert(file.file?,"deleted link, file still exists")
+#     assert!(link.exist?,"link is deleted")
+#     assert!(link.symlink?,"link is gone")
+    
+#     file.symlink(link)
+#     assert(file.file?,"file exists")
+#     assert(link.exist?,"link exists")
+#     assert(link.symlink?,"link is a symlink")
+
+#     link.touch
+#     assert(file.exist?,"link.touch creates a file")
+#     assert(file.file?,"link.touch creates a file")
+
+#     file.delete
+#     assert!(file.exist?,"file deleted")
+#     assert!(link.exist?,"file deleted, link.exist? returns false")
+#     assert(link.symlink?,"file deleted, link is a symlink")
+
     
 
     rio('..').chdir
