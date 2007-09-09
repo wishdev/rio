@@ -314,11 +314,17 @@ common I/O idioms to be expressed succinctly.
    # method 5
    array = ario.norecurse('.svn')['*.txt']
   
-* Put all directories (recursively) into an array
+* Put all directories into an array
    # method 1
    array = ario.dirs[]
    # method 2
    array = ario.dirs.to_a
+
+* Put all directories (recursively) into an array
+   # method 1
+   array = ario.all.dirs[]
+   # method 2
+   array = ario.all.dirs.to_a
 
 * Put all entries (recursively) into an array, but limit the depth of recursion to 2
    # method 1

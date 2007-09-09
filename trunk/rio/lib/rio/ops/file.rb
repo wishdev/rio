@@ -81,6 +81,7 @@ module RIO
           } 
         end
         alias :delete :rm
+        alias :unlink :delete
         alias :delete! :rm
         def touch(*args) rtn_self { fs.touch(self.to_s,*args) } end
         def truncate(sz=0) rtn_reset { fs.truncate(self.to_s,sz) } end
@@ -92,6 +93,7 @@ module RIO
 
         def rm(*args) rtn_self { ; } end
         alias delete rm
+        alias :unlink :delete
         alias delete! rm
         def touch(*args) rtn_reset { fs.touch(self,*args) } end
       end

@@ -52,6 +52,15 @@ module RIO
       end
       module Existing
         include ExistOrNot
+        def delete(*args)
+          rm(*args)
+        end
+        def unlink(*args)
+          delete(*args)
+        end
+        def delete!(*args)
+          delete(*args)
+        end
       end
       module NonExisting
         include ExistOrNot

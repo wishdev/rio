@@ -131,10 +131,11 @@ module RIO
           softreset()
         end
         def rmtree(*args) fs.rmtree(self.to_s,*args); softreset() end
-
+        def rm(*args) fs.rm(self.to_s,*args); softreset() end
+        
         alias :delete :rmdir
+        alias :unlink :delete
         alias :delete! :rmtree
-        alias :unlink :rmdir
 
         def chdir(*args,&block) 
           if block_given?

@@ -71,6 +71,15 @@ class TC_RIO_symlink0 < Test::Unit::TestCase
     assert(file.exist?,"link.touch creates a file")
     assert(file.file?,"link.touch creates a file")
 
+    file.unlink
+    assert!(file.exist?,"file.unlink file deleted")
+    assert!(link.exist?,"file.unlink file deleted, link.exist? returns false")
+    assert(link.symlink?,"file unlink file deleted, link is a symlink")
+
+    link.touch
+    assert(file.exist?,"link.touch creates a file")
+    assert(file.file?,"link.touch creates a file")
+
     file.delete
     assert!(file.exist?,"file deleted")
     assert!(link.exist?,"file deleted, link.exist? returns false")
@@ -106,31 +115,22 @@ class TC_RIO_symlink0 < Test::Unit::TestCase
     assert(link.symlink?,"link.mkdir, link is a symlink")
 
 #    link.delete
-    File.delete(link.to_s)
+    link.delete!
+    assert!(link.exist?,"link.delete! deletes link")
+    assert(dir.exist?,"link.delete! deletes link, directory still exists")
+    assert(dir.directory?,"link.delete! deletes link, not directory")
+    #File.delete(link.to_s)
+    dir.symlink(link)
+    link.delete
     assert!(link.exist?,"link.delete deletes link")
     assert(dir.exist?,"link.delete deletes link, directory still exists")
     assert(dir.directory?,"link.delete deletes link, not directory")
 
-#     link.delete
-#     assert(file.file?,"deleted link, file still exists")
-#     assert!(link.exist?,"link is deleted")
-#     assert!(link.symlink?,"link is gone")
-    
-#     file.symlink(link)
-#     assert(file.file?,"file exists")
-#     assert(link.exist?,"link exists")
-#     assert(link.symlink?,"link is a symlink")
-
-#     link.touch
-#     assert(file.exist?,"link.touch creates a file")
-#     assert(file.file?,"link.touch creates a file")
-
-#     file.delete
-#     assert!(file.exist?,"file deleted")
-#     assert!(link.exist?,"file deleted, link.exist? returns false")
-#     assert(link.symlink?,"file deleted, link is a symlink")
-
-    
+    dir.symlink(link)
+    link.unlink
+    assert!(link.exist?,"link.unlink deletes link")
+    assert(dir.exist?,"link.unlink deletes link, directory still exists")
+    assert(dir.directory?,"link.unlink deletes link, not directory")
 
     rio('..').chdir
   end

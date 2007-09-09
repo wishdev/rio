@@ -442,7 +442,7 @@ with the block after the method.
    rio('adir').skipfiles(/^\./)
 
   These methods select which entries will be returned when iterating
-  throug directories.  Entries are included (+entries+,+files+,+dirs+)
+  through directories.  Entries are included (+entries+,+files+,+dirs+)
   or excluded(+skipentries+,+skipfiles+,+skipdirs+) if they match *any* of
   the arguments as follows.
 

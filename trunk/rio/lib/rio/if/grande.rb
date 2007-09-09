@@ -329,6 +329,9 @@ module RIO
       #
       def delete() target.delete(); self end
 
+      # See IF::Grande#delete
+      def unlink() target.unlink(); self end
+
       # For a file IF::Grande#delete! calls FileUtils#rm. 
       # For a directory IF::Grande#delete! calls FileUtils#rmtree.
       # Returns the Rio. If the rio does not exist, simply returns itself.
@@ -529,7 +532,7 @@ module RIO
       # For example the code:
       #
       #  destination < source
-      #  # is like
+      # is like
       #  source.each { |element| destination << element }
       #
       # for any of the following definitions of src and dst
