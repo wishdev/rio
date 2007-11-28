@@ -118,9 +118,9 @@ module RIO
       #
       #  anarray = rio('afile').lines[0..1] # anarray == ["L0\n", "L1\n"]
       #
-      # +recno+ counts the number of times IF::Grande#getrec or IF::Grande#each is used to get a record. 
+      # +recno+ counts the number of times IF::GrandeStream#getrec or IF::Grande#each is used to get a record. 
       # so +recno+ will only concern parts of the file read with grande methods 
-      # IF::Grande#each, IF::Grande#[], IF::Grande#getrec 
+      # IF::Grande#each, IF::Grande#[], IF::GrandeStream#getrec 
       # 
       # See also IF::RubyIO#lineno
       def recno() target.recno() end

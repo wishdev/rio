@@ -40,7 +40,7 @@ module RIO
       # Grande Directory Selection Method 
       #
       # Sets the rio to return directories. _args_ can be used to select which directories are returned.
-      #  ario.files(*args) do |f|
+      #  ario.dirs(*args) do |f|
       #    f.directory?      #=> true
       #  end
       #
