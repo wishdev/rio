@@ -1,6 +1,6 @@
 #--
 # =============================================================================== 
-# Copyright (c) 2005,2006,2007 Christopher Kleckner
+# Copyright (c) 2005,2006,2007,2008 Christopher Kleckner
 # All rights reserved
 #
 # This file is part of the Rio library for ruby.
@@ -39,7 +39,7 @@
 #
 # = Rio
 #
-# Copyright (c) 2005,2006,2007 Christopher Kleckner
+# Copyright (c) 2005,2006,2007,2008 Christopher Kleckner
 #
 #
 
