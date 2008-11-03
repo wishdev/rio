@@ -26,7 +26,8 @@ class PathGenerator
     @fs_paths = @fs_basic_paths + @fs_url_paths + @fs_drive_paths + @fs_unc_paths
     @http_paths = self.class.http_paths()
     @ftp_paths = self.class.ftp_paths()
-    @uri_paths = @http_paths + @ftp_paths
+    #@uri_paths = @http_paths + @ftp_paths
+    @uri_paths = @http_paths
 
     @all_paths = @fs_paths + @uri_paths
   end
