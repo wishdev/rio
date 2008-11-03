@@ -152,7 +152,7 @@ class TC_riorl < Test::RIO::TestCase
   def mkrios_open()
     require 'tempfile'
     stdlib_temppath = ::Tempfile.new('rio').path
-    fnre = "#{@tmppath}(\\.)?\\d+\\.\\d+"
+    fnre = "#{@tmppath}(\\.)?\\d+.\\d+"
     rinfo = {
       ?- => ['stdout',/^$/,nil,nil,/^stdout:$/,/^stdout:$/],
       ?? => ['file',%r|//#{fnre}|,%r|#{fnre}|,%r|#{fnre}|,/#{fnre}/,/#{fnre}/],
