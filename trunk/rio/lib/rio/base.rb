@@ -36,21 +36,5 @@
 
 module RIO
   class Base < ::Object #:nodoc: all
-    KEEPSYM = {
-      '__id__' => true,
-      '__send__' => true,
-      'send' => true,
-      'class' => true, 
-      'kind_of?' => true, 
-      'instance_of?' => true, 
-      'equal?' => true,
-      'respond_to?' => true,
-      'object_id' => true,
-      'dup' => true,
-      'clone' => true,
-      'nil?'  => true,
-      'open'  => true,
-    }.freeze
-    instance_methods.each { |m| undef_method m unless KEEPSYM[m] }
   end
 end
