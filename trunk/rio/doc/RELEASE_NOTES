@@ -20,13 +20,17 @@ Suggested Reading
 * RIO::Doc::INTRO
 * RIO::Doc::HOWTO
 * RIO::Rio
+=
+== New for version 0.4.2
+* Fix tests to better deal with Changes to URI library in ruby 1.8.7.
+* Other bug fixes.
 
 == New for version 0.4.1
 * Bug fixes to better handle file system paths with URI special
   characters.
 * Other bug fixes.
 
-== New for version 0.4.0
+= New for version 0.4.0
 * Alpha. 
 
 
