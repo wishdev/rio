@@ -57,7 +57,7 @@ module RIO
       ary[0] 
     end
 
-    SINGLE_RETURN_KEYS = %[line record row]
+    SINGLE_RETURN_KEYS = %w[line record row]
 
     def _ss_clear_single_return
       SINGLE_RETURN_KEYS.each do |key|
