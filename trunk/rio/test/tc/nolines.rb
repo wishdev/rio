@@ -6,7 +6,7 @@ end
 
 require 'rio'
 require 'test/unit'
-require 'test/unit/testsuite'
+#require 'test/unit/testsuite'
 
 class TC_RIO_skiplines < Test::Unit::TestCase
   def tdir() rio(%w/qp skiplines/) end

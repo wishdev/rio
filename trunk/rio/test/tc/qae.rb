@@ -6,7 +6,7 @@ end
 
 require 'rio'
 require 'test/unit'
-require 'test/unit/testsuite'
+#require 'test/unit/testsuite'
 
 class TC_RIO_qae < Test::Unit::TestCase
   @@tdir = rio(%w/qp qae/)

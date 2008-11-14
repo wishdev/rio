@@ -6,7 +6,7 @@ end
 
 require 'rio'
 require 'test/unit'
-require 'test/unit/testsuite'
+#require 'test/unit/testsuite'
 
 class TC_RIO_symlink1 < Test::Unit::TestCase
   def assert!(a,msg="negative assertion")

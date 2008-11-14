@@ -5,7 +5,7 @@ if $0 == __FILE__
 end
 require 'rio'
 require 'test/unit'
-require 'test/unit/testsuite'
+#require 'test/unit/testsuite'
 
 class TC_RIO_create < Test::Unit::TestCase
   def rio(*args) RIO.rio(*args) end

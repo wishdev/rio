@@ -6,7 +6,7 @@ end
 
 require 'rio'
 require 'test/unit'
-require 'test/unit/testsuite'
+#require 'test/unit/testsuite'
 
 def smap(a) a.map { |el| el.to_s } end
 
