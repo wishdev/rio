@@ -36,14 +36,14 @@ options.keys.each do |opt|
   case opt
   when :std
     require 'tc/all'
-    require 'test/unit/ui/console/testrunner'
+    #require 'test/unit/ui/console/testrunner'
   when :http
     require 'lib/temp_server.rb'
     TempServer.new.run('runhttptests.rb')
   when :ftp
     require 'test/unit'
     require 'ftp/all'
-    require 'test/unit/ui/console/testrunner'
+    #require 'test/unit/ui/console/testrunner'
   end
 end
 
