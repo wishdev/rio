@@ -11,5 +11,5 @@ require 'test/unit'
 
 require 'tc/all'
 $trace_states = false
-require 'test/unit/ui/console/testrunner'
+#require 'test/unit/ui/console/testrunner'
 #require 'test/unit/ui/tk/testrunner'

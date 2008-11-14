@@ -11,7 +11,7 @@ require 'test/unit'
 require 'tc/all'
 require 'ftp/all'
 $trace_states = false
-require 'test/unit/ui/console/testrunner'
+#require 'test/unit/ui/console/testrunner'
 require 'lib/temp_server.rb'
 TempServer.run('runhttptests.rb')
 #require 'test/unit/ui/tk/testrunner'
