@@ -50,19 +50,9 @@ module AutoRemoval #:nodoc: all
     n = failure = 0
 
     begin
-      Thread.critical = true
-      begin
-        tmpname = File.join(tmpdir, make_tmpname(basename, n))
-        n += 1
-      end until !@@cleanlist.include?(tmpname) and yield(tmpname)
-    rescue
-      p $!
-      failure += 1
-      retry if failure < MAX_TRY
-      raise "cannot generate tempfile `%s'" % tmpname
-    ensure
-      Thread.critical = false
-    end
+      tmpname = File.join(tmpdir, make_tmpname(basename, n))
+      n += 1
+    end until !@@cleanlist.include?(tmpname) and yield(tmpname)
 
     tmpname
   end

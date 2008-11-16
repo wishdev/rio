@@ -103,19 +103,6 @@ module RIO
         dups[-1]
       end
 
-      def runeth
-        dups = @rios.map { |r| r.clone }
-
-        (1...dups.size-1).each { |i| dups[i].w! }
-        
-        threads = []
-        (1...dups.size).each { |i|
-          threads << Thread.new(dups[i-1],dups[i]) { |src,dst|
-            src > dst
-          } 
-        }
-        threads.each { |aThread| aThread.join }
-      end
     end
     
   end
