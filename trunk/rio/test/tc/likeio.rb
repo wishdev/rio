@@ -102,11 +102,11 @@ class TC_likeio < Test::RIO::TestCase
       check_read_method(fruby,frio,4,:gets,'e')
     }
   end
-  def test_getc
-    open_data(@@data['bytes']) { |fruby,frio|
-      check_read_method(fruby,frio,4,:getc)
-    }
-  end
+#  def test_getc
+#    open_data(@@data['bytes']) { |fruby,frio|
+#      check_read_method(fruby,frio,4,:getc)
+#    }
+#  end
   def test_readchar
     testdata = @@data['bytes'] 
     open_data(testdata) { |fruby,frio|

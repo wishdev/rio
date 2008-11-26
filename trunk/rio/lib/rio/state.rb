@@ -54,9 +54,30 @@ module RIO
     # * the state changing mechanism
     # * and some basic error handling stubs
     class Base
-      KIOSYMS = [:gets,:getc,:open,:readline,:readlines,:chop,:to_a,:putc,:puts,:print,:printf,
-                 #:split,
-                 :=~,:===,:==,:eql?,:sub,:sub!,:gsub,:gsub!,:load]
+      kiosyms = []
+      kiosyms << :gets
+      kiosyms << :open
+      kiosyms << :readline
+      kiosyms << :readlines
+      kiosyms << :to_a
+      kiosyms << :putc
+      kiosyms << :puts
+      kiosyms << :print
+      kiosyms << :printf
+      kiosyms << :=~
+      kiosyms << :===
+      kiosyms << :==
+      kiosyms << :eql?
+      kiosyms << :load
+      #kiosyms << :split
+      #kiosyms << :sub
+      #kiosyms << :sub!
+      #kiosyms << :gsub
+      #kiosyms << :gsub!
+      #kiosyms << :chop
+      #kiosyms << :getc
+
+      KIOSYMS = kiosyms
       @@kernel_cleaned ||= KIOSYMS.each { |sym| undef_method(sym) } 
       undef_method(:rio)
     end 
