@@ -46,6 +46,7 @@ class TC_splitpath < Test::RIO::TestCase
   end
   def test_abs_host
     r = rio('//ahost/a/b/c')
+#    p r.to_uri.methods(true).sort
     ary = r.split
     exp = [rio('file://ahost/'),rio('a'),rio('b'),rio('c')]
     #p "ary=#{ary.inspect} exp=#{exp.inspect}"

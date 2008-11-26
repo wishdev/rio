@@ -91,7 +91,9 @@ module RIO
         protected
 
         def cpto_obj_(obj)
+          #p "cpto_obj_(#{obj.inspect})"
           self.each do |el|
+            #p el
             obj << el
           end
         end

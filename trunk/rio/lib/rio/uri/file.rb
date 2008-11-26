@@ -1,190 +1,121 @@
-#--
-# =============================================================================== 
-# Copyright (c) 2005,2006,2007,2008 Christopher Kleckner
-# All rights reserved
 #
-# This file is part of the Rio library for ruby.
+# = uri/http.rb
 #
-# Rio is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# Rio is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Rio; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-# =============================================================================== 
-#++
-#
-# To create the documentation for Rio run the command
-#  ruby build_doc.rb
-# from the distribution directory.
-#
-# Suggested Reading
-# * RIO::Doc::SYNOPSIS
-# * RIO::Doc::INTRO
-# * RIO::Doc::HOWTO
-# * RIO::Doc::EXAMPLES
-# * RIO::Rio
-#
-
-
-#
-# = uri/file.rb
-#
-# Author:: Akira Yamada <kit_kleckner@yahoo.com>
+# Author:: Akira Yamada <akira@ruby-lang.org>
 # License:: You can redistribute it and/or modify it under the same term as Ruby.
+# Revision:: $Id$
 #
 
 require 'uri/generic'
 
-module URI #:nodoc: all
-  
+module URI
 
   #
-  # RFC1738 section 3.10.
+  # The syntax of HTTP URIs is defined in RFC1738 section 3.3.
   #
-=begin
-RFC 1738            Uniform Resource Locators (URL)        December 1994
-
-3.10 FILES
-
-   The file URL scheme is used to designate files accessible on a
-   particular host computer. This scheme, unlike most other URL schemes,
-   does not designate a resource that is universally accessible over the
-   Internet.
-
-   A file URL takes the form:
-
-       file://<host>/<path>
-
-   where <host> is the fully qualified domain name of the system on
-   which the <path> is accessible, and <path> is a hierarchical
-   directory path of the form <directory>/<directory>/.../<name>.
-
-   For example, a VMS file
-
-     DISK$USER:[MY.NOTES]NOTE123456.TXT
-
-   might become
-
-     <URL:file://vms.host.edu/disk$user/my/notes/note12345.txt>
-
-   As a special case, <host> can be the string "localhost" or the empty
-   string; this is interpreted as `the machine from which the URL is
-   being interpreted'.
-
-   The file URL scheme is unusual in that it does not specify an
-   Internet protocol or access method for such files; as such, its
-   utility in network protocols between hosts is limited.
-=end
-
-  module REGEXP
-    module PATTERN
-      DRIVE_SPEC = "[A-Za-z]:"
-      FILE_ESCAPED = ESCAPED
-      FILE_UNRESERVED = "-_.!~*'()#{ALNUM}"
-      FILE_PCHAR = "(?:[#{FILE_UNRESERVED}:@?&=+$,]|#{FILE_ESCAPED})"
-      FILE_SEGMENT = "#{FILE_PCHAR}*(?:;#{PARAM})*"
-      FILE_PATH_SEGMENTS = "#{FILE_SEGMENT}(?:/#{FILE_SEGMENT})*"
-      FILE_ABS_PATH = "(?:/#{DRIVE_SPEC})?/#{FILE_PATH_SEGMENTS}"
-
-      FILE_REL_SEGMENT = "(?:[#{FILE_UNRESERVED};@?&=+$,]|#{FILE_ESCAPED})+"
-      FILE_REL_PATH = "#{FILE_REL_SEGMENT}(?:#{FILE_ABS_PATH})?"
-
-      #FILE_ABS_PATH = "(?:/#{DRIVE_SPEC})?/#{FILE_PATH_SEGMENTS}(?:\\?#{QUERY})?"
-    end
-    EMPTYHOST = Regexp.new("^$", false, 'N').freeze #"
-    FILE_ABS_PATH = Regexp.new("^#{PATTERN::FILE_ABS_PATH}$", false, 'N').freeze
-  end # module REGEXP
-
+  # Note that the Ruby URI library allows HTTP URLs containing usernames and
+  # passwords. This is not legal as per the RFC, but used to be 
+  # supported in Internet Explorer 5 and 6, before the MS04-004 security 
+  # update. See <URL:http://support.microsoft.com/kb/834489>.
+  #
   class FILE < Generic
-    #FILE_ABS_PATH = REGEXP::FILE_ABS_PATH
+    include REGEXP
+    #DEFAULT_PORT = 80
+
     COMPONENT = [
       :scheme, 
-      :host,
+      :host, 
       :path, 
-    ].freeze 
-
-    def check_host(v)
-      return true if v && EMPTYHOST =~ v
-      super
-    end
-    private :check_host
-
-    def check_path(v)
-      # raise if both hier and opaque are not nil, because:
-      # absoluteURI   = scheme ":" ( hier_part | opaque_part )
-      # hier_part     = ( net_path | abs_path ) [ "?" query ]
-      #p "URI::FILE self=#{self} v=#{v}"
-      if v && @opaque
-        raise InvalidURIError, 
-          "path conflicts with opaque"
-      end
-
-      if @scheme
-        if v && v != '' && FILE_ABS_PATH !~ v
-          raise InvalidComponentError, 
-            "bad component(expected absolute path component): #{v}"
-        end
-      else
-        if v && v != '' && FILE_ABS_PATH !~ v && FILE_REL_PATH !~ v
-          raise InvalidComponentError, 
-            "bad component(expected relative path component): #{v}"
-        end
-      end
-
-      return true
-    end
-    private :check_path
-
-    def path=(v)
-      check_path(v)
-      set_path(v)
-      v
-    end
-
-    def normalize!
-      super
-      if host && host == 'localhost'
-        set_host('')
-      end
-    end
-
-    def file(*args)
-      pth = self.path(*args)
-      pth.chop! if pth[-1,1] == '/' && pth != '/'
-      return pth
-    end
+    ].freeze
 
     #
     # == Description
     #
-    # Create a new URI::FILE object from components of URI::FILE with
-    # check.  It is scheme, userinfo, host, port, path, query and
-    # fragment. It provided by an Array of a Hash.
+    # Create a new URI::HTTP object from components, with syntax checking.
+    #
+    # The components accepted are userinfo, host, port, path, query and
+    # fragment.
+    #
+    # The components should be provided either as an Array, or as a Hash 
+    # with keys formed by preceding the component names with a colon. 
+    #
+    # If an Array is used, the components must be passed in the order
+    # [userinfo, host, port, path, query, fragment].
+    #
+    # Example:
+    #
+    #     newuri = URI::HTTP.build({:host => 'www.example.com', 
+    #       :path> => '/foo/bar'})
+    #
+    #     newuri = URI::HTTP.build([nil, "www.example.com", nil, "/path", 
+    #       "query", 'fragment'])
+    #
+    # Currently, if passed userinfo components this method generates 
+    # invalid HTTP URIs as per RFC 1738.
     #
     def self.build(args)
-      #p "In build: "+args.inspect
       tmp = Util::make_components_hash(self, args)
       return super(tmp)
     end
 
+    def check_host(v)
+      return v unless v
+      #p self.class
+      #p @parser
+      if @registry || @opaque
+        raise InvalidURIError, 
+          "can not set host with registry or opaque"
+#      elsif v != '' and @parser.regexp[:HOST] !~ v
+      elsif v != '' and HOST !~ v
+        raise InvalidComponentError,
+          "bad component(expected host component): #{v}"
+      end
+
+      return true
+    end
+    def host=(v)
+      check_host(v)
+      set_host(v)
+      v
+    end
+    private :check_host
+
     #
     # == Description
     #
-    # Create a new URI::FILE object from ``generic'' components with no
-    # check.
+    # Create a new URI::HTTP object from generic URI components as per
+    # RFC 2396. No HTTP-specific syntax checking (as per RFC 1738) is 
+    # performed.
+    #
+    # Arguments are +scheme+, +userinfo+, +host+, +port+, +registry+, +path+, 
+    # +opaque+, +query+ and +fragment+, in that order.
+    #
+    # Example:
+    #
+    #     uri = URI::HTTP.new(['http', nil, "www.example.com", nil, "/path",
+    #       "query", 'fragment'])
     #
     def initialize(*arg)
       super(*arg)
       self.host = '' if self.host.nil?
     end
+
+    #
+    # == Description
+    #
+    # Returns the full path for an HTTP request, as required by Net::HTTP::Get.
+    #
+    # If the URI contains a query, the full path is URI#path + '?' + URI#query.
+    # Otherwise, the path is simply URI#path.
+    #
+#     def request_uri
+#       r = path_query
+#       if r[0] != ?/
+#         r = '/' + r
+#       end
+
+#       r
+#     end
   end
 
   @@schemes['FILE'] = FILE

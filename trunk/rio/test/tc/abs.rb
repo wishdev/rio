@@ -8,6 +8,7 @@ require 'test/unit'
 #require 'test/unit/testsuite'
 
 class TC_RIO_abs < Test::Unit::TestCase
+
   def test_abs
     rio('qp/test_abs').rmtree.mkpath.chdir {
       
