@@ -50,6 +50,12 @@ module RIO
         a.flatten!
         a.push('') if a.empty?
         case a[0]
+        when ?? , ?= , ?_ , ?", ?[, ?#, ?`, ?|, ?z
+          a[0] = 'rio:'+CHMAP[a[0]]+':'
+        when ?-
+          a[0] = ( a.size == 1 ? 'rio:'+CHMAP[a[0]]+':' : 'rio:cmdio:' )
+        when ?$
+          a[0] = 'rio:strio:'
         when ::String
           case a[0]
           when /^[a-zA-Z]:/
@@ -91,12 +97,6 @@ module RIO
           end
         when ::NilClass
           a[0] = 'rio:null:'
-        when ?? , ?= , ?_ , ?", ?[, ?#, ?`, ?|, ?z
-          a[0] = 'rio:'+CHMAP[a[0]]+':'
-        when ?-
-          a[0] = ( a.size == 1 ? 'rio:'+CHMAP[a[0]]+':' : 'rio:cmdio:' )
-        when ?$
-          a[0] = 'rio:strio:'
         when ::IO
           a.unshift('rio:sysio:')
         when ::StringIO
