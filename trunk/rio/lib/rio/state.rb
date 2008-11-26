@@ -59,7 +59,6 @@ module RIO
       kiosyms << :open
       kiosyms << :readline
       kiosyms << :readlines
-      kiosyms << :to_a
       kiosyms << :putc
       kiosyms << :puts
       kiosyms << :print
@@ -69,6 +68,7 @@ module RIO
       kiosyms << :==
       kiosyms << :eql?
       kiosyms << :load
+      #kiosyms << :to_a
       #kiosyms << :split
       #kiosyms << :sub
       #kiosyms << :sub!
@@ -91,6 +91,7 @@ module RIO
 
       attr_accessor :cx
 
+      include Enumerable
       # Context handling
       include Cx::Methods
       include RIO::Ext::Cx

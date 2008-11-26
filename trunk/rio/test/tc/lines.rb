@@ -46,6 +46,7 @@ class TC_RIO_lines < Test::Unit::TestCase
       
       
       expa = ["L1: 3:2\n", "L2: 6:4\n", "L4: 12:8\n", "L6: 18:12\n"]
+      assert_equal(expa,rio('basic.txt').lines[/2/])
       assert_equal(expa,rio('basic.txt').lines(/2/).to_a)
       
       expa = ["L0: 0:0\nL1: 3:2\nL2: 6:4\nL3: 9:6\n", "L4: 12:8\nL5: 15:10\nL6: 18:12\nLin", "e Z\n"]
