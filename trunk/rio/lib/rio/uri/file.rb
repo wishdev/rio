@@ -57,21 +57,35 @@ module URI
       tmp = Util::make_components_hash(self, args)
       return super(tmp)
     end
-
-    def check_host(v)
-      return v unless v
-      #p self.class
-      #p @parser
-      if @registry || @opaque
-        raise InvalidURIError, 
-          "can not set host with registry or opaque"
-#      elsif v != '' and @parser.regexp[:HOST] !~ v
-      elsif v != '' and HOST !~ v
-        raise InvalidComponentError,
-          "bad component(expected host component): #{v}"
+    
+    RMAJOR,RMINOR,RTINY =  RUBY_VERSION.split('.')
+    if RMAJOR == 1 and RMINOR < 9
+      def check_host(v)
+        return v unless v
+        if @registry || @opaque
+          raise InvalidURIError, 
+                "can not set host with registry or opaque"
+        elsif v != '' and HOST !~ v
+          raise InvalidComponentError,
+                "bad component(expected host component): #{v}"
+        end
+        
+        return true
       end
-
-      return true
+    else
+      def check_host(v)
+        return v unless v
+        if @registry || @opaque
+          raise InvalidURIError, 
+                "can not set host with registry or opaque"
+          #      elsif v != '' and @parser.regexp[:HOST] !~ v
+        elsif v != '' and HOST !~ v
+          raise InvalidComponentError,
+                "bad component(expected host component): #{v}"
+        end
+        
+        return true
+      end
     end
     def host=(v)
       check_host(v)

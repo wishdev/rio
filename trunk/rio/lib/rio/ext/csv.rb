@@ -194,6 +194,9 @@ module RIO
           tfields
         end
         def parse_line_(line,fs,rs)
+          #h = {:col_sep => fs, :row_sep => rs}
+          line.chomp!
+          #p line
           ::CSV.parse_line(line,fs,rs)
         end
         def _l2a(line,fs,rs)
@@ -341,6 +344,7 @@ module RIO
 
         def _ary_to_line(ary,fs,rs)
           rs ||= $/
+          #h = {:col_sep => fs, :row_sep => rs}
           ::CSV.generate_line(ary,fs,rs)
         end
         public
