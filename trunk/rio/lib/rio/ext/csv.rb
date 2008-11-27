@@ -193,20 +193,22 @@ module RIO
           end
           tfields
         end
-        def parse_line_(line,fs,rs)
+        def parse_line_(line)
           #h = {:col_sep => fs, :row_sep => rs}
           line.chomp!
           #p line
+          fs = cx['csv_fs']
+          rs = cx['csv_rs']
           ::CSV.parse_line(line,fs,rs)
         end
-        def _l2a(line,fs,rs)
-          parse_line_(line,fs,rs)
+        def _l2a(line)
+          parse_line_(line)
         end
         def _l2record(line)
           #p callstr('_l2record',line,fs,rs,cols)
           fs = cx['csv_fs']
           rs = cx['csv_rs']
-          fields = trim(parse_line_(line,fs,rs))
+          fields = trim(parse_line_(line))
           if $EXTEND_CSV_RESULTS
             unless copying_from?
               fields.extend(RIO::Ext::CSV::Ary)
@@ -224,9 +226,7 @@ module RIO
         end
 
         def _l2row(line)
-          fs = cx['csv_fs']
-          rs = cx['csv_rs']
-          dat = _l2a(line,fs,rs)
+          dat = _l2a(line)
           names = cnames(dat.length)
           dat = trim(dat)
           rw = {}
