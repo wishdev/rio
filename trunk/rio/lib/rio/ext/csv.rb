@@ -149,11 +149,11 @@ module RIO
             end
             raw_rec
           when 'records'
-            _l2record(raw_rec,cx['csv_fs'],cx['csv_rs'])
+            _l2record(raw_rec)
           when 'rows'
-            _l2row(raw_rec,cx['csv_fs'],cx['csv_rs'])
+            _l2row(raw_rec)
           else
-            _l2record(raw_rec,cx['csv_fs'],cx['csv_rs'])
+            _l2record(raw_rec)
           end
         end
 
@@ -202,8 +202,10 @@ module RIO
         def _l2a(line,fs,rs)
           parse_line_(line,fs,rs)
         end
-        def _l2record(line,fs,rs)
+        def _l2record(line)
           #p callstr('_l2record',line,fs,rs,cols)
+          fs = cx['csv_fs']
+          rs = cx['csv_rs']
           fields = trim(parse_line_(line,fs,rs))
           if $EXTEND_CSV_RESULTS
             unless copying_from?
@@ -221,7 +223,9 @@ module RIO
           @cnames ||= trim((0...num).map { |n| "Col#{n}" })
         end
 
-        def _l2row(line,fs,rs)
+        def _l2row(line)
+          fs = cx['csv_fs']
+          rs = cx['csv_rs']
           dat = _l2a(line,fs,rs)
           names = cnames(dat.length)
           dat = trim(dat)
@@ -245,7 +249,7 @@ module RIO
         end
 
         def _init_cols_from_line(line)
-          ary = _l2record(line,cx['csv_fs'],cx['csv_rs'])
+          ary = _l2record(line)
           _init_cols_from_ary(ary)
         end
 
