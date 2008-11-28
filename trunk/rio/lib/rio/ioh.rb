@@ -39,7 +39,7 @@
 module RIO
   module IOH #:nodoc: all
     class Base
-      attr :ios
+      attr_accessor :ios
       def initialize(ios,*args)
         @ios = ios
       end
@@ -56,17 +56,17 @@ module RIO
       def open?() not closed? end
     end
     class Stream < Base
-      attr_reader :iostack
+      #attr_reader :iostack
       attr_accessor :hindex
       def initialize(iosp,*args)
         super
-        @iostack = [@ios]
-        @hindex = -1
+        #@iostack = [@ios]
+        #@hindex = -1
       end
       def initialize_copy(*args)
         #p callstr('ioh_stream:initialize_copy',*args)
         super
-        @iostack = @iostack.map { |io| io.nil? || io.equal?(@ios) ? io : io.clone }
+        #@iostack = @iostack.map { |io| io.nil? || io.equal?(@ios) ? io : io.clone }
       end
       def copy_blksize() 
         if @ios.respond_to? :stat
@@ -76,7 +76,7 @@ module RIO
         sz || 512 
       end
 
-      def handle() @iostack[@hindex] end
+      def handle() @ios end
       def close()  handle.close unless self.closed? end
       def closed?() handle.nil? or handle.closed? end
       def eof?() closed? or handle.eof? end
