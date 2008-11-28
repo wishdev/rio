@@ -117,7 +117,13 @@ module RIO
       end
       def add_filters
         #p "IN stream#add_filters"
-        add_filter(Filter::GZipRead) if gzip?
+        if gzip?
+          gz = Zlib::GzipReader.new(self.ioh.ios)
+          gz.extend Filter::GZipMissing
+          gz.extend Filter::GZipWin32MissingEachLine
+          self.ioh.ios = gz
+          add_filter(Filter::GZipRead)
+        end
         #add_filter(Filter::YAML) if yaml?
         add_line_filters()
 #        add_filter(Filter::FasterCSV) if csv?
@@ -142,7 +148,12 @@ module RIO
         Ext::Output.add_extensions(self)
       end
       def add_filters
-        add_filter(Filter::GZipWrite) if gzip?
+        if gzip?
+          gz = Zlib::GzipWriter.new(self.ioh.ios)
+          gz.extend Filter::GZipMissing
+          self.ioh.ios = gz
+          add_filter(Filter::GZipWrite)
+        end
         #add_filter(Filter::FasterCSV) if csv?
         #add_filter(Filter::YAML) if yaml?
         self
