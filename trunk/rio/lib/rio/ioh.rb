@@ -98,12 +98,10 @@ module RIO
         end
         self
       end
-      def each_line(*args,&block)
-        handle.each_line(*args,&block)
-      end
       extend Forwardable
       def_instance_delegators(:handle,:binmode,:stat,:rewind,
                               :each,:each_byte,:gets,:getc,
+                              :each_line,
                               :read,:readlines,:readline,:sysread,
                               :<<,:print,:printf,:putc,:write,:syswrite,
                               :pos,:pos=,:lineno,:lineno=,
