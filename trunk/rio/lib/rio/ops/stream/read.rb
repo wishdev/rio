@@ -59,7 +59,7 @@ module RIO
 
         public
 
-        def contents()                  _post_eof_close { ior.gets(nil) || "" }         end
+        def contents()                  _post_eof_close { ior.read || "" }         end
         def readlines(*args)            _post_eof_close { ior.readlines(*args) }        end
         def each_line(*args,&block)     
           _post_eof_close { ior.each_line(*args,&block) } 

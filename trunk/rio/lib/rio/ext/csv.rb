@@ -135,6 +135,7 @@ module RIO
 #         end
 
         def to_rec_(raw_rec)
+          #return raw_rec
           #_init_cols_from_line(raw_rec) if @recno == 0
           #p "#{callstr('to_rec_',raw_rec.inspect,@recno)} ; itertype=#{cx['stream_itertype']}"
           case cx['stream_itertype']

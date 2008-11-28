@@ -124,7 +124,11 @@ module RIO
           self.ioh.ios = gz
           add_filter(Filter::GZipRead)
         end
-        #add_filter(Filter::YAML) if yaml?
+#        if csv?
+#          csvio = CSV.new(self.ioh.ios,*cx['csv_args'])
+#          self.ioh.ios = csvio
+#        end
+       #add_filter(Filter::YAML) if yaml?
         add_line_filters()
 #        add_filter(Filter::FasterCSV) if csv?
 #        if closeoneof?
