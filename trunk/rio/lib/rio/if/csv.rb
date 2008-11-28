@@ -63,8 +63,8 @@ module RIO
       #  rio("afile.csv").csv.columns(5..7).skiplines[0]
       #
       # See RIO::Doc::INTRO for complete documentation on csv mode.
-      def csv(field_separator=',',record_separator=nil,&block) 
-        target.csv(field_separator,record_separator,&block); 
+      def csv(*csv_args,&block) 
+        target.csv(*csv_args,&block); 
         self 
       end
       # Select columns from a CSV file. See #csv and RIO::Doc::INTRO.

@@ -60,15 +60,13 @@ module RIO
   module Ext
     module CSV
       module Cx
-        def csv(fs=',',rs=nil,&block) 
-          cx['csv_fs'] = fs
-          cx['csv_rs'] = rs
+        def csv(*args,&block) 
+          cx['csv_args'] = args
           cxx('csv',true,&block) 
         end
         def csv?() cxx?('csv') end 
-        def csv_(fs=',',rs=nil) 
-          cx['csv_fs'] = fs
-          cx['csv_rs'] = rs
+        def csv_(*args) 
+          cx['csv_args'] = args
           cxx_('csv',true) 
         end
         protected :csv_
@@ -144,7 +142,7 @@ module RIO
             if $EXTEND_CSV_RESULTS
               unless copying_from?
                 raw_rec.extend(RIO::Ext::CSV::Str)
-                raw_rec.csv_s_to_rec = _s_to_rec_proc(cx['csv_fs'],cx['csv_rs'])
+                raw_rec.csv_s_to_rec = _s_to_rec_proc(*cx['csv_args'])
               end
             end
             raw_rec
@@ -197,22 +195,18 @@ module RIO
           #h = {:col_sep => fs, :row_sep => rs}
           line.chomp!
           #p line
-          fs = cx['csv_fs']
-          rs = cx['csv_rs']
-          ::CSV.parse_line(line,fs,rs)
+          ::CSV.parse_line(line,*cx['csv_args'])
         end
         def _l2a(line)
           parse_line_(line)
         end
         def _l2record(line)
-          #p callstr('_l2record',line,fs,rs,cols)
-          fs = cx['csv_fs']
-          rs = cx['csv_rs']
+          #p callstr('_l2record',line)
           fields = trim(parse_line_(line))
           if $EXTEND_CSV_RESULTS
             unless copying_from?
               fields.extend(RIO::Ext::CSV::Ary)
-              fields.csv_rec_to_s = _rec_to_s_proc(fs,rs)
+              fields.csv_rec_to_s = _rec_to_s_proc(*cx['csv_args'])
             end
           end
 #          p "csv#fields: #{fields}"
@@ -236,15 +230,15 @@ module RIO
           rw
         end
 
-        def _rec_to_s_proc(fs,rs)
+        def _rec_to_s_proc(*csv_args)
           proc { |a|
-            ::CSV.generate_line(a,fs,rs) 
+            ::CSV.generate_line(a,*csv_args) 
           }
         end
 
-        def _s_to_rec_proc(fs,rs)
+        def _s_to_rec_proc(*csv_args)
           proc { |s|
-            ::CSV.parse_line(s,fs,rs) 
+            ::CSV.parse_line(s,*csv_args) 
           }
         end
 
@@ -291,7 +285,7 @@ module RIO
         def putrow(*argv)
           require 'csv'
           row = ( argv.length == 1 && argv[0].kind_of?(::Array) ? argv[0] : argv )
-          self.puts(::CSV.generate_line(row,self.cx['csv_fs'],self.cx['csv_rs']))
+          self.puts(::CSV.generate_line(row,*cx['csv_args']))
         end
         def putrow!(*argv)
           putrow(*argv)
@@ -300,10 +294,10 @@ module RIO
 
         protected
 
-        def put_(arg,fs=cx['csv_fs'],rs=cx['csv_rs'])
-          #p callstr('put_',arg.inspect,fs,rs)
-          @header_line ||= _to_header_line(arg,fs,rs)
-          puts(_to_line(arg,fs,rs))
+        def put_(arg)
+          #p callstr('put_',arg.inspect)
+          @header_line ||= _to_header_line(arg,*cx['csv_args'])
+          puts(_to_line(arg,*cx['csv_args']))
         end
 
         def cpfrom_array_(ary)
@@ -321,35 +315,36 @@ module RIO
 
         private
 
-        def _to_header_line(arg,fs=cx['csv_fs'],rs=nil)
+        def _to_header_line(arg,*csv_args)
           case arg
           when ::String
             arg
           when ::Array
-            _ary_to_line(arg,fs,rs)
+            _ary_to_line(arg,*csv_args)
           when ::Hash
-            _ary_to_line(arg.keys,fs,rs)
+            _ary_to_line(arg.keys,*csv_args)
           else
             arg.to_s
           end
         end
 
-        def _to_line(arg,fs=cx['csv_fs'],rs=cx['csv_rs'])
-          #p callstr('_to_line',arg.inspect,fs,rs)
+        def _to_line(arg,*csv_args)
+          #p callstr('_to_line',arg.inspect,csv_args)
           case arg
           when ::Array
-            _ary_to_line(arg,fs,rs)
+            _ary_to_line(arg,*csv_args)
           when ::Hash
-            _ary_to_line(arg.values,fs,rs)
+            _ary_to_line(arg.values,*csv_args)
           else
             arg
           end
         end
 
-        def _ary_to_line(ary,fs,rs)
+        def _ary_to_line(ary,*csv_args)
           rs ||= $/
           #h = {:col_sep => fs, :row_sep => rs}
-          ::CSV.generate_line(ary,fs,rs)
+          #p 'HERE',csv_args
+          ::CSV.generate_line(ary,*csv_args)
         end
         public
       end

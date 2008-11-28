@@ -218,9 +218,10 @@ class TC_csv < Test::Unit::TestCase
 
     dst = rio(?").csv(';') < rio(?",src_str).csv
     assert_equal(src_str.gsub(/,/,';'),dst.contents)
-
+    $trace_states = false
     rio(?",src_str).csv > (dst = rio(?").csv(';'))
     assert_equal(src_str.gsub(/,/,';'),dst.contents)
+    $trace_states = false
 
   end
 end
