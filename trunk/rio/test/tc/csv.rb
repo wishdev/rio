@@ -6,57 +6,20 @@ end
 
 require 'rio'
 require 'tc/testcase'
-class TC_csv < Test::Unit::TestCase
-  include RIO_TestCase
-  def records_to_rows(records)
-    n_records = records.size
-    rows = []
-    head = records[0]
-    (1...n_records).each do |n|
-      record = records[n]
-      row = {}
-      (0...record.size).each do |ncol|
-        row[head[ncol]] = row[ncol]
-      end
-      rows << row
-    end
-    rows
-  end
-  def records_to_strings(records)
-    records.map { |values| values.join(',') }
-  end
-  def records_to_string(records)
-    records_to_strings(records).join("\n") + "\n"
-  end
-  def strings_to_string(strings)
-    strings.join("\n") + "\n"
-  end
-  def strings_to_lines(strings)
-    strings.map { |s| s + "\n" }
-  end
-  def create_test_csv_records(n_rows,n_cols,header=true)
-    records = []
-    
-    records << (0...n_cols).map { |n| "Head#{n}" } if header
-    
-    (0...n_rows).each do |nrow|
-      records << (0...n_cols).map { |n| "Dat#{nrow}#{n}" }
-    end
-    records
-  end
-  def create_test_csv_data(fname,n_rows,n_cols,header=true)
-    records = create_test_csv_records(n_rows,n_cols,header)
-    strings = records_to_strings(records)
-    lines = strings_to_lines(strings)
-    string = strings_to_string(strings)
-    rio(fname) < string
-    [records,strings,lines,string]
+require 'tc/csvutil'
+
+class TC_csv < Test::RIO::TestCase
+  include CSV_Util
+
+  @@once = false
+  def self.once
+    @@once = true
   end
   def setup()
     super
     @src_name = 'src1.csv'
     @dst_name = 'dst.csv'
-    @records,@strings,@lines,@string = create_test_csv_data(@src_name,3, 3, true)
+    @records,@strings,@lines,@string = create_test_csv_data(@src_name,3, 3, ',', $/, true)
   end
   def test_nocsv_lines
     rio(@src_name) > rio(@dst_name)
@@ -196,10 +159,10 @@ class TC_csv < Test::Unit::TestCase
     assert_equal(src_str,dst_str)
 
     rio(?",src_str).csv >  rio(?",dst_str='')
-    assert_equal(@records.to_s,dst_str)
+    assert_equal(@records.join,dst_str)
 
     rio(?",dst_str='') < rio(?",src_str).csv
-    assert_equal(@records.to_s,dst_str)
+    assert_equal(@records.join,dst_str)
 
     dst = rio(?")
     rio(?",src_str) > dst.csv

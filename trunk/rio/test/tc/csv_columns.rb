@@ -19,7 +19,7 @@ class TC_csv_columns < Test::RIO::TestCase
     super
     @src = rio(?")
     @dst_name = 'dst.csv'
-    @records,@strings,@lines,@string = create_test_csv_data(@src,1, 8, false)
+    @records,@strings,@lines,@string = create_test_csv_data(@src,1, 8,',',$/, false)
   end
 
   def test_basic

@@ -19,7 +19,7 @@ class TC_csv2 < Test::RIO::TestCase
     super
     @src = rio(?")
     @dst_name = 'dst.csv'
-    @records,@strings,@lines,@string = create_test_csv_data(@src,3, 3, true)
+    @records,@strings,@lines,@string = create_test_csv_data(@src,3, 3, ',', $/, true)
   end
 
   def test_read
@@ -63,10 +63,10 @@ class TC_csv2 < Test::RIO::TestCase
     assert_equal(src_str,dst_str)
 
     rio(?",src_str).csv >  rio(?",dst_str='')
-    assert_equal(@records.to_s,dst_str)
+    assert_equal(@records.join,dst_str)
 
     rio(?",dst_str='') < rio(?",src_str).csv
-    assert_equal(@records.to_s,dst_str)
+    assert_equal(@records.join,dst_str)
 
     dst = rio(?")
     rio(?",src_str) > dst.csv
@@ -125,7 +125,7 @@ class TC_csv2 < Test::RIO::TestCase
     ary = rio('src1.csv').csv[]
     assert_kind_of(::Array,ary[0])
     exp = $EXTEND_CSV_RESULTS ? @strings[0] : @records[0].to_s
-    assert_equal(exp,ary[0].to_s)
+    assert_equal(exp,ary[0].join)
 
     recs = rio('src1.csv').csv.lines[]
     assert_kind_of(::String,recs[0])

@@ -21,17 +21,17 @@ module CSV_Util
     end
     rows
   end
-  def records_to_strings(records)
-    records.map { |values| values.join(',') }
+  def records_to_strings(records,fs=',')
+    records.map { |values| values.join(fs) }
   end
-  def records_to_string(records)
-    records_to_strings(records).join("\n") + "\n"
+  def records_to_string(records,fs=',',rs="\n")
+    records_to_strings(records,fs).join(rs) + rs
   end
-  def strings_to_string(strings)
-    strings.join("\n") + "\n"
+  def strings_to_string(strings,rs="\n")
+    strings.join(rs) + rs
   end
-  def strings_to_lines(strings)
-    strings.map { |s| s + "\n" }
+  def strings_to_lines(strings,rs="\n")
+    strings.map { |s| s + rs }
   end
   def create_test_csv_records(n_rows,n_cols,header=true)
     records = []
@@ -44,11 +44,11 @@ module CSV_Util
     records
   end
 
-  def create_test_csv_data(frio,n_rows,n_cols,header=true)
+  def create_test_csv_data(frio,n_rows,n_cols,fs,rs,header=true)
     records = create_test_csv_records(n_rows,n_cols,header)
-    strings = records_to_strings(records)
-    lines = strings_to_lines(strings)
-    string = strings_to_string(strings)
+    strings = records_to_strings(records,fs)
+    lines = strings_to_lines(strings,rs)
+    string = strings_to_string(strings,rs)
     frio < string
     [records,strings,lines,string]
   end

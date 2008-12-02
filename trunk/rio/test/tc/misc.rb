@@ -299,37 +299,6 @@ class TC_RIO_misc < Test::Unit::TestCase
     
   end
 
-  def test_copy
-    require 'rio'
-    datadir = rio('qp/test_copy').rmtree.mkpath
-    inline = "Source Stuff\n"
-    src = rio(datadir,'src')
-    src.print(inline)
-    src.close
-    src = rio(datadir,'src')
-    dst1 = rio(datadir,'dst1')
-    src.copy_to(dst1)
-    dst2 = rio(datadir,'dst2').mkdir
-    src.copy_to(dst2)
-    sline = rio(datadir,'src').readline
-    l1 = rio(datadir,'dst1').readline
-    l2 = rio(datadir,'dst2/src').readline
-    assert_equal(inline,sline)
-    assert_equal(inline,l1)
-    assert_equal(inline,l2)
-
-    # copy directories
-    sd1 = rio(datadir,'dir1/sd1').rmtree.mkpath
-    txt = "Hello f1.txt"
-    sd1.join('f1.txt').puts(txt).close
-    oline = rio(datadir,'dir1/sd1/f1.txt').readline
-
-    dir2 = rio(datadir,'dir2').rmtree.mkpath
-    sd1.copy_to(dir2)
-    nline = rio(datadir,'dir2/sd1/f1.txt').readline
-    assert_equal(oline,nline)
-    
-  end
   def cmpfiles(z1,z2)
     o = rio(z1).contents
     n = rio(z2).contents
