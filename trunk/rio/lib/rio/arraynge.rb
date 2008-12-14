@@ -75,8 +75,8 @@ module RIO
     def self.reduce_ranges(r1,r2)
       # requires that r2.min >= r1.min
       #puts("reduce_ranges(#{r1},#{r2})")
-      if (r1.min..r1.max.succ).cover?(r2.min)
-        r1.cover?(r2.max) ? [r1] : [(r1.min..r2.max)]
+      if (r1.min..r1.max.succ).include?(r2.min)
+        r1.include?(r2.max) ? [r1] : [(r1.min..r2.max)]
       else
         [r1,r2]
       end
@@ -111,11 +111,11 @@ module RIO
     end
     def self.diff1(r1,r2)
       ans = []
-      if !r1.cover?(r2.min) and !r1.cover?(r2.max)
-        ans << r1 unless r2.cover?(r1.min)
+      if !r1.include?(r2.min) and !r1.include?(r2.max)
+        ans << r1 unless r2.include?(r1.min)
       else
-        ans << (r1.min...r2.min) if r1.cover?(r2.min) and r1.min != r2.min
-        ans << (r2.max.succ..r1.max) if r1.cover?(r2.max) and r1.max != r2.max
+        ans << (r1.min...r2.min) if r1.include?(r2.min) and r1.min != r2.min
+        ans << (r2.max.succ..r1.max) if r1.include?(r2.max) and r1.max != r2.max
       end
       ans
     end

@@ -81,7 +81,8 @@ module RIO
 
         def each_row(*args,&block) 
           #p callstr('each_row',*args)
-          rows(*args).each_row_(*args,&block)
+          #rows(*args).each_row_(*args,&block)
+          rows(*args,&block)
           self
         end
 

@@ -106,11 +106,12 @@ module RIO
 
         def cpfrom_obj_(obj)
           obj.each do |el|
+            #p el
             self << el
           end
         end
         def cpfrom_array_(ary)
-          #p "CPFROM_ARRAY_"
+          #p "CPFROM_ARRAY_ #{ary.inspect}"
           ary.inject(self) { |anio,el| anio << el }
         end
       end
@@ -160,10 +161,13 @@ module RIO
           cpto_obj_(arg)
         end
         def cpto_string_(arg)
+          #p "cpto_string_(#{arg})"
           cpto_obj_(arg)
         end
 
         def cpto_rio_(arg,sym)
+          #p callstr('cpto_rio_',arg.inspect)
+
           ario = ensure_rio(arg)
           #p ario
           ario = ario.join(self.filename) if ario.dir?
@@ -199,11 +203,14 @@ module RIO
           self
         end
         def cpfrom_rio_(arg)
+          #p callstr('cpfrom_rio_',arg.inspect)
           ario = ensure_rio(arg)
           #p ario.cx
 
           ario.copying(self).each { |el|
-            self << el
+            #p el
+            #self << el
+            self.putrec(el)
           }.copying_done(self)
         end
       end

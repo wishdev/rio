@@ -4,8 +4,6 @@ if $0 == __FILE__
   $:.unshift File.expand_path('../lib/')
 end
 
-require 'rio'
-
 module CSV_Util
   def records_to_rows(records)
     n_records = records.size

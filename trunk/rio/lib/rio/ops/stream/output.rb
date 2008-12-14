@@ -55,6 +55,7 @@ module RIO
         include Ops::Stream::Write
         include Cp::Stream::Output
         def putrec(rec,*args)
+          #p callstr('putrec',rec.inspect,args.inspect)
           self.put_(rec,*args)
           self
         end

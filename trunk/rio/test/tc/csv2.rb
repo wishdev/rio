@@ -20,8 +20,37 @@ class TC_csv2 < Test::RIO::TestCase
     @src = rio(?")
     @dst_name = 'dst.csv'
     @records,@strings,@lines,@string = create_test_csv_data(@src,3, 3, ',', $/, true)
+    if $USE_FASTER_CSV
+      opts = {:headers => true, :return_headers => true}
+      @rows = []
+      ::CSV.parse(@string, opts) do |row|
+        @rows << row
+      end
+    else
+      @rows = []
+      @records.each do |rec|
+        h = {}
+        (0...rec.size).each do |n|
+          h["Col#{n}"] = rec[n]
+        end
+        @rows << h
+      end
+    end
+      
   end
 
+  def test_rows
+    rio('src1.csv') < @src
+
+    rio('src1.csv') > rio('dst.csv')
+    first_row = ($USE_FASTER_CSV ? 1 : 0)
+    assert_equal(@rows[first_row,@rows.size-first_row],rio('dst.csv').csv.rows[])
+    ans = []
+    rio('dst.csv').csv.rows do |row|
+      ans << row
+    end
+    assert_equal(@rows[first_row,@rows.size-first_row],ans)
+  end
   def test_read
     rio('src1.csv') < @src
 
@@ -37,59 +66,15 @@ class TC_csv2 < Test::RIO::TestCase
     assert_equal(@strings,rio('dst.csv').chomp.readlines)
 
     assert_equal(@records,rio('dst.csv').csv[])
-    assert_equal(@records,rio('dst.csv').csv.chomp[])
     assert_equal(@lines,rio('dst.csv').csv.lines[])
     assert_equal(@strings,rio('dst.csv').csv.chomp.lines[])
     assert_equal(@records,rio('dst.csv').csv.records[])
-    assert_equal(@lines,rio('dst.csv').csv.records.readlines)
+    exp  = ($USE_FASTER_CSV ? @records : @lines)
+    assert_equal(exp,rio('dst.csv').csv.records.readlines)
     assert_equal(@lines[1..2],rio('dst.csv').csv.lines[1..2])
     assert_equal(@lines[1..2],rio('dst.csv').csv.lines(1..2).to_a)
-    assert_equal(@lines,rio('dst.csv').csv.lines(1..2).readlines)
-
-    rio('dst.csv') < @string
-    assert_equal(@lines,::File.open('dst.csv').readlines)
-    
-    rio('dst.csv').csv < @string
-    assert_equal(@lines,::File.open('dst.csv').readlines)
-    
-    rio('dst.csv') < @lines
-    assert_equal(@lines,::File.open('dst.csv').readlines)
-    
-    rio('dst.csv').csv < @records
-    assert_equal(@lines,::File.open('dst.csv').readlines)
-
-    src_str = @string.dup
-    rio(?",src_str) >  rio(?",dst_str='')
-    assert_equal(src_str,dst_str)
-
-    rio(?",src_str).csv >  rio(?",dst_str='')
-    assert_equal(@records.join,dst_str)
-
-    rio(?",dst_str='') < rio(?",src_str).csv
-    assert_equal(@records.join,dst_str)
-
-    dst = rio(?")
-    rio(?",src_str) > dst.csv
-    assert_equal(@records,dst[])
-
-    dst = rio(?")
-    dst.csv < rio(?",src_str)
-    assert_equal(@records,dst[])
-
-    dst = rio(?")
-    rio(?",src_str) > dst.csv
-    assert_equal(@records,dst[])
-
-    dst = rio(?").csv < rio(?",src_str)
-    assert_equal(@records,dst[])
-
-    dst = rio(?").csv(';') < rio(?",src_str).csv
-    assert_equal(src_str.gsub(/,/,';'),dst.contents)
-
-    rio(?",src_str).csv > (dst = rio(?").csv(';'))
-    assert_equal(src_str.gsub(/,/,';'),dst.contents)
-
-    
+    exp  = ($USE_FASTER_CSV ? @records : @lines)
+    assert_equal(exp,rio('dst.csv').csv.lines(1..2).readlines)
 
   end
   def test_getrec
@@ -124,13 +109,13 @@ class TC_csv2 < Test::RIO::TestCase
 
     ary = rio('src1.csv').csv[]
     assert_kind_of(::Array,ary[0])
-    exp = $EXTEND_CSV_RESULTS ? @strings[0] : @records[0].to_s
+    exp = $EXTEND_CSV_RESULTS ? @strings[0] : @records[0].join
     assert_equal(exp,ary[0].join)
 
     recs = rio('src1.csv').csv.lines[]
     assert_kind_of(::String,recs[0])
-    exp = $EXTEND_CSV_RESULTS ? @records[0] : [@strings[0]+$/]
-    assert_equal(exp,recs[0].to_a)
+    exp = $EXTEND_CSV_RESULTS ? @records[0] : @strings[0]+$/
+    assert_equal(exp,recs[0])
     return
   end
 

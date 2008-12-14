@@ -11,7 +11,7 @@ class TC_RIO_copydest < Test::Unit::TestCase
     qp = RIO.rio('qp')
     rio(qp,'test_copydest').rmtree.mkpath.chdir {
       expary = ["Line0\n","Line1\n","Line2\n"]
-      line = expary.to_s
+      line = expary.join
       src = rio('src').print!(line)
       
       ary = Array.new

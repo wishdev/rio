@@ -124,10 +124,13 @@ module RIO
           self.ioh.ios = gz
           add_filter(Filter::GZipRead)
         end
-#        if csv?
+        if csv?
+          require 'rio/ext/csv/filter' if $USE_FASTER_CSV
+          self.extend(::RIO::Ext::CSV::Input)
+          add_csv_filter() if $USE_FASTER_CSV
 #          csvio = CSV.new(self.ioh.ios,*cx['csv_args'])
 #          self.ioh.ios = csvio
-#        end
+        end
        #add_filter(Filter::YAML) if yaml?
         add_line_filters()
 #        add_filter(Filter::FasterCSV) if csv?
@@ -157,6 +160,13 @@ module RIO
           gz.extend Filter::GZipMissing
           self.ioh.ios = gz
           add_filter(Filter::GZipWrite)
+        end
+        if csv?
+          require 'rio/ext/csv/filter'  if $USE_FASTER_CSV
+          self.extend(::RIO::Ext::CSV::Output)
+          add_csv_filter() if $USE_FASTER_CSV
+#          csvio = CSV.new(self.ioh.ios,*cx['csv_args'])
+#          self.ioh.ios = csvio
         end
         #add_filter(Filter::FasterCSV) if csv?
         #add_filter(Filter::YAML) if yaml?

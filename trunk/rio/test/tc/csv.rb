@@ -34,25 +34,24 @@ class TC_csv < Test::RIO::TestCase
   def test_csv_lines
     assert_equal(@string,rio(@dst_name).csv.contents)
     assert_equal(@records,rio(@dst_name).csv[])
-    assert_equal(@records,rio(@dst_name).csv.chomp[])
     assert_equal(@lines,rio(@dst_name).csv.lines[])
-    assert_equal(@strings,rio(@dst_name).csv.chomp.lines[])
     assert_equal(@records,rio(@dst_name).csv.records[])
-    assert_equal(@lines,rio(@dst_name).csv.records.readlines)
+    exp = ($USE_FASTER_CSV ? @records : @lines)
+    assert_equal(exp,rio(@dst_name).csv.records.readlines)
     assert_equal(@lines[1..2],rio(@dst_name).csv.lines[1..2])
     assert_equal(@lines[1..2],rio(@dst_name).csv.lines(1..2).to_a)
-    assert_equal(@lines,rio(@dst_name).csv.lines(1..2).readlines)
+    assert_equal(exp,rio(@dst_name).csv.lines(1..2).readlines)
   end
   def test_kind_new
     mkrio = proc { rio(@src_name).csv }
     each_kind_csv(mkrio)
   end
-  def test_kind_reuse
-    src = rio(@src_name).csv
-    mkrio = proc { src }
-    each_kind_csv(mkrio)
-
-  end
+#  def test_kind_reuse
+#    src = rio(@src_name).csv
+#    mkrio = proc { src }
+#    each_kind_csv(mkrio)
+#
+#  end
   def test_each_break
     each_break
   end
@@ -72,79 +71,37 @@ class TC_csv < Test::RIO::TestCase
     
     ario = rio('src2.csv').chomp
     ario.each { |el| assert_equal(ary[0],el); break }
-    ario.each_record { |el| assert_equal(ary[1],el); break }
     
     ario = rio('src2.csv').chomp
     ario.each { |el| assert_equal(ary[0],el); break }
-    ario.each_row { |el| assert_equal(ary[1],el); break }
     
-    ario = rio('src2.csv').chomp
-    ario.each_record { |el| assert_equal(ary[0],el); break }
-    ario.each { |el| assert_equal(ary[1],el); break }
     
-    ario = rio('src2.csv').chomp
-    ario.each_record { |el| assert_equal(ary[0],el); break }
-    ario.each_record { |el| assert_equal(ary[1],el); break }
-    
-    ario = rio('src2.csv').chomp
-    ario.each_record { |el| assert_equal(ary[0],el); break }
-    ario.each_row { |el| assert_equal(ary[1],el); break }
-    
-    ario = rio('src2.csv').chomp
-    ario.each_row { |el| assert_equal(ary[0],el); break }
-    ario.each { |el| assert_equal(ary[1],el); break }
-    
-    ario = rio('src2.csv').chomp
-    ario.each_row { |el| assert_equal(ary[0],el); break }
-    ario.each_record { |el| assert_equal(ary[1],el); break }
-    
-    ario = rio('src2.csv').chomp
-    ario.each_row { |el| assert_equal(ary[0],el); break }
-    ario.each_row { |el| assert_equal(ary[1],el); break }
     
   end
   def each_kind()
     mkrio = proc { rio('src1.csv') }
     
     rio('src1.csv').each                 { |el| assert_kind_of(::String,el); break }
-    rio('src1.csv').each_record          { |el| assert_kind_of(::String,el); break }
-    rio('src1.csv').each_row             { |el| assert_kind_of(::String,el); break }
-    
     rio('src1.csv').lines.each           { |el| assert_kind_of(::String,el); break }
-    rio('src1.csv').lines.each_record    { |el| assert_kind_of(::String,el); break }
-    rio('src1.csv').lines.each_row       { |el| assert_kind_of(::String,el); break }
-    
     rio('src1.csv').records.each         { |el| assert_kind_of(::String,el); break }
-    rio('src1.csv').records.each_record  { |el| assert_kind_of(::String,el); break }
-    rio('src1.csv').records.each_row     { |el| assert_kind_of(::String,el); break }
-    
     rio('src1.csv').rows.each            { |el| assert_kind_of(::String,el); break }
-    rio('src1.csv').rows.each_record     { |el| assert_kind_of(::String,el); break }
-    rio('src1.csv').rows.each_row        { |el| assert_kind_of(::String,el); break }
   end
   def each_kind_csv(mkrio)
+    rowsrtn = ($USE_FASTER_CSV ? CSV::Row : Hash)
+    mkrio.call.rows.each         { |el| assert_kind_of(rowsrtn,el); break }
     
+    rowsrtn = ($USE_FASTER_CSV ? CSV::Row : Array)
     mkrio.call.each         { |el| assert_kind_of(::Array,el); break }
-    mkrio.call.each_record  { |el| assert_kind_of(::Array,el); break }
-    mkrio.call.each_row     { |el| assert_kind_of(::Hash,el); break }
-    
     mkrio.call.lines.each         { |el| assert_kind_of(::String,el); break }
-    mkrio.call.lines.each_record  { |el| assert_kind_of(::String,el); break }
-    mkrio.call.lines.each_row     { |el| assert_kind_of(::Hash,el); break }
-    
     mkrio.call.records.each         { |el| assert_kind_of(::Array,el); break }
-    mkrio.call.records.each_record  { |el| assert_kind_of(::Array,el); break }
-    mkrio.call.records.each_row     { |el| assert_kind_of(::Hash,el); break }
     
-    mkrio.call.rows.each         { |el| assert_kind_of(::Hash,el); break }
-    mkrio.call.rows.each_record  { |el| assert_kind_of(::Hash,el); break }
-    mkrio.call.rows.each_row     { |el| assert_kind_of(::Hash,el); break }
   end
   def test_copy
     rio('dst.csv') < @string
     assert_equal(@lines,::File.open('dst.csv').readlines)
     
     rio('dst.csv').csv < @string
+    #p @string
     assert_equal(@lines,::File.open('dst.csv').readlines)
     
     rio('dst.csv') < @lines
@@ -159,10 +116,10 @@ class TC_csv < Test::RIO::TestCase
     assert_equal(src_str,dst_str)
 
     rio(?",src_str).csv >  rio(?",dst_str='')
-    assert_equal(@records.join,dst_str)
+    assert_equal(@records.map{|ar| ar.to_s}.join,dst_str)
 
     rio(?",dst_str='') < rio(?",src_str).csv
-    assert_equal(@records.join,dst_str)
+    assert_equal(@records.map{|ar| ar.to_s}.join,dst_str)
 
     dst = rio(?")
     rio(?",src_str) > dst.csv
@@ -172,17 +129,11 @@ class TC_csv < Test::RIO::TestCase
     dst.csv < rio(?",src_str)
     assert_equal(@records,dst[])
 
-    dst = rio(?")
-    rio(?",src_str) > dst.csv
-    assert_equal(@records,dst[])
-
-    dst = rio(?").csv < rio(?",src_str)
-    assert_equal(@records,dst[])
-
-    dst = rio(?").csv(';') < rio(?",src_str).csv
+    csv_arg = ($USE_FASTER_CSV ? {:col_sep => ';'} : ';')
+    dst = rio(?").csv(csv_arg) < rio(?",src_str).csv
     assert_equal(src_str.gsub(/,/,';'),dst.contents)
     $trace_states = false
-    rio(?",src_str).csv > (dst = rio(?").csv(';'))
+    rio(?",src_str).csv > (dst = rio(?").csv(csv_arg))
     assert_equal(src_str.gsub(/,/,';'),dst.contents)
     $trace_states = false
 
