@@ -58,6 +58,19 @@ module RIO
       reduced_list = reduce(rl)
       flatten_singles(reduced_list)
     end
+    def self.arraynge(mx,rng)
+      puts "#{mx}: #{rng}"
+      begr = rng.begin
+      endr = rng.end
+      endr = mx if rng.end > mx
+      if rng.end < 0
+        endr = mx + rng.end + 1
+      end
+      if rng.begin < 0
+        begr = mx + rng.begin + 1
+      end
+      rng.exclude_end? ? (begr...endr) : (begr..endr)
+    end
     def self.ml_expand(ml)
       rl = ml_to_ranges(ml)
       reduced_list = reduce(rl)
