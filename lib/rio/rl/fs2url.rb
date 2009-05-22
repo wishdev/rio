@@ -41,8 +41,8 @@ require 'rio/rl/chmap'
 
 module RIO
   module RL #:nodoc: all
-    PESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;?:@&=+$,]",false, 'N').freeze
-    ESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;\/?:@&=+$,]",false, 'N').freeze
+    PESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;?:@&=+$,]",false).freeze
+    ESCAPE = Regexp.new("[^-_.!~*'()a-zA-Z0-9;\/?:@&=+$,]",false).freeze
     def escape(pth,esc=ESCAPE)
       ::URI.escape(pth,esc)
     end

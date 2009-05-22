@@ -51,6 +51,6 @@ module RIO
       'nil?'  => true,
       'open'  => true,
     }.freeze
-    instance_methods.each { |m| undef_method m unless KEEPSYM[m] }
+    instance_methods.each { |m| undef_method m unless KEEPSYM[m.to_s] }
   end
 end

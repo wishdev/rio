@@ -48,7 +48,8 @@ module RIO
       def _set_entry_sel_args(sel_type,*args)
         #p callstr('_set_entry_sel_args',sel_type,*args)
 
-        es = (cx['entry_sel'] ||= {})
+        cx['entry_sel'] ||= {}
+        es = cx['entry_sel']
         eargs = (es['args'] ||= {})
         eargs[sel_type] ||= []
         eargs[sel_type] += args

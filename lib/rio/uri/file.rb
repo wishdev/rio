@@ -90,6 +90,13 @@ RFC 1738            Uniform Resource Locators (URL)        December 1994
       FILE_ESCAPED = ESCAPED
       FILE_UNRESERVED = "-_.!~*'()#{ALNUM}"
       FILE_PCHAR = "(?:[#{FILE_UNRESERVED}:@?&=+$,]|#{FILE_ESCAPED})"
+
+      # pchar         = unreserved | escaped |
+      #                 ":" | "@" | "&" | "=" | "+" | "$" | ","
+      PCHAR = "(?:[#{UNRESERVED}:@&=+$,]|#{ESCAPED})"
+      # param         = *pchar
+      PARAM = "#{PCHAR}*"
+ 
       FILE_SEGMENT = "#{FILE_PCHAR}*(?:;#{PARAM})*"
       FILE_PATH_SEGMENTS = "#{FILE_SEGMENT}(?:/#{FILE_SEGMENT})*"
       FILE_ABS_PATH = "(?:/#{DRIVE_SPEC})?/#{FILE_PATH_SEGMENTS}"
@@ -99,8 +106,8 @@ RFC 1738            Uniform Resource Locators (URL)        December 1994
 
       #FILE_ABS_PATH = "(?:/#{DRIVE_SPEC})?/#{FILE_PATH_SEGMENTS}(?:\\?#{QUERY})?"
     end
-    EMPTYHOST = Regexp.new("^$", false, 'N').freeze #"
-    FILE_ABS_PATH = Regexp.new("^#{PATTERN::FILE_ABS_PATH}$", false, 'N').freeze
+    EMPTYHOST = Regexp.new("^$", false).freeze #"
+    FILE_ABS_PATH = Regexp.new("^#{PATTERN::FILE_ABS_PATH}$", false).freeze
   end # module REGEXP
 
   class FILE < Generic

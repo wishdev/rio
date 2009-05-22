@@ -1,4 +1,4 @@
-Rio 0.4.1
+Rio 0.4.3
 
 = Rio - Ruby I/O Facilitator
 
@@ -148,6 +148,8 @@ Email:: rio4ruby@rubyforge.org
 Blog:: http://rio4ruby.blogspot.com
 
 == Copyright
+== Ruby 1.9 Mods
+Copyright (c) 2009 John W Higgins. All rights reserved
 Copyright (c) 2005,2006,2007 Christopher Kleckner. All rights reserved
 
 == License
