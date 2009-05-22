@@ -1,6 +1,0 @@
-#-- 
-#
-# To create the documentation for Rio run the command
-#   rake rdoc
-# from the distribution directory.
-#++
