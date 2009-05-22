@@ -1,7 +1,7 @@
 --- !ruby/object:Gem::Specification 
 name: rio
 version: !ruby/object:Gem::Version 
-  version: 0.4.3
+  version: 0.4.3.1
 platform: ruby
 authors: 
 - Christopher Kleckner
